@@ -13,20 +13,16 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->enum('tipo', ['imagem', 'video', 'texto', 'enquete']);
+            $table->string('titulo');
+            $table->text('texto')->nullable();
+            $table->date('data');
+            $table->unsignedBigInteger('visualizacoes')->default(0);
 
-            $table->enum('tipo', ['texto', 'imagem', 'video']);
-        $table->string('titulo');
-        $table->text('conteudo')->nullable();
-        $table->string('arquivo')->nullable();
-        $table->date('data_postagem');
-
-        $table->unsignedBigInteger('visualizacoes')->default(0);
-
-        $table->foreignId('user_id')
-            ->constrained()
-            ->onDelete('cascade');
-
-            $table->timestamps();
+            $table->foreignId('id_usuario')
+                ->constrained('users')
+                ->onDelete('cascade');
+                $table->timestamps();
         });
     }
 

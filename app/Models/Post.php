@@ -9,19 +9,14 @@ class Post extends Model
     protected $fillable = [
         'tipo',
         'titulo',
-        'conteudo',
-        'arquivo',
-        'data_postagem',
+        'texto',
+        'data',
         'visualizacoes',
-        'user_id'
+        'id_usuario'
     ];
 
-    protected $casts = [
-        'data_postagem' => 'date'
-    ];
-
-    public function user()
+    public function usuario()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id_usuario');
     }
 }
