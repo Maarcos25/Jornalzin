@@ -7,7 +7,7 @@
     <body>
         <nav>
             <a href="/">Home</a> |
-            <a href="{{ route('users.index') }}">Usuários</a>
+{{-- <a href="{{ route('users.index') }}">Usuários</a> --}}
         </nav>
         <hr>
 
