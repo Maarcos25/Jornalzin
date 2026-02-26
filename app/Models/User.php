@@ -19,10 +19,16 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nome',
+        'sobrenome',
         'email',
         'password',
+        'ra',
+        'telefone',
+        'data_nascimento',
+        'tipo'
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -34,21 +40,19 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function posts()
-    {
-        return $this->hasMany(Post::class);
-    }
-
     /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'data_nascimento' => 'date',
+    ];
+
+    public function posts()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(Post::class);
     }
 }
