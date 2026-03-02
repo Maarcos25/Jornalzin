@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('content')
+@section('conteudo')
 <div class="container">
     <h1>Novo Comentário</h1>
 

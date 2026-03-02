@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('content')
+@section('conteudo')
 <div class="container">
     <h1>Comentários</h1>
 
@@ -11,7 +11,7 @@
     @if(session('success'))
         <div class="alert alert-success mt-2">
             {{ session('success') }}
-        </div> 
+        </div>
     @endif
 
     <table class="table mt-3">

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('content')
+@section('conteudo')
 <h1>Lista de Posts</h1>
 
 <a href="{{ route('posts.create') }}">Novo Post</a>
