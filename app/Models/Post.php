@@ -20,3 +20,4 @@ class Post extends Model
         return $this->belongsTo(User::class, 'id_usuario');
     }
 }
+PAREI NO PASSO 3
