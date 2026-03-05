@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -24,9 +25,14 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'nome' => fake()->name(),
+            'sobrenome' => fake()->name(),
+            'ra' => fake()->numerify('#####'),
+            'telefone' => fake()->phoneNumber(),
+            'data_nascimento' =>  Carbon::now()->subYears(rand(0, 30)),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'tipo' => fake()->randomElement(['administrador', 'editor', 'leitor']),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
