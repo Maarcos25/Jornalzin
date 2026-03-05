@@ -26,7 +26,14 @@ class PostController extends Controller
             'data' => 'required|date',
         ]);
 
-        Post::create($request->all());
+        Post::create([
+            'tipo' => $request->tipo,
+            'titulo' => $request->titulo,
+            'texto' => $request->texto,
+            'data' => $request->data,
+            'visualizacoes' => 0,
+            'id_usuario' => auth()->id(),
+        ]);
 
         return redirect()->route('posts.index')
             ->with('success', 'Post criado com sucesso!');
@@ -39,16 +46,23 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
+        if ($post->id_usuario !== auth()->id()) {
+            abort(403);
+        }
+
         return view('posts.edit', compact('post'));
     }
 
     public function update(Request $request, Post $post)
     {
+        if ($post->id_usuario !== auth()->id()) {
+            abort(403);
+        }
         $post->update($request->all());
 
-        return redirect()->route('posts.index')
-            ->with('success', 'Post atualizado com sucesso!');
+        return redirect()->route('posts.index')->with('success', 'Post atualizado com sucesso!');
     }
+
 
     public function destroy(Post $post)
     {

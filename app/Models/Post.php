@@ -19,5 +19,12 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'id_usuario');
     }
+
+    public function comentarios()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+
 }
-PAREI NO PASSO 3
+
