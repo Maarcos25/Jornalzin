@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.site')
 
 @section('conteudo')
 <h1>Criar Post</h1>

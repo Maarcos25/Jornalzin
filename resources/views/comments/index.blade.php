@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.site')
 
 @section('conteudo')
 <div class="container">
@@ -30,7 +30,7 @@
                 <tr>
                     <td>{{ $comment->id }}</td>
                     <td>{{ $comment->texto }}</td>
-                    <td>{{ $comment->user->name ?? '' }}</td>
+                    <td>{{ $comment->user->nome ?? '' }}</td>
                     <td>{{ $comment->post->title ?? '' }}</td>
                     <td>{{ $comment->data }}</td>
                     <td>
