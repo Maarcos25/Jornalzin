@@ -5,7 +5,7 @@
 <div class="hero">
     <h1 class="titulo">Jornalzin</h1>
     <p class="subtitulo">Informação que transforma.</p>
-    <a href="{{ route('posts.index') }}" class="btn-entrar">Entrar</a>
+    <a href="{{ route('login') }}" class="btn-entrar">Entrar</a>
 </div>
 
 <style>
