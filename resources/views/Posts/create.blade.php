@@ -1,30 +1,68 @@
 @extends('layouts.site')
 
 @section('conteudo')
-<h1>Criar Post</h1>
+    <div class="row justify-content-center">
 
-<form action="{{ route('posts.store') }}" method="POST">
-    @csrf
+        <div class="col-md-6">
 
-    <label>Tipo:</label>
-    <select name="tipo">
-        <option value="imagem">Imagem</option>
-        <option value="video">Vídeo</option>
-        <option value="texto">Texto</option>
-        <option value="enquete">Enquete</option>
-    </select>
+            <div class="card shadow">
 
-    <label>Título:</label>
-    <input type="text" name="titulo">
+                <div class="card-header bg-primary text-white">
+                    <h4>Criar Post</h4>
+                </div>
 
-    <label>Texto:</label>
-    <textarea name="texto"></textarea>
+                <div class="card-body">
 
-    <label>Data:</label>
-    <input type="date" name="data">
+                    <form action="{{ route('posts.store') }}" method="POST">
 
-    <input type="hidden" name="id_usuario" value="1">
+                        @csrf
 
-    <button type="submit">Salvar</button>
-</form>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select name="tipo" class="form-select">
+                                <option value="imagem">Imagem</option>
+                                <option value="video">Vídeo</option>
+                                <option value="texto">Texto</option>
+                                <option value="enquete">Enquete</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Título</label>
+                            <input type="text" name="titulo" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Texto</label>
+                            <textarea name="texto" class="form-control" rows="4"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Data</label>
+                            <input type="date" name="data" class="form-control">
+                        </div>
+
+                        <input type="hidden" name="id_usuario" value="1">
+
+                        <div class="d-flex justify-content-between">
+
+                            <a href="{{ route('posts.index') }}" class="btn btn-secondary">
+                                Voltar
+                            </a>
+
+                            <button type="submit" class="btn btn-success">
+                                Salvar Post
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 @endsection
