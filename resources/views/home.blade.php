@@ -1,67 +1,143 @@
 @extends('layouts.site')
 
 @section('conteudo')
+    <div class="container">
 
-<div class="hero">
-    <h1 class="titulo">Jornalzin</h1>
-    <p class="subtitulo">Informação que transforma.</p>
-    <a href="{{ route('posts.index') }}" class="btn-entrar">Entrar</a>
-</div>
+        <h1>Jornalzin 📰</h1>
 
-<style>
-body {
-    margin: 0;
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-}
+        <form method="GET" action="/">
+            <input type="text" name="pesquisa" placeholder="Pesquisar postagens..." class="form-control mb-3">
+        </form>
 
-.hero {
-    height: 80vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
+        <div class="row">
 
-/* Animação do título */
-.titulo {
-    font-size: 4rem;
-    opacity: 0;
-    transform: translateY(-40px);
-    animation: aparecer 1.5s ease-out forwards;
-}
+            <div class="col-md-8">
 
-/* Subtitulo */
-.subtitulo {
-    font-size: 1.5rem;
-    margin-top: 10px;
-    opacity: 0;
-    animation: aparecer 1.5s ease-out forwards;
-    animation-delay: 1s;
-}
+                <h3>Postagens recentes</h3>
 
-/* Botão */
-.btn-entrar {
-    margin-top: 30px;
-    padding: 12px 25px;
-    background: #e63946;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    opacity: 0;
-    animation: aparecer 1.5s ease-out forwards;
-    animation-delay: 2s;
-}
+                <div id="posts">
 
-/* Keyframes */
-@keyframes aparecer {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-</style>
+                    @foreach ($posts as $post)
+                        <div class="card mb-3">
+                            <div class="card-body">
 
+                                <h5>{{ $post->titulo }}</h5>
+
+                                <p>{{ $post->texto }}</p>
+
+                                <small>
+                                    Autor: {{ $post->usuario->name ?? 'Desconhecido' }}
+                                </small>
+
+                                <br>
+                                <small>
+                                    👁️ {{ $post->visualizacoes }} visualizações
+                                </small>
+
+                                <hr>
+
+                                <form method="POST" action="/comments">
+                                    @csrf
+
+                                    <input type="hidden" name="post_id" value="{{ $post->id }}">
+
+                                    <input type="text" name="texto" placeholder="Comentar..." class="form-control">
+
+                                    <button class="btn btn-primary btn-sm mt-2">
+                                        Enviar
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    @endforeach
+
+
+                    <div class="card mb-3">
+
+                        <div class="card-body">
+
+                            <h5>{{ $post->titulo }}</h5>
+
+                            <p>{{ $post->texto }}</p>
+
+                            <small>
+                                Autor: {{ $post->usuario->name ?? 'Desconhecido' }}
+                            </small>
+
+                            <br>
+
+                            <small>
+                                👁️ {{ $post->visualizacoes }} visualizações
+                            </small>
+
+                            <br><br>
+
+                            <button class="btn btn-sm btn-outline-primary">👍 Curtir</button>
+
+                            <button class="btn btn-sm btn-outline-secondary">💬 Comentar</button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="text-center">
+
+                    {{ $posts->links() }}
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <h3>🔥 Mais vistos</h3>
+
+                <ul class="list-group">
+
+                    @foreach ($maisVistos as $post)
+                        <li class="list-group-item">
+                            {{ $post->titulo }}
+                            <br>
+                            <small>{{ $post->visualizacoes }} views</small>
+                        </li>
+                    @endforeach
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
 @endsection
+
+<script>
+    let page = 1;
+
+    window.onscroll = function() {
+
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+
+            page++;
+
+            fetch('/?page=' + page)
+                .then(response => response.text())
+                .then(data => {
+
+                    let parser = new DOMParser();
+                    let html = parser.parseFromString(data, 'text/html');
+
+                    let novosPosts = html.querySelector('#posts').innerHTML;
+
+                    document.querySelector('#posts').innerHTML += novosPosts;
+
+                });
+
+        }
+
+    };
+</script>
