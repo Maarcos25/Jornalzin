@@ -4,6 +4,19 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+
+// Registro
+Route::get('/register', [RegisteredUserController::class, 'create'])->middleware('guest')->name('register');
+Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('guest');
+
+// Login
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->middleware('guest')->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('guest');
+
+// Logout
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');
 
 use Illuminate\Support\Facades\Route;
 

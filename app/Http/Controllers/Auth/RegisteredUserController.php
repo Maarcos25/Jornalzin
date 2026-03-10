@@ -30,21 +30,27 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'nome' => ['required','string','max:255'],
+            'sobrenome' => ['required','string','max:255'],
+            'ra' => ['required','string','max:50'],
+            'email' => ['required','string','email','max:255','unique:users'],
+            'password' => ['required','confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'name' => $request->nome,
+            'nome' => $request->nome,
+            'sobrenome' => $request->sobrenome,
+            'ra' => $request->ra,
+            'telefone' => null,
+            'data_nascimento' => null,
+            'tipo' => 'leitor',
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect('/'); // Home do Jornalzin
     }
 }

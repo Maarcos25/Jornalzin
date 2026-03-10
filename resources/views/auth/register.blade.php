@@ -4,9 +4,16 @@
 
         <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+            <x-input-label for="nome" value="Nome" />
+            <x-text-input id="nome" class="block mt-1 w-full" type="text" name="nome" :value="old('nome')" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                <div>
+                    <label>Sobrenome</label>
+                    <input type="text" name="sobrenome" required>
+                    <div class="mt-2">
+                        <label>RA</label>
+                        <input type="text" name="ra" class="border rounded w-full p-2" required>
+                    </div>
         </div>
 
         <!-- Email Address -->

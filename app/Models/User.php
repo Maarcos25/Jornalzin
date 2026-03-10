@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Post;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
