@@ -37,16 +37,28 @@
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
-            @endif
+                <div class="text-center mt-2">
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
+    <a href="{{ url('/users/create') }}">
+        Criar conta
+    </a>
+
+</div>
+            @endif
+            <x-primary-button class="w-full mt-3">
+                {{ __('Entrar') }}
             </x-primary-button>
-            
-            <a href="{{ route('register') }}"
-            class="ms-3 underline text-sm text-gray-600 hover:text-gray-900">
-            Criar conta
-        </a>
-        </div>
+
+            <a href="{{ url('/users/create') }}"
+            class="block w-full text-center mt-3 border border-blue-600 text-blue-600 py-2 rounded-md hover:bg-blue-600 hover:text-white transition">
+                Criar conta
+            </a>
+
+            <div class="text-center mt-4">
+                <a href="{{ route('password.request') }}"
+                class="text-sm text-gray-600 hover:text-gray-900 underline">
+                    Esqueceu a senha?
+                </a>
+            </div>
     </form>
 </x-guest-layout>

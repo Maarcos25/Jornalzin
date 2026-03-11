@@ -1,22 +1,108 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Jornalzin</title>
-        <meta charset="UTF-8">
+<html lang="pt-br">
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <nav>
-            <a href="/">Home</a> |
-            <a href="{{ route('users.index') }}">Usuários</a> |
-            <a href="{{ route('comments.index') }}">Comentários</a> |
-            <a href="{{ route('posts.index') }}">Posts</a>
-        </nav>
+<head>
+    <meta charset="UTF-8">
+    <title>Jornalzin</title>
 
-        <hr>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            background: #212529;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+
+            <a class="navbar-brand" href="/">📰 Jornalzin</a>
+
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu">
+
+                <ul class="navbar-nav me-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('users.index') }}">Usuários</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('comments.index') }}">Comentários</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('posts.index') }}">Posts</a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav">
+                    @guest
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light me-2" href="{{ route('login') }}">
+                                Entrar
+                            </a>
+                        </li>
+                    @endguest
+
+                    @auth
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light" href="{{ route('profile.edit') }}">
+                                Perfil
+                            </a>
+                        </li>
+
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="btn btn-danger dropdown-item text-danger">
+                                    Sair
+                                </button>
+                            </form>
+                        </li>
+                    @endauth
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- CONTEÚDO -->
+    <div class="container mt-4">
         @yield('conteudo')
-    </body>
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer>
+        © {{ date('Y') }} Jornalzin - Projeto TCC
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
 </html>

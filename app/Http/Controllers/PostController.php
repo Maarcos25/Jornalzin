@@ -20,11 +20,27 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'tipo' => 'required',
             'titulo' => 'required',
             'data' => 'required|date',
         ]);
+
+        $dados = $request->all();
+
+        if ($request->hasFile('imagem')) {
+            $imagem = $request->file('imagem')->store('posts', 'public');
+            $dados['imagem'] = $imagem;
+        }
+
+        $dados['id_usuario'] = auth()->id();
+        $dados['visualizacoes'] = 0;
+
+        Post::create($dados);
+
+        return redirect()->route('posts.index')
+            ->with('success','Post criado com sucesso!');
 
         Post::create([
             'tipo' => $request->tipo,

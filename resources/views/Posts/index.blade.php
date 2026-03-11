@@ -19,22 +19,56 @@
     </tr>
 
     @foreach($posts as $post)
-    <tr>
-        <td>{{ $post->id }}</td>
-        <td>{{ $post->titulo }}</td>
-        <td>{{ $post->tipo }}</td>
-        <td>{{ $post->data }}</td>
-        <td>
-            <a href="{{ route('posts.show', $post) }}">Ver</a>
-            <a href="{{ route('posts.edit', $post) }}">Editar</a>
 
-            <form action="{{ route('posts.destroy', $post) }}" method="POST">
-                @csrf
-                @method('DELETE')
-                <button type="submit">Excluir</button>
-            </form>
-        </td>
-    </tr>
+    <div class="card mb-3">
+
+    <div class="card-body">
+
+    <h4>{{ $post->titulo }}</h4>
+
+    @if($post->tipo == 'texto')
+
+    <p>{{ $post->texto }}</p>
+
+    @endif
+
+
+    @if($post->tipo == 'imagem')
+
+    <img src="{{ asset('storage/'.$post->imagem) }}" width="300">
+
+    @endif
+
+
+    @if($post->tipo == 'video')
+
+    <iframe width="400" height="200"
+    src="{{ $post->video }}"
+    frameborder="0"></iframe>
+
+    @endif
+
+
+    @if($post->tipo == 'enquete')
+
+    <p>Vote:</p>
+
+    <form>
+
+    <input type="radio"> {{ $post->opcao1 }} <br>
+    <input type="radio"> {{ $post->opcao2 }} <br>
+    <input type="radio"> {{ $post->opcao3 }} <br>
+    <input type="radio"> {{ $post->opcao4 }} <br>
+
+    <button class="btn btn-primary mt-2">Votar</button>
+
+    </form>
+
+    @endif
+
+    </div>
+    </div>
+
     @endforeach
 </table>
 @endsection

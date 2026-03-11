@@ -10,11 +10,16 @@ class Post extends Model
         'tipo',
         'titulo',
         'texto',
+        'imagem',
+        'video',
+        'opcao1',
+        'opcao2',
+        'opcao3',
+        'opcao4',
         'data',
         'visualizacoes',
         'id_usuario'
     ];
-
     public function usuario()
     {
         return $this->belongsTo(User::class, 'id_usuario');
