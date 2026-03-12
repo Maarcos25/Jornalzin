@@ -68,6 +68,7 @@
                             name="email"
                             class="form-control @error('email') is-invalid @enderror"
                             value="{{ old('email') }}"
+                            placeholder="username@gmail.com"
                         >
                         @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -100,6 +101,10 @@
                             name="telefone"
                             class="form-control @error('telefone') is-invalid @enderror"
                             value="{{ old('telefone') }}"
+                            maxlength="11"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                            placeholder="(18) 91234-5678"
+                            required>
                         >
                         @error('telefone')
                             <div class="invalid-feedback">{{ $message }}</div>

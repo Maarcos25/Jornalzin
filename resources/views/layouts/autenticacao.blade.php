@@ -18,8 +18,8 @@
 
         .auth-card {
             width: 100%;
-            max-width: 420px;
-            padding: 30px;
+            max-width: 900px;
+            padding: 90px;
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
