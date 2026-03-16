@@ -76,10 +76,10 @@
                             </a>
                         </li>
 
-                        <li>
+                        <li class="nav-item ms-2">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="btn btn-danger dropdown-item text-danger">
+                                <button type="submit" class="btn btn-danger">
                                     Sair
                                 </button>
                             </form>

@@ -1,110 +1,101 @@
 @extends('layouts.site')
 
 @section('conteudo')
-    <div class="container">
+<div class="container">
 
-        <h1>Jornalzin 📰</h1>
+    <h1>Jornalzin 📰</h1>
 
-        <form method="GET" action="/">
-            <input type="text" name="pesquisa" placeholder="Pesquisar postagens..." class="form-control mb-3">
-        </form>
+    <div class="row">
 
-        <div class="row">
+        <!-- COLUNA POSTS -->
+        <div class="col-md-8">
 
-            <div class="col-md-8">
+            <!-- PESQUISA -->
+            <form method="GET" action="/" class="mb-4">
+                <div class="input-group">
 
+                    <input
+                        type="text"
+                        name="pesquisa"
+                        class="form-control"
+                        placeholder="Pesquisar postagens..."
+                        value="{{ request('pesquisa') }}"
+                    >
+
+                    <button class="btn btn-dark" type="submit">
+                        🔍
+                    </button>
+
+                </div>
+            </form>
+
+
+            @if(request('pesquisa'))
+                <h3>🔎 Resultados para "{{ request('pesquisa') }}"</h3>
+            @else
                 <h3>Postagens recentes</h3>
-
-                <div id="posts">
-
-                    @foreach ($posts as $post)
-                        <div class="card mb-3">
-                            <div class="card-body">
-
-                                <h5>{{ $post->titulo }}</h5>
-
-                                <p>{{ $post->texto }}</p>
-
-                                <small>
-                                    Autor: {{ $post->usuario->name ?? 'Desconhecido' }}
-                                </small>
-
-                                <br>
-                                <small>
-                                    👁️ {{ $post->visualizacoes }} visualizações
-                                </small>
-
-                                <hr>
-
-                                <form method="POST" action="/comments">
-                                    @csrf
-
-                                    <input type="hidden" name="post_id" value="{{ $post->id }}">
-
-                                    <input type="text" name="texto" placeholder="Comentar..." class="form-control">
-
-                                    <button class="btn btn-primary btn-sm mt-2">
-                                        Enviar
-                                    </button>
-
-                                </form>
-
-                            </div>
-                        </div>
-                    @endforeach
+            @endif
 
 
-                    <div class="card mb-3">
+            <div id="posts">
 
-                        <div class="card-body">
+                @foreach ($posts as $post)
 
-                            <h5>{{ $post->titulo }}</h5>
+                <div class="card mb-3">
+                    <div class="card-body">
 
-                            <p>{{ $post->texto }}</p>
+                        <h5>{{ $post->titulo }}</h5>
 
-                            <small>
-                                Autor: {{ $post->usuario->name ?? 'Desconhecido' }}
-                            </small>
+                        <p>{{ $post->texto }}</p>
 
-                            <br>
+                        <small>
+                            Autor: {{ $post->usuario->name ?? 'Desconhecido' }}
+                        </small>
 
-                            <small>
-                                👁️ {{ $post->visualizacoes }} visualizações
-                            </small>
+                        <br>
 
-                            <br><br>
-
-                            <button class="btn btn-sm btn-outline-primary">👍 Curtir</button>
-
-                            <button class="btn btn-sm btn-outline-secondary">💬 Comentar</button>
-
-                        </div>
+                        <small>
+                            👁️ {{ $post->visualizacoes }} visualizações
+                        </small>
 
                     </div>
-
                 </div>
 
-                <div class="text-center">
-
-                    {{ $posts->links() }}
-
-                </div>
+                @endforeach
 
             </div>
 
-            <div class="col-md-4">
+            <div class="text-center">
+                {{ $posts->links() }}
+            </div>
 
-                <h3>🔥 Mais vistos</h3>
+        </div>
 
-                <ul class="list-group">
 
-                    @foreach ($maisVistos as $post)
-                        <li class="list-group-item">
-                            {{ $post->titulo }}
-                            <br>
-                            <small>{{ $post->visualizacoes }} views</small>
-                        </li>
-                    @endforeach
+        <!-- COLUNA MAIS VISTOS -->
+        <div class="col-md-4">
+
+            <h3>🔥 Mais vistos</h3>
+
+            <ul class="list-group">
+
+                @foreach ($maisVistos as $mais)
+
+                <li class="list-group-item">
+                    {{ $mais->titulo }}
+                    <br>
+                    <small>{{ $mais->visualizacoes }} views</small>
+                </li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
 
                 </ul>
 
