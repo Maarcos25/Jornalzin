@@ -87,4 +87,15 @@ class PostController extends Controller
         return redirect()->route('posts.index')
             ->with('success', 'Post excluído com sucesso!');
     }
+
+    public function like($id)
+    {
+        $post = Post::findOrFail($id);
+
+        $post->likes += 1;
+        $post->save();
+
+        return back();
+    }
 }
+

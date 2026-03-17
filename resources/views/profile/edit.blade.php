@@ -2,11 +2,36 @@
 
 @section('conteudo')
 
-<div class="container mt-4" style="max-width: 800px;">
+<div class="container-fluid mt-4 px-4">
+    <div class="text-center mb-3">
 
-<h4 class="text-center mb-4">Configurações da Conta</h4>
+        <a href="/" style="text-decoration:none; font-size:28px; font-weight:bold; color:black;">
 
-<div class="card shadow mb-4">
+        📰 Jornalzin
+
+        </a>
+
+        </div>
+
+<h4 class="text-center mb-2">
+    <div style="
+width:120px;
+height:120px;
+border-radius:50%;
+background:#ddd;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:40px;
+margin:auto;
+">
+
+👤
+
+
+</div>Configurações da Conta</h4>
+
+<div class="card shadow mb-3">
     <div class="card-body">
 
         <h5 class="mb-3">Informações do Perfil</h5>
@@ -35,7 +60,7 @@
 </div>
 
 
-<div class="card shadow mb-4">
+<div class="card shadow mb-3">
     <div class="card-body">
 
         <h5 class="mb-3">Alterar Senha</h5>
@@ -47,22 +72,22 @@
             <div class="mb-3">
                 <label class="form-label">Senha atual</label>
                 <input type="password"
-                       name="current_password"
-                       class="form-control">
+                    name="current_password"
+                    class="form-control">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Nova senha</label>
                 <input type="password"
-                       name="password"
-                       class="form-control">
+                    name="password"
+                    class="form-control">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Confirmar nova senha</label>
                 <input type="password"
-                       name="password_confirmation"
-                       class="form-control">
+                    name="password_confirmation"
+                    class="form-control">
             </div>
 
             <button class="btn btn-primary">

@@ -8,39 +8,35 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        body {
+
+body {
             background: linear-gradient(135deg, #1e3c72, #2a5298);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 0;
         }
 
         .auth-card {
             width: 100%;
-            max-width: 900px;
-            padding: 90px;
+            max-width: 700px;
+            margin: auto;
+            padding: 40px;
             border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .logo {
             font-size: 28px;
             font-weight: bold;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
-    </style>
 
+        </style>
 </head>
 
 <body>
 
     <div class="card auth-card">
-
-        <div class="logo">
-            📰 Jornalzin
-        </div>
 
         @yield('conteudo')
 

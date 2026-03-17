@@ -64,6 +64,14 @@
                             </small>
 
                         </div>
+                        <form method="POST" action="{{ route('posts.like', $post->id) }}">
+                            @csrf
+
+                            <button class="btn btn-outline-primary btn-sm">
+                                👍 Curtir ({{ $post->likes ?? 0 }})
+                            </button>
+
+                        </form>
 
 
                         <hr>
