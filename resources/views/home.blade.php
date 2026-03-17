@@ -41,24 +41,53 @@
 
                 @foreach ($posts as $post)
 
-                <div class="card mb-3">
+                <div class="card mb-4 shadow-sm">
+
                     <div class="card-body">
 
-                        <h5>{{ $post->titulo }}</h5>
+                        <h4 class="fw-bold">
+                            {{ $post->titulo }}
+                        </h4>
 
-                        <p>{{ $post->texto }}</p>
+                        <p class="text-muted">
+                            {{ Str::limit($post->texto, 200) }}
+                        </p>
 
-                        <small>
-                            Autor: {{ $post->usuario->name ?? 'Desconhecido' }}
-                        </small>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
 
-                        <br>
+                            <small class="text-secondary">
+                                ✍ {{ $post->usuario->name ?? 'Desconhecido' }}
+                            </small>
 
-                        <small>
-                            👁️ {{ $post->visualizacoes }} visualizações
-                        </small>
+                            <small class="text-secondary">
+                                👁 {{ $post->visualizacoes }} visualizações
+                            </small>
+
+                        </div>
+
+
+                        <hr>
+
+                        <form method="POST" action="/comments">
+                            @csrf
+
+                            <input type="hidden" name="post_id" value="{{ $post->id }}">
+
+                            <input
+                                type="text"
+                                name="texto"
+                                class="form-control"
+                                placeholder="Escreva um comentário..."
+                            >
+
+                            <button class="btn btn-primary btn-sm mt-2">
+                                Enviar
+                            </button>
+
+                        </form>
 
                     </div>
+
                 </div>
 
                 @endforeach
