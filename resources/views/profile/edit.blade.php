@@ -2,7 +2,29 @@
 
 @section('conteudo')
 
-<div class="container">
+<form action="{{ route('profile.avatar') }}" method="POST" enctype="multipart/form-data" style="text-align:center; margin-bottom:20px;">
+    @csrf
+    <label for="profile-upload" style="cursor:pointer; display:inline-block; position:relative; width:120px; height:120px;">
+        <img id="avatar-img" src="{{ auth()->user()->avatar ?? asset('images/default-avatar.png') }}"
+             alt="Avatar"
+             style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:2px solid #ccc; display:block; background:#eee;">
+        <span style="position:absolute; bottom:0; right:0; background:#007bff; color:white; border-radius:50%; padding:8px; font-size:16px; cursor:pointer;">✏️</span>
+        <input type="file" id="profile-upload" name="avatar" style="display:none;" onchange="previewAvatar(this); this.form.submit();">
+    </label>
+</form>
+
+<script>
+function previewAvatar(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('avatar-img').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+
 
 <div class="text-center mb-3">
 <a href="/" style="text-decoration:none;font-size:28px;font-weight:bold;color:black;">

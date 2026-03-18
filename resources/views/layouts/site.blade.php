@@ -67,9 +67,9 @@
                         👤 Perfil
                     </a>
 
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout') }}" class="d-flex align-items-center m-0">
                         @csrf
-                        <button class="btn btn-danger btn-sm">
+                        <button class="btn btn-danger btn-sm ms-2">
                             Sair
                         </button>
                     </form>
