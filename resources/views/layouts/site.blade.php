@@ -30,72 +30,66 @@
 <body>
 
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
 
-            <a class="navbar-brand" href="/">📰 Jornalzin</a>
+        <a href="{{ route('home') }}" class="navbar-brand">
+            📰 Jornalzin
+        </a>
 
-            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="collapse navbar-collapse" id="menu">
+        <div class="collapse navbar-collapse" id="menu">
 
-                <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('home') }}">Home</a>
+                </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('posts.index') }}">Posts</a>
+                </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('users.index') }}">Usuários</a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('users.index') }}">Usuários</a>
+                </li>
+            </ul>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('comments.index') }}">Comentários</a>
-                    </li>
+            <div class="d-flex align-items-center">
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('posts.index') }}">Posts</a>
-                    </li>
-                </ul>
+                @auth
+                    <span class="text-white me-3">
+                        Bem-vindo, {{ auth()->user()->nome ?? 'Usuário' }}
+                    </span>
 
-                <ul class="navbar-nav">
-                    @guest
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light me-2" href="{{ route('login') }}">
-                                Entrar
-                            </a>
-                        </li>
-                    @endguest
+                    <a href="{{ route('profile.edit') }}" class="btn btn-outline-light btn-sm me-2">
+                        👤 Perfil
+                    </a>
 
-                    @auth
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light" href="{{ route('profile.edit') }}">
-                                Perfil
-                            </a>
-                        </li>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button class="btn btn-danger btn-sm">
+                            Sair
+                        </button>
+                    </form>
+                @endauth
 
-                        <li class="nav-item ms-2">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="btn btn-danger">
-                                    Sair
-                                </button>
-                            </form>
-                        </li>
-                    @endauth
-                </ul>
+                @guest
+                    <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm">
+                        Entrar
+                    </a>
+                @endguest
+
             </div>
+
         </div>
     </nav>
-
 
     <!-- CONTEÚDO -->
     <div class="container mt-4">
         @yield('conteudo')
     </div>
-
 
     <!-- FOOTER -->
     <footer>

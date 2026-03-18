@@ -38,7 +38,7 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
-            'nome' => $request->nome,
+            'name' => $request->name,
             'sobrenome' => $request->sobrenome,
             'ra' => $request->ra,
             'telefone' => null,
@@ -46,6 +46,7 @@ class RegisteredUserController extends Controller
             'tipo' => 'leitor',
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            dd($request->all()) 
         ]);
         event(new Registered($user));
 

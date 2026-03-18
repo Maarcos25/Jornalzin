@@ -2,126 +2,143 @@
 
 @section('conteudo')
 
-<div class="container-fluid mt-4 px-4">
-    <div class="text-center mb-3">
+<div class="container">
 
-        <a href="/" style="text-decoration:none; font-size:28px; font-weight:bold; color:black;">
+<div class="text-center mb-3">
+<a href="/" style="text-decoration:none;font-size:28px;font-weight:bold;color:black;">
+📰 Jornalzin
+</a>
+</div>
 
-        📰 Jornalzin
-
-        </a>
-
-        </div>
-
-<h4 class="text-center mb-2">
-    <div style="
-width:120px;
-height:120px;
-border-radius:50%;
-background:#ddd;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:40px;
-margin:auto;
-">
-
-👤
+<h4 class="text-center mb-4">Configurações da Conta</h4>
 
 
-</div>Configurações da Conta</h4>
+<!-- ABAS -->
+<ul class="nav nav-tabs mb-3" id="configTabs">
 
-<div class="card shadow mb-3">
-    <div class="card-body">
+<li class="nav-item">
+<button class="nav-link active" data-bs-toggle="tab" data-bs-target="#perfil">
+Perfil
+</button>
+</li>
 
-        <h5 class="mb-3">Informações do Perfil</h5>
+<li class="nav-item">
+<button class="nav-link" data-bs-toggle="tab" data-bs-target="#senha">
+Segurança
+</button>
+</li>
 
-        <form method="POST" action="{{ route('profile.update') }}">
-            @csrf
-            @method('PATCH')
+<li class="nav-item">
+<button class="nav-link" data-bs-toggle="tab" data-bs-target="#conta">
+Conta
+</button>
+</li>
 
-            <div class="mb-3">
-                <label class="form-label">Nome</label>
-                <input type="text" name="name" class="form-control"
-                value="{{ auth()->user()->name }}" required>
-            </div>
+</ul>
 
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control"
-                value="{{ auth()->user()->email }}" required>
-            </div>
 
-            <button class="btn btn-primary">Salvar</button>
+<div class="tab-content">
 
-        </form>
+<!-- PERFIL -->
+<div class="tab-pane fade show active" id="perfil">
 
-    </div>
+<div class="card shadow">
+<div class="card-body">
+
+<form method="POST" action="{{ route('profile.update') }}">
+@csrf
+@method('PATCH')
+
+<div class="mb-3">
+<label class="form-label">Nome</label>
+<input type="text" name="name" class="form-control"
+value="{{ auth()->user()->name }}" required>
+</div>
+
+<div class="mb-3">
+<label class="form-label">Email</label>
+<input type="email" name="email" class="form-control"
+value="{{ auth()->user()->email }}" required>
+</div>
+
+<button class="btn btn-primary">Salvar</button>
+
+</form>
+
+</div>
+</div>
+
 </div>
 
 
-<div class="card shadow mb-3">
-    <div class="card-body">
+<!-- SENHA -->
+<div class="tab-pane fade" id="senha">
 
-        <h5 class="mb-3">Alterar Senha</h5>
+<div class="card shadow">
+<div class="card-body">
 
-        <form method="POST" action="{{ route('password.update') }}">
-            @csrf
-            @method('PUT')
+<form method="POST" action="{{ route('password.update') }}">
+@csrf
+@method('PUT')
 
-            <div class="mb-3">
-                <label class="form-label">Senha atual</label>
-                <input type="password"
-                    name="current_password"
-                    class="form-control">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Nova senha</label>
-                <input type="password"
-                    name="password"
-                    class="form-control">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Confirmar nova senha</label>
-                <input type="password"
-                    name="password_confirmation"
-                    class="form-control">
-            </div>
-
-            <button class="btn btn-primary">
-                Atualizar senha
-            </button>
-
-        </form>
-
-    </div>
+<div class="mb-3">
+<label class="form-label">Senha atual</label>
+<input type="password" name="current_password" class="form-control">
 </div>
 
+<div class="mb-3">
+<label class="form-label">Nova senha</label>
+<input type="password" name="password" class="form-control">
+</div>
+
+<div class="mb-3">
+<label class="form-label">Confirmar nova senha</label>
+<input type="password" name="password_confirmation" class="form-control">
+</div>
+
+<button class="btn btn-primary">
+Atualizar senha
+</button>
+
+</form>
+
+</div>
+</div>
+
+</div>
+
+
+<!-- CONTA -->
+<div class="tab-pane fade" id="conta">
 
 <div class="card shadow border-danger">
-    <div class="card-body">
+<div class="card-body">
 
-        <h5 class="text-danger mb-3">Excluir Conta</h5>
+<h5 class="text-danger mb-3">Excluir Conta</h5>
 
-        <p class="text-muted">
-            Após excluir sua conta, todos os dados serão removidos permanentemente.
-        </p>
+<p class="text-muted">
+Após excluir sua conta, todos os dados serão removidos permanentemente.
+</p>
 
-        <form method="POST" action="{{ route('profile.destroy') }}"
-        onsubmit="return confirm('Tem certeza que deseja excluir sua conta?')">
+<form method="POST" action="{{ route('profile.destroy') }}"
+onsubmit="return confirm('Tem certeza que deseja excluir sua conta?')">
 
-            @csrf
-            @method('DELETE')
+@csrf
+@method('DELETE')
 
-            <button type="submit" class="btn btn-danger">
-                Excluir Conta
-            </button>
+<button type="submit" class="btn btn-danger">
+Excluir Conta
+</button>
 
-        </form>
+</form>
 
-    </div>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 @endsection

@@ -74,7 +74,7 @@ class UserController
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'nome' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'sobrenome' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'ra' => 'required|unique:users,ra,' . $user->id,
