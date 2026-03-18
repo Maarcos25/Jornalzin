@@ -2,25 +2,35 @@
 
 @section('conteudo')
 
-<form action="{{ route('profile.avatar') }}" method="POST" enctype="multipart/form-data" style="text-align:center; margin-bottom:20px;">
+<form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
     @csrf
-    <label for="profile-upload" style="cursor:pointer; display:inline-block; position:relative; width:120px; height:120px;">
-        <img id="avatar-img" src="{{ auth()->user()->avatar ?? asset('images/default-avatar.png') }}"
-             alt="Avatar"
-             style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:2px solid #ccc; display:block; background:#eee;">
-        <span style="position:absolute; bottom:0; right:0; background:#007bff; color:white; border-radius:50%; padding:8px; font-size:16px; cursor:pointer;">✏️</span>
-        <input type="file" id="profile-upload" name="avatar" style="display:none;" onchange="previewAvatar(this); this.form.submit();">
-    </label>
-</form>
+    @method('PATCH')
+<!-- Foto do Perfil -->
+<div class="mb-3 text-center">
+    <div style="position: relative; display: inline-block;">
+        <img
+            id="avatarPreview"
+            src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('img/default-avatar.png') }}"
+            alt="Avatar"
+            style="width:100px; height:100px; min-width:100px; min-height:100px; border-radius:50%; object-fit:cover; border:2px solid #ccc;"
+            onclick="document.getElementById('avatarInput').click();">
+
+        <!-- Lápis de edição -->
+        <span
+            onclick="document.getElementById('avatarInput').click();"
+            style="position:absolute; bottom:0; right:0; background:#0d6efd; color:white; border-radius:50%; padding:4px; cursor:pointer;">
+            ✏️
+        </span>
+
+        <input type="file" name="avatar" id="avatarInput" class="d-none" accept="image/*" onchange="previewAvatar(event)">
+    </div>
+</div>
 
 <script>
-function previewAvatar(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('avatar-img').src = e.target.result;
-        }
-        reader.readAsDataURL(input.files[0]);
+function previewAvatar(event) {
+    const file = event.target.files[0];
+    if(file){
+        document.getElementById('avatarPreview').src = URL.createObjectURL(file);
     }
 }
 </script>
@@ -66,10 +76,6 @@ Conta
 
 <div class="card shadow">
 <div class="card-body">
-
-<form method="POST" action="{{ route('profile.update') }}">
-@csrf
-@method('PATCH')
 
 <div class="mb-3">
 <label class="form-label">Nome</label>
