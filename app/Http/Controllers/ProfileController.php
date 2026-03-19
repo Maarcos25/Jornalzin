@@ -73,4 +73,16 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+    public function deleteAvatar(Request $request)
+{
+    $user = $request->user();
+
+    if ($user->avatar) {
+        Storage::disk('public')->delete($user->avatar);
+        $user->avatar = null;
+        $user->save();
+    }
+
+    return redirect()->back()->with('success', 'Avatar removido!');
+}
 }
