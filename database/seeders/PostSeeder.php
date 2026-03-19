@@ -22,6 +22,7 @@ class PostSeeder extends Seeder
         }
 
         $tipos = ['imagem', 'video', 'texto', 'enquete'];
+        $tamanhos = ['P', 'M', 'G', 'GG'];
 
         foreach (range(1, 20) as $i) {
             Post::create([
@@ -31,6 +32,7 @@ class PostSeeder extends Seeder
                 'data' => Carbon::now()->subDays(rand(0, 30)),
                 'visualizacoes' => rand(0, 1000),
                 'id_usuario' => $usuarios->random()->id,
+                "tamanho" => $tamanhos[array_rand($tamanhos)]
             ]);
         }
     }
