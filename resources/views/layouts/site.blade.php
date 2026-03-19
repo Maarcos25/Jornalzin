@@ -54,6 +54,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('users.index') }}">Usuários</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('comments.index') }}">
+                        💬 Comentários
+                    </a>
+                </li>
             </ul>
 
             <div class="d-flex align-items-center">
