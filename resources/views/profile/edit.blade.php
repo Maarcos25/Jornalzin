@@ -122,9 +122,10 @@ value="{{ auth()->user()->email }}" required>
             @csrf
             @method('DELETE')
 
-            <button type="submit" onclick="return confirm('Remover foto?')">
-                🗑️ Remover foto
-            </button>
+            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3"
+            onclick="return confirm('Remover foto?')">
+            🗑️ Remover foto
+        </button>
         </form>
     </div>
 @endif
