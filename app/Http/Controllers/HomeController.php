@@ -9,10 +9,9 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-
         $pesquisa = $request->input('pesquisa');
 
-        $posts = Post::with('usuario')
+        $posts = Post::with(['usuario', 'comments.user']) // 🔥 AQUI
             ->when($pesquisa, function ($query, $pesquisa) {
                 return $query->where('titulo', 'like', "%{$pesquisa}%")
                             ->orWhere('texto', 'like', "%{$pesquisa}%");
@@ -25,5 +24,5 @@ class HomeController extends Controller
             ->get();
 
         return view('home', compact('posts', 'maisVistos'));
+        }
     }
-}

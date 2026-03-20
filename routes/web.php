@@ -39,9 +39,7 @@ Route::middleware('auth')->group(function () {
 });
 
     Route::middleware(['auth', 'verified'])->group(function () {
-        Route::post('/posts/{post}/comentarios',
-            [CommentController::class, 'store']
-        )->name('comentarios.store');
+        Route::resource('comments', CommentController::class);
     });
 
 

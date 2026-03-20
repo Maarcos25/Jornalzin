@@ -1,171 +1,159 @@
-@extends('layouts.site')
+    @extends('layouts.site')
 
-@section('conteudo')
-<div class="container">
+    @section('conteudo')
+        <div class="container">
 
-    <h1>início</h1>
+            <h1>início</h1>
 
-    <div class="row">
+            <div class="row">
 
-        <!-- COLUNA POSTS -->
-        <div class="col-md-8">
+                <!-- COLUNA POSTS -->
+                <div class="col-md-8">
 
-            <!-- PESQUISA -->
-            <form method="GET" action="/" class="mb-4">
-                <div class="input-group">
+                    <!-- PESQUISA -->
+                    <form method="GET" action="/" class="mb-4">
+                        <div class="input-group">
 
-                    <input
-                        type="text"
-                        name="pesquisa"
-                        class="form-control"
-                        placeholder="Pesquisar postagens..."
-                        value="{{ request('pesquisa') }}"
-                    >
+                            <input type="text" name="pesquisa" class="form-control" placeholder="Pesquisar postagens..."
+                                value="{{ request('pesquisa') }}">
 
-                    <button class="btn btn-dark" type="submit">
-                        🔍
-                    </button>
-
-                </div>
-            </form>
-
-
-            @if(request('pesquisa'))
-                <h3>🔎 Resultados para "{{ request('pesquisa') }}"</h3>
-            @else
-                <h3>Postagens recentes</h3>
-            @endif
-
-
-            <div id="posts">
-
-                @foreach ($posts as $post)
-
-                <div class="card mb-4 shadow-sm">
-
-                    <div class="card-body">
-
-                        <h4 class="fw-bold">
-                            {{ $post->titulo }}
-                        </h4>
-
-                        <p class="text-muted">
-                            {{ Str::limit($post->texto, 200) }}
-                        </p>
-
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-
-                            <small class="text-secondary">
-                                ✍ {{ $post->usuario->name ?? 'Desconhecido' }}
-                            </small>
-
-                            <small class="text-secondary">
-                                👁 {{ $post->visualizacoes }} visualizações
-                            </small>
+                            <button class="btn btn-dark" type="submit">
+                                🔍
+                            </button>
 
                         </div>
-                        <form method="POST" action="{{ route('posts.like', $post->id) }}">
-                            @csrf
-
-                            <button class="btn btn-outline-primary btn-sm">
-                                👍 Curtir ({{ $post->likes ?? 0 }})
-                            </button>
-
-                        </form>
+                    </form>
 
 
-                        <hr>
+                    @if (request('pesquisa'))
+                        <h3>🔎 Resultados para "{{ request('pesquisa') }}"</h3>
+                    @else
+                        <h3>Postagens recentes</h3>
+                    @endif
 
-                        <form method="POST" action="/comments">
-                            @csrf
 
-                            <input type="hidden" name="post_id" value="{{ $post->id }}">
+                    <div id="posts">
 
-                            <input
-                                type="text"
-                                name="texto"
-                                class="form-control"
-                                placeholder="Escreva um comentário..."
-                            >
+                        @foreach ($posts as $post)
+                            <div class="card mb-4 shadow-sm">
 
-                            <button class="btn btn-primary btn-sm mt-2">
-                                Enviar
-                            </button>
+                                <div class="card-body">
 
-                        </form>
+                                    <a class="text-decoration-none" href="{{ route('posts.show', $post->id) }}">
+                                        <h4 class="fw-bold">
+                                                {{ $post->titulo }}
+                                        </h4>
 
+                                        <p class="text-muted">
+                                            {{ Str::limit($post->texto, 200) }}
+                                        </p>
+                                    </a>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+
+                                        <small class="text-secondary">
+                                            ✍ {{ $post->usuario->name ?? 'Desconhecido' }}
+                                        </small>
+
+                                        <small class="text-secondary">
+                                            👁 {{ $post->visualizacoes }} visualizações
+                                        </small>
+
+                                    </div>
+                                    <form method="POST" action="{{ route('posts.like', $post->id) }}">
+                                        @csrf
+
+                                        <button class="btn btn-outline-primary btn-sm">
+                                            👍 Curtir ({{ $post->likes ?? 0 }})
+                                        </button>
+
+                                    </form>
+
+                                    @if ($post->comments && $post->comments->count() > 0)
+                                        <div class="mt-3">
+
+                                            @foreach ($post->comments as $comment)
+                                                <div style="border-top:1px solid #eee; padding:6px 0; font-size:14px;">
+
+                                                    <strong>{{ $comment->user->name ?? 'Usuário' }}</strong>:
+                                                    {{ $comment->texto }}
+
+                                                </div>
+                                            @endforeach
+
+                                        </div>
+                                    @endif
+
+
+                                    <hr>
+
+                                    <form method="POST" action="{{ route('comments.store') }}">
+                                        @csrf
+
+                                        <input type="hidden" name="post_id" value="{{ $post->id }}">
+
+                                        <input type="text" name="texto" class="form-control">
+
+                                        <button type="submit" class="btn btn-primary btn-sm mt-2">
+                                            Enviar
+                                        </button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        @endforeach
+
+                    </div>
+
+                    <div class="text-center">
+                        {{ $posts->links() }}
                     </div>
 
                 </div>
 
-                @endforeach
 
-            </div>
+                <!-- COLUNA MAIS VISTOS -->
+                <div class="col-md-4">
 
-            <div class="text-center">
-                {{ $posts->links() }}
-            </div>
+                    <h3>🔥 Mais vistos</h3>
 
-        </div>
+                    <ul class="list-group">
+
+                        @foreach ($maisVistos as $mais)
+                            <li class="list-group-item">
+                                {{ $mais->titulo }}
+                                <br>
+                                <small>{{ $mais->visualizacoes }} views</small>
+                            </li>
+                        @endforeach
 
 
-        <!-- COLUNA MAIS VISTOS -->
-        <div class="col-md-4">
+                </div>
+            @endsection
 
-            <h3>🔥 Mais vistos</h3>
+            <script>
+                let page = 1;
 
-            <ul class="list-group">
+                window.onscroll = function() {
 
-                @foreach ($maisVistos as $mais)
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
 
-                <li class="list-group-item">
-                    {{ $mais->titulo }}
-                    <br>
-                    <small>{{ $mais->visualizacoes }} views</small>
-                </li>
+                        page++;
 
-                @endforeach
+                        fetch('/?page=' + page)
+                            .then(response => response.text())
+                            .then(data => {
 
-            </ul>
+                                let parser = new DOMParser();
+                                let html = parser.parseFromString(data, 'text/html');
 
-        </div>
+                                let novosPosts = html.querySelector('#posts').innerHTML;
 
-    </div>
+                                document.querySelector('#posts').innerHTML += novosPosts;
 
-</div>
+                            });
 
-                </ul>
+                    }
 
-            </div>
-
-        </div>
-
-    </div>
-@endsection
-
-<script>
-    let page = 1;
-
-    window.onscroll = function() {
-
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-
-            page++;
-
-            fetch('/?page=' + page)
-                .then(response => response.text())
-                .then(data => {
-
-                    let parser = new DOMParser();
-                    let html = parser.parseFromString(data, 'text/html');
-
-                    let novosPosts = html.querySelector('#posts').innerHTML;
-
-                    document.querySelector('#posts').innerHTML += novosPosts;
-
-                });
-
-        }
-
-    };
-</script>
+                };
+            </script>
