@@ -93,7 +93,7 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        $post->likes += 1;
+        $post->likes = ($post->likes ?? 0) + 1;
         $post->save();
 
         return back();
