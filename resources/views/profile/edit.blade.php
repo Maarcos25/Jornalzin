@@ -6,34 +6,59 @@
     @csrf
     @method('PATCH')
 <!-- Foto do Perfil -->
+<!-- Foto do Perfil -->
 <div class="mb-3 text-center">
-    <div style="position: relative; display: inline-block;">
+
+<div class="mb-3 text-center" style="position: relative; width:100px; height:100px; margin:auto; cursor:pointer;">
+
+    @if(auth()->user()->avatar)
         <img
             id="avatarPreview"
-            src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('img/default-avatar.png') }}"
-            alt="Avatar"
-            style="width:100px; height:100px; min-width:100px; min-height:100px; border-radius:50%; object-fit:cover; border:2px solid #ccc;"
+            src="{{ asset('storage/' . auth()->user()->avatar) }}"
+            style="width:100%; height:100%; border-radius:50%; object-fit:cover; border:2px solid #ccc;"
             onclick="document.getElementById('avatarInput').click();">
+    @else
+        <div id="cameraPlaceholder" style="width:100%; height:100%; border-radius:50%; background:#eee; border:2px solid #ccc; position:relative;" onclick="document.getElementById('avatarInput').click();">
+            <span id="cameraIcon" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-size:28px; color:#666;">📷</span>
+        </div>
+        <img id="avatarPreview" src="" style="width:100%; height:100%; border-radius:50%; object-fit:cover; display:none; position:absolute; top:0; left:0; border:2px solid #ccc;">
+    @endif
 
-        <!-- Lápis de edição -->
-        <span
-            onclick="document.getElementById('avatarInput').click();"
-            style="position:absolute; bottom:0; right:0; background:#0d6efd; color:white; border-radius:50%; padding:4px; cursor:pointer;">
-            ✏️
-        </span>
-
-        <input type="file" name="avatar" id="avatarInput" class="d-none" accept="image/*" onchange="previewAvatar(event)">
-    </div>
+    <!-- Input agora 100% dentro do form -->
+    <input type="file" name="avatar" id="avatarInput" accept="image/*" onchange="previewAvatar(event)" style="position:absolute; width:100%; height:100%; top:0; left:0; opacity:0; cursor:pointer;">
 </div>
 
 <script>
-function previewAvatar(event) {
+function previewAvatar(event){
     const file = event.target.files[0];
-    if(file){
-        document.getElementById('avatarPreview').src = URL.createObjectURL(file);
-    }
+    if(!file) return;
+
+    const preview = document.getElementById('avatarPreview');
+    const icon = document.getElementById('cameraIcon');
+    const placeholder = document.getElementById('cameraPlaceholder');
+
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = 'block';
+
+    if(icon) icon.style.display = 'none';
+    if(placeholder) placeholder.style.background = 'transparent';
 }
 </script>
+
+</div>
+<script>
+    function previewAvatar(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+
+        const preview = document.getElementById('avatarPreview');
+        const icon = document.getElementById('cameraIcon');
+
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+        icon.style.display = 'none';
+    }
+    </script>
 
 
 <div class="text-center mb-3">
@@ -79,8 +104,8 @@ Conta
 
 <div class="mb-3">
 <label class="form-label">Nome</label>
-<input type="text" name="name" class="form-control"
-value="{{ auth()->user()->name }}" required>
+<input type="text" name="nome" class="form-control"
+value="{{ auth()->user()->nome }}" required>
 </div>
 
 <div class="mb-3">
@@ -90,9 +115,20 @@ value="{{ auth()->user()->email }}" required>
 </div>
 
 <button class="btn btn-primary">Salvar</button>
-
 </form>
+@if(auth()->user()->avatar)
+    <div class="text-center mt-2">
+        <form method="POST" action="{{ route('profile.deleteAvatar') }}">
+            @csrf
+            @method('DELETE')
 
+            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3"
+            onclick="return confirm('Remover foto?')">
+            🗑️ Remover foto
+        </button>
+        </form>
+    </div>
+@endif
 </div>
 </div>
 

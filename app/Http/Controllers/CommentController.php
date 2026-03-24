@@ -21,19 +21,18 @@ class CommentController extends Controller
     {
         $request->validate([
             'texto' => 'required',
-            'user_id' => 'required',
-            'post_id' => 'required',
+            'post_id' => 'required|exists:posts,id' // 🔥 ISSO AQUI
         ]);
 
-        Comment::create([
+        $comment = Comment::create([
             'texto' => $request->texto,
-            'user_id' => $request->user_id,
+            'user_id' => auth()->id(), // 🔥 SEMPRE ASSIM
             'post_id' => $request->post_id,
             'data' => now()
         ]);
 
-        return redirect()->route('comments.index')
-            ->with('success', 'Comentário criado com sucesso!');
+        return redirect()->route('posts.show', $comment->post_id)
+        ->with('success', 'Comentário criado!');
     }
 
     public function show(Comment $comment)
