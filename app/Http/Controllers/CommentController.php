@@ -27,8 +27,7 @@ class CommentController extends Controller
         $comment = Comment::create([
             'texto' => $request->texto,
             'user_id' => auth()->id(), // 🔥 SEMPRE ASSIM
-            'post_id' => $request->post_id,
-            'data' => now()
+            'post_id' => $request->post_id
         ]);
 
         return redirect()->route('posts.show', $comment->post_id)

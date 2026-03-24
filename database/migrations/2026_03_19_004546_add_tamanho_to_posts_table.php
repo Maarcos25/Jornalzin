@@ -12,6 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('posts', function (Blueprint $table) {
+            $table->string('tamanho')->default('M'); // P, M, G, GG
         });
     }
 
@@ -21,7 +22,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->dropColumn('likes');
+            $table->dropColumn('tamanho');
         });
     }
 };

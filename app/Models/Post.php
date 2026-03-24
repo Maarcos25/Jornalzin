@@ -30,5 +30,24 @@ class Post extends Model
         return $this->hasMany(Comment::class, 'post_id');
     }
 
-}
+    public function getColunaBootstrapAttribute()
+    {
+        return match ($this->tamanho) {
+            'P' => 'col-md-3',
+            'M' => 'col-md-4',
+            'G' => 'col-md-6',
+            'GG' => 'col-md-12',
+            default => 'col-md-4',
+        };
+    }
 
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'post_id');
+    }
+
+    public function getCurtidasAttribute()
+    {
+        return $this->likes()->count();
+    }
+}
