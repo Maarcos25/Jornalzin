@@ -17,6 +17,7 @@ class Post extends Model
         'opcao3',
         'opcao4',
         'data',
+        'tamanho',
         'visualizacoes',
         'id_usuario'
     ];

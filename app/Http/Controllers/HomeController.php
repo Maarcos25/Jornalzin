@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -11,18 +12,21 @@ class HomeController extends Controller
     {
         $pesquisa = $request->input('pesquisa');
 
-        $posts = Post::with(['usuario', 'comments.user']) // 🔥 AQUI
+        $posts = Post::with(['usuario', 'comments.user'])
             ->when($pesquisa, function ($query, $pesquisa) {
                 return $query->where('titulo', 'like', "%{$pesquisa}%")
                             ->orWhere('texto', 'like', "%{$pesquisa}%");
             })
             ->orderBy('data', 'desc')
-            ->paginate(5);
+            ->orderBy('created_at', 'desc')
+            ->paginate(20); // Aumentado para pegar mais posts por página e garantir dias completos
 
-        $maisVistos = Post::orderBy('visualizacoes', 'desc')
-            ->limit(5)
-            ->get();
+        // Agrupa os posts por data (Y-m-d) mantendo a paginação do Laravel
+        $postsPorDia = $posts->getCollection()
+            ->groupBy(fn($post) => Carbon::parse($post->data)->format('Y-m-d'));
 
-        return view('home', compact('posts', 'maisVistos'));
-        }
+        $maisVistos = Post::orderBy('visualizacoes', 'desc')->limit(5)->get();
+
+        return view('home', compact('posts', 'postsPorDia', 'maisVistos'));
     }
+}
