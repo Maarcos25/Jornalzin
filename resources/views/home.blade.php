@@ -8,7 +8,7 @@
         <div class="row">
 
             <!-- COLUNA POSTS -->
-            <div class="col-md-8">
+            <div class="col-md-12">
 
                 <!-- PESQUISA -->
                 <form method="GET" action="/" class="mb-4">
@@ -109,26 +109,7 @@
                 </div>
 
             </div>
-
-            <!-- SIDEBAR -->
-            <div class="col-md-4">
-
-                <h3>🔥 Mais vistos</h3>
-
-                <ul class="list-group">
-                    @foreach ($maisVistos as $mais)
-                        <li class="list-group-item">
-                            {{ $mais->titulo }}
-                            <br>
-                            <small>{{ $mais->visualizacoes }} views</small>
-                        </li>
-                    @endforeach
-                </ul>
-
-            </div>
-
         </div>
-
     </div>
 @endsection
 
