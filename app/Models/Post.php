@@ -40,5 +40,14 @@ class Post extends Model
             default => 'col-md-4',
         };
     }
-}
 
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'post_id');
+    }
+
+    public function getCurtidasAttribute()
+    {
+        return $this->likes()->count();
+    }
+}
