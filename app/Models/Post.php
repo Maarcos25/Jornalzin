@@ -51,4 +51,16 @@ class Post extends Model
     {
         return $this->likes()->count();
     }
+
+    // Relacionamento: um post tem muitas imagens
+    public function imagens()
+    {
+        return $this->hasMany(PostImagem::class, 'post_id')->orderBy('ordem');
+    }
+
+    // Retorna array de URLs de todas as imagens
+    public function getImagensUrlAttribute(): array
+    {
+        return $this->imagens->map(fn($i) => $i->url)->toArray();
+    }
 }

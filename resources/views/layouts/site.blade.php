@@ -24,7 +24,11 @@
             color: white;
             text-align: center;
         }
-    </style>
+        </style>
+
+        @stack('scripts')
+
+        @stack('styles')
 </head>
 
 <body>

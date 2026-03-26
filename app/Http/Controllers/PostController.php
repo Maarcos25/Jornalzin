@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\PostImagem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::latest()->get();
-
+        $posts = Post::with('imagens')->latest()->get();
         return view('posts.index', compact('posts'));
     }
 
@@ -21,83 +22,137 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'tipo' => 'required',
-            'titulo' => 'required',
-            'texto' => 'required',
-            'data' => 'required|date',
-            'imagem' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
-        ]);
+        // ── Regras base ──────────────────────────────────────────────────
+        $rules = [
+            'tipo'    => 'required|in:texto,imagem,video,enquete',
+            'titulo'  => 'required|string|max:255',
+            'data'    => 'required|date',
+            'tamanho' => 'nullable|in:P,M,G,GG',
+        ];
 
-        $dados = $request->all();
+        // Regras dinâmicas por tipo
+        switch ($request->tipo) {
+            case 'texto':
+                $rules['texto'] = 'required|string';
+                break;
 
-        // Upload da imagem
-        if ($request->hasFile('imagem')) {
-            $file = $request->file('imagem');
-            $nome = time().'.'.$file->getClientOriginalExtension();
-            $file->storeAs('public/posts', $nome);
-            $dados['imagem'] = 'storage/posts/'.$nome;
+            case 'imagem':
+                $rules['imagens']   = 'required|array|min:1|max:10';
+                $rules['imagens.*'] = 'image|mimes:jpg,jpeg,png,webp|max:5120';
+                break;
+
+            case 'video':
+                $hasUrl  = $request->filled('video_url');
+                $hasFile = $request->hasFile('video_file');
+                if (!$hasUrl && !$hasFile) {
+                    return back()->withErrors(['video' => 'Informe um link ou envie um arquivo de vídeo.'])->withInput();
+                }
+                if ($hasUrl)  $rules['video_url']  = 'nullable|url';
+                if ($hasFile) $rules['video_file'] = 'nullable|file|mimes:mp4,webm,ogg|max:102400'; // 100 MB
+                break;
+
+            case 'enquete':
+                $rules['opcoes']   = 'required|array|min:2|max:8';
+                $rules['opcoes.*'] = 'required|string|max:200';
+                break;
         }
 
-        $dados = $request->all();
+        $validated = $request->validate($rules);
 
-        if ($request->hasFile('imagem')) {
-            $imagem = $request->file('imagem')->store('posts', 'public');
-            $dados['imagem'] = $imagem;
-        }
-
-        $dados['id_usuario'] = auth()->id();
-        $dados['visualizacoes'] = 0;
-
-        Post::create($dados);
-
-        return redirect()->route('posts.index')
-            ->with('success','Post criado com sucesso!');
-
-        Post::create([
-            'tipo' => $request->tipo,
-            'titulo' => $request->titulo,
-            'texto' => $request->texto,
-            'data' => $request->data,
+        // ── Monta dados do post ──────────────────────────────────────────
+        $dados = [
+            'tipo'        => $request->tipo,
+            'titulo'      => $request->titulo,
+            'texto'       => $request->texto,
+            'data'        => $request->data,
+            'tamanho'     => $request->tamanho ?? 'M',
             'visualizacoes' => 0,
-            'id_usuario' => auth()->id(),
-        ]);
+            'id_usuario'  => auth()->id(),
+        ];
 
-        return redirect()->route('posts.index')
-            ->with('success', 'Post criado com sucesso!');
+        // ── Vídeo ────────────────────────────────────────────────────────
+        if ($request->tipo === 'video') {
+            if ($request->hasFile('video_file')) {
+                $path = $request->file('video_file')->store('posts/videos', 'public');
+                $dados['video'] = Storage::url($path);
+            } else {
+                $dados['video'] = $request->video_url;
+            }
+        }
+
+        // ── Enquete ──────────────────────────────────────────────────────
+        if ($request->tipo === 'enquete') {
+            $opcoes = array_values(array_filter($request->opcoes));
+            foreach ($opcoes as $i => $opcao) {
+                $dados['opcao' . ($i + 1)] = $opcao; // opcao1…opcao8
+            }
+            // Campos extras de enquete (não obrigatórios no modelo base)
+            // Se quiser persistir: adicione colunas enquete_fim e multipla_escolha
+        }
+
+        // ── Cria o post ──────────────────────────────────────────────────
+        $post = Post::create($dados);
+
+        // ── Múltiplas imagens ────────────────────────────────────────────
+        if ($request->tipo === 'imagem' && $request->hasFile('imagens')) {
+            foreach ($request->file('imagens') as $ordem => $file) {
+                $path = $file->store('posts/imagens', 'public');
+
+                // Salva em tabela relacionada (PostImagem)
+                $post->imagens()->create([
+                    'caminho' => $path,
+                    'ordem'   => $ordem,
+                ]);
+            }
+
+            // Mantém retrocompatibilidade: salva a 1ª imagem na coluna legada
+            $post->update(['imagem' => Storage::url($post->imagens()->orderBy('ordem')->first()->caminho)]);
+        }
+
+        return redirect()
+            ->route('posts.index')
+            ->with('success', 'Post criado com sucesso! 🎉');
     }
 
     public function show(Post $post)
     {
+        $post->increment('visualizacoes');
         return view('posts.show', compact('post'));
     }
 
     public function edit(Post $post)
     {
-        if ($post->id_usuario !== auth()->id()) {
-            abort(403);
-        }
-
+        $this->authorize('update', $post); // ou: abort_if($post->id_usuario !== auth()->id(), 403);
         return view('posts.edit', compact('post'));
     }
 
     public function update(Request $request, Post $post)
     {
-        if ($post->id_usuario !== auth()->id()) {
-            abort(403);
-        }
-        $post->update($request->all());
+        $this->authorize('update', $post);
 
-        return redirect()->route('posts.index')->with('success', 'Post atualizado com sucesso!');
+        $post->update($request->only(['titulo', 'texto', 'data', 'tamanho']));
+
+        return redirect()
+            ->route('posts.index')
+            ->with('success', 'Post atualizado com sucesso!');
     }
-
 
     public function destroy(Post $post)
     {
+        $this->authorize('delete', $post);
+
+        // Remove imagens do storage
+        foreach ($post->imagens as $img) {
+            Storage::disk('public')->delete($img->caminho);
+        }
+        if ($post->imagem) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $post->imagem));
+        }
+
         $post->delete();
 
-        return redirect()->route('posts.index')
+        return redirect()
+            ->route('posts.index')
             ->with('success', 'Post excluído com sucesso!');
     }
 }
-
