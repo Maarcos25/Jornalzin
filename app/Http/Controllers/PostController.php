@@ -21,12 +21,23 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
             'tipo' => 'required',
             'titulo' => 'required',
+            'texto' => 'required',
             'data' => 'required|date',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
+
+        $dados = $request->all();
+
+        // Upload da imagem
+        if ($request->hasFile('imagem')) {
+            $file = $request->file('imagem');
+            $nome = time().'.'.$file->getClientOriginalExtension();
+            $file->storeAs('public/posts', $nome);
+            $dados['imagem'] = 'storage/posts/'.$nome;
+        }
 
         $dados = $request->all();
 

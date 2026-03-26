@@ -30,22 +30,20 @@ class ProfileController extends Controller
      {
          $user = auth()->user();
 
-         // Atualiza nome e email
-         $user->nome = $request->nome;
+         // Corrigido: name
+         $user->name = $request->name;
          $user->email = $request->email;
 
-         // Se enviou imagem
          if ($request->hasFile('avatar')) {
 
-             // 🔥 Deleta imagem antiga (se existir)
-             if ($user->avatar && Storage::exists('public/' . $user->avatar)) {
-                 Storage::delete('public/' . $user->avatar);
+             // Deleta imagem antiga
+             if ($user->avatar) {
+                 Storage::disk('public')->delete($user->avatar);
              }
 
-             // 🔥 Salva nova imagem
+             // Salva nova
              $path = $request->file('avatar')->store('avatars', 'public');
 
-             // 🔥 Salva no banco
              $user->avatar = $path;
          }
 
