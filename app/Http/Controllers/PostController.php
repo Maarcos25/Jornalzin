@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use App\Models\PostImagem;
+use App\Models\PostMedia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -120,15 +120,21 @@ class PostController extends Controller
         return view('posts.show', compact('post'));
     }
 
+    // $this->authorize('update', $post);
+// $this->authorize('delete', $post);
     public function edit(Post $post)
     {
-        $this->authorize('update', $post); // ou: abort_if($post->id_usuario !== auth()->id(), 403);
+        if ($post->id_usuario !== auth()->id()) {
+            abort(403);
+        }
         return view('posts.edit', compact('post'));
     }
 
     public function update(Request $request, Post $post)
     {
-        $this->authorize('update', $post);
+        if ($post->id_usuario !== auth()->id()) {
+            abort(403);
+        }
 
         $post->update($request->only(['titulo', 'texto', 'data', 'tamanho']));
 
@@ -139,12 +145,14 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        $this->authorize('delete', $post);
+        if ($post->id_usuario !== auth()->id()) {
+            abort(403);
+        }
 
-        // Remove imagens do storage
         foreach ($post->imagens as $img) {
             Storage::disk('public')->delete($img->caminho);
         }
+
         if ($post->imagem) {
             Storage::disk('public')->delete(str_replace('/storage/', '', $post->imagem));
         }

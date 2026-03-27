@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\PostMedia;
 
 class Post extends Model
 {
@@ -53,11 +54,10 @@ class Post extends Model
     }
 
     // Relacionamento: um post tem muitas imagens
-    public function imagens()
-    {
-        return $this->hasMany(PostImagem::class, 'post_id')->orderBy('ordem');
-    }
-
+public function imagens()
+{
+    return $this->hasMany(PostMedia::class, 'post_id')->orderBy('ordem');
+}
     // Retorna array de URLs de todas as imagens
     public function getImagensUrlAttribute(): array
     {
