@@ -17,7 +17,7 @@
         <div class="mb-3">
             <label>Título</label>
             <input type="text" name="titulo" class="form-control"
-                   value="{{ $post->titulo }}" required>
+                value="{{ $post->titulo }}" required>
         </div>
 
         <!-- TEXTO -->
@@ -29,32 +29,54 @@
         @endif
 
         <!-- IMAGENS (MOSTRAR) -->
-        @if($post->tipo === 'imagem' && $post->imagens->count())
-            <div class="mb-3">
-                <label>Imagens atuais:</label><br>
-                @foreach($post->imagens as $img)
-                    <img src="{{ asset('storage/' . $img->caminho) }}"
-                         style="width:120px; margin:5px; border-radius:8px;">
-                @endforeach
-            </div>
-        @endif
+        @if($post->tipo === 'imagem')
+        <div class="mb-3">
+            <label>Novas imagens</label>
+            <input type="file" name="imagens[]" multiple class="form-control">
+        </div>
+    @endif
 
         <!-- VIDEO -->
         @if($post->tipo === 'video')
-            <div class="mb-3">
-                <label>Vídeo atual:</label><br>
+        <div class="mb-3">
+            <label>Novo vídeo</label>
+            <input type="file" name="video_file" class="form-control">
+        </div>
+    @endif
 
-                @if(str_contains($post->video, 'youtube'))
-                    <iframe width="300"
-                        src="{{ str_replace('watch?v=', 'embed/', $post->video) }}">
-                    </iframe>
-                @else
-                    <video width="300" controls>
-                        <source src="{{ $post->video }}">
-                    </video>
-                @endif
-            </div>
-        @endif
+        @if($post->tipo === 'video')
+        <div class="mb-3">
+            <label>Vídeo atual:</label><br>
+
+            @if(str_contains($post->video, 'youtube'))
+                <iframe width="300"
+                    src="{{ str_replace('watch?v=', 'embed/', $post->video) }}">
+                </iframe>
+            @else
+                <video width="300" controls>
+                    <source src="{{ $post->video }}">
+                </video>
+            @endif
+        </div>
+    @endif
+
+        <!-- TROCAR VÍDEO -->
+<div class="mb-3">
+    <label>Novo vídeo (opcional)</label>
+    <input type="file" name="video_file" class="form-control">
+</div>
+
+@if($post->video || $post->imagens->count())
+    <form method="POST" action="{{ route('posts.removerMidia', $post->id) }}">
+        @csrf
+        @method('DELETE')
+
+        <button class="btn btn-danger mt-2"
+            onclick="return confirm('Remover mídia?')">
+            🗑️ Remover mídia
+        </button>
+    </form>
+@endif
 
         <!-- ENQUETE -->
         @if($post->tipo == 'enquete')

@@ -34,6 +34,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('comments', CommentController::class);
     Route::resource('posts', PostController::class);
     Route::resource('users', UserController::class);
+    Route::delete('/posts/{post}/midia', [PostController::class, 'removerMidia'])
+    ->name('posts.removerMidia');
 });
 
 Route::resource('users', UserController::class)->only(['create', 'store']);

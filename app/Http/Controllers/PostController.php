@@ -151,10 +151,15 @@ class PostController extends Controller
 
         foreach ($post->imagens as $img) {
             Storage::disk('public')->delete($img->caminho);
+            $img->delete();
         }
 
         if ($post->imagem) {
             Storage::disk('public')->delete(str_replace('/storage/', '', $post->imagem));
+        }
+
+        if ($post->video) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $post->video));
         }
 
         $post->delete();
@@ -163,4 +168,39 @@ class PostController extends Controller
             ->route('posts.index')
             ->with('success', 'Post excluído com sucesso!');
     }
-}
+
+    public function deleteVideo(Post $post)
+    {
+        if ($post->id_usuario !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($post->video) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $post->video));
+            $post->video = null;
+            $post->save();
+        }
+
+        return back()->with('success', 'Vídeo removido!');
+    }
+
+    public function removerMidia(Post $post)
+    {
+        if ($post->id_usuario !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($post->video) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $post->video));
+            $post->video = null;
+        }
+
+        foreach ($post->imagens as $img) {
+            Storage::disk('public')->delete($img->caminho);
+            $img->delete();
+        }
+
+        $post->save();
+
+        return back()->with('success', 'Arquivo removido!');
+    }
