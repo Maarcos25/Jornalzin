@@ -10,6 +10,9 @@
         @csrf
         @method('PUT')
 
+        <!-- TIPO -->
+        <p><strong>Tipo:</strong> {{ $post->tipo }}</p>
+
         <!-- TÍTULO -->
         <div class="mb-3">
             <label>Título</label>
@@ -22,6 +25,46 @@
             <div class="mb-3">
                 <label>Texto</label>
                 <textarea name="texto" class="form-control">{{ $post->texto }}</textarea>
+            </div>
+        @endif
+
+        <!-- IMAGENS (MOSTRAR) -->
+        @if($post->tipo === 'imagem' && $post->imagens->count())
+            <div class="mb-3">
+                <label>Imagens atuais:</label><br>
+                @foreach($post->imagens as $img)
+                    <img src="{{ asset('storage/' . $img->caminho) }}"
+                         style="width:120px; margin:5px; border-radius:8px;">
+                @endforeach
+            </div>
+        @endif
+
+        <!-- VIDEO -->
+        @if($post->tipo === 'video')
+            <div class="mb-3">
+                <label>Vídeo atual:</label><br>
+
+                @if(str_contains($post->video, 'youtube'))
+                    <iframe width="300"
+                        src="{{ str_replace('watch?v=', 'embed/', $post->video) }}">
+                    </iframe>
+                @else
+                    <video width="300" controls>
+                        <source src="{{ $post->video }}">
+                    </video>
+                @endif
+            </div>
+        @endif
+
+        <!-- ENQUETE -->
+        @if($post->tipo == 'enquete')
+            <div class="mb-3">
+                <label>Opções:</label>
+
+                <input type="text" name="opcao1" class="form-control mb-2" value="{{ $post->opcao1 }}">
+                <input type="text" name="opcao2" class="form-control mb-2" value="{{ $post->opcao2 }}">
+                <input type="text" name="opcao3" class="form-control mb-2" value="{{ $post->opcao3 }}">
+                <input type="text" name="opcao4" class="form-control mb-2" value="{{ $post->opcao4 }}">
             </div>
         @endif
 
