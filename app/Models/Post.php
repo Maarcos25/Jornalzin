@@ -63,4 +63,8 @@ public function imagens()
     {
         return $this->imagens->map(fn($i) => $i->url)->toArray();
     }
+    public function votos()
+{
+    return $this->hasMany(Voto::class, 'post_id');
+}
 }

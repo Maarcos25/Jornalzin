@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('comments', CommentController::class);
     Route::resource('posts', PostController::class);
     Route::resource('users', UserController::class);
+    Route::post('/posts/{post}/votar', [PostController::class, 'votar'])->name('posts.votar');
     Route::delete('/posts/{post}/midia', [PostController::class, 'removerMidia'])
     ->name('posts.removerMidia');
 });

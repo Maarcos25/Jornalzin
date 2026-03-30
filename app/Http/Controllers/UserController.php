@@ -18,10 +18,7 @@ class UserController
     //             abort(403);
     //         }
 
-    //         return $next($request);
-    //     });
-    // }
-
+    //         retu
     public function index()
     {
         $users = User::paginate(10);
