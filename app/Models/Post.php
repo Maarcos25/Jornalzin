@@ -20,7 +20,8 @@ class Post extends Model
         'data',
         'tamanho',
         'visualizacoes',
-        'id_usuario'
+        'id_usuario',
+        'aprovado',
     ];
     public function usuario()
     {

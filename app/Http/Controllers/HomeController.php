@@ -12,21 +12,27 @@ class HomeController extends Controller
     {
         $pesquisa = $request->input('pesquisa');
 
-        $posts = Post::with(['usuario', 'comments.user'])
+        $posts = Post::with(['usuario', 'comments.user', 'imagens', 'votos'])
             ->when($pesquisa, function ($query, $pesquisa) {
                 return $query->where('titulo', 'like', "%{$pesquisa}%")
                             ->orWhere('texto', 'like', "%{$pesquisa}%");
             })
             ->orderBy('data', 'desc')
             ->orderBy('created_at', 'desc')
-            ->paginate(20); // Aumentado para pegar mais posts por página e garantir dias completos
+            ->paginate(20);
 
-        // Agrupa os posts por data (Y-m-d) mantendo a paginação do Laravel
         $postsPorDia = $posts->getCollection()
             ->groupBy(fn($post) => Carbon::parse($post->data)->format('Y-m-d'));
 
+        // Destaque: score = visualizacoes + (curtidas * 3)
+        // Multiplicador 3 dá mais peso a curtidas (ação ativa) vs visualizações (passiva)
+        $destaque = Post::with(['usuario', 'imagens'])
+            ->selectRaw('*, (visualizacoes + (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) * 3) as score')
+            ->orderByDesc('score')
+            ->first();
+
         $maisVistos = Post::orderBy('visualizacoes', 'desc')->limit(5)->get();
 
-        return view('home', compact('posts', 'postsPorDia', 'maisVistos'));
+        return view('home', compact('posts', 'postsPorDia', 'maisVistos', 'destaque'));
     }
 }

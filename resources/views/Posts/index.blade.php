@@ -435,16 +435,18 @@ body {
         </div>
 
         {{-- Botões de ação ── --}}
-        @if(auth()->id() === $post->id_usuario)
-        <div class="card-actions">
-            <a href="{{ route('posts.edit', $post->id) }}" class="btn-action btn-edit">✏️ Editar</a>
-            <form action="{{ route('posts.destroy', $post->id) }}" method="POST" style="display:inline;">
-                @csrf @method('DELETE')
-                <button type="submit" class="btn-action btn-del"
-                    onclick="return confirm('Excluir este post?')">🗑️ Excluir</button>
-            </form>
-        </div>
-        @endif
+        @if(!$post->aprovado)
+        <span class="badge bg-warning text-dark me-1">⏳ Pendente</span>
+        <form action="{{ route('posts.aprovar', $post->id) }}" method="POST" style="display:inline">
+            @csrf
+            <button class="btn btn-success btn-sm">✅ Aprovar</button>
+        </form>
+        <form action="{{ route('posts.rejeitar', $post->id) }}" method="POST" style="display:inline"
+              onsubmit="return confirm('Rejeitar e excluir este post?')">
+            @csrf
+            <button class="btn btn-danger btn-sm">❌ Rejeitar</button>
+        </form>
+    @endif
 
         <div class="card-divider"></div>
 

@@ -21,22 +21,26 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::middleware('auth')->group(function () {
     Route::post('/like/{post}', [LikeController::class, 'altera_like'])->name('posts.like');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // Perfil
+    Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
+    // Senha  ← ROTA NOVA
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+
+    // Avatar
     Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.deleteAvatar');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('comments', CommentController::class);
     Route::resource('posts', PostController::class);
     Route::resource('users', UserController::class);
-    Route::post('/posts/{post}/votar', [PostController::class, 'votar'])->name('posts.votar');
-    Route::delete('/posts/{post}/midia', [PostController::class, 'removerMidia'])
-    ->name('posts.removerMidia');
+    Route::post('/posts/{post}/aprovar',  [PostController::class, 'aprovar'])->name('posts.aprovar');
+    Route::post('/posts/{post}/rejeitar', [PostController::class, 'rejeitar'])->name('posts.rejeitar');
+    Route::post('/posts/{post}/votar',    [PostController::class, 'votar'])->name('posts.votar');
+    Route::delete('/posts/{post}/midia',  [PostController::class, 'removerMidia'])->name('posts.removerMidia');
 });
 
 Route::resource('users', UserController::class)->only(['create', 'store']);
