@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Senha  ← ROTA NOVA
-    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    Route::put('/alterar-senha', [ProfileController::class, 'updatePassword'])->name('senha.update');
 
     // Avatar
     Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.deleteAvatar');

@@ -139,7 +139,7 @@
                         <div class="alert alert-danger">❌ {{ $errors->first('password') }}</div>
                     @endif
 
-                    <form method="POST" action="{{ route('password.update') }}">
+                    <form method="POST" action="{{ route('senha.update') }}">
                         @csrf
                         @method('PUT')
 
