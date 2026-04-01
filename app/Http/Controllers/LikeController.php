@@ -10,16 +10,25 @@ class LikeController extends Controller
 {
     public function altera_like(Post $post)
     {
-        $user = auth()->user(); // Usuario logado
+        $user = auth()->user();
 
         $like = Like::firstOrCreate([
             'user_id' => $user->id,
-            'post_id' => $post->id
+            'post_id' => $post->id,
         ]);
 
-        // Apaga caso ja exista
         if (!$like->wasRecentlyCreated) {
             $like->delete();
+            $liked = false;
+        } else {
+            $liked = true;
+        }
+
+        $total = $post->likes()->count();
+
+        // Se for requisição AJAX retorna JSON, senão redireciona normalmente
+        if (request()->expectsJson()) {
+            return response()->json(['liked' => $liked, 'total' => $total]);
         }
 
         return back();
