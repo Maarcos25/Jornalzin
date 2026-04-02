@@ -2,8 +2,12 @@
 
 @section('conteudo')
 <style>
-html {
-    font-size: 105%;
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #f1f5f9 !important;
 }
 
     :root {
@@ -19,12 +23,18 @@ html {
         --shadow:     0 2px 12px rgba(0,0,0,.07);
     }
 
-    body { background: #f1f5f9 !important; }
+    body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    zoom: 0.95;
+}
 
-    .profile-wrap {
+.profile-wrap {
     max-width: 960px;
+    width: 100%;
     margin: 0 auto;
-    padding: 1rem 1.5rem 1rem;
+    padding: 1rem 1.5rem;
 }
 
     /* Header */
@@ -50,7 +60,10 @@ html {
         position: relative; width: 120px; height: 120px;
         cursor: pointer; transition: transform .2s;
     }
-    .avatar-wrapper:hover { transform: scale(1.04); }
+    .avatar-wrapper {
+    position: relative; width: 130px; height: 130px;
+    cursor: pointer; transition: transform .2s;
+}
     .avatar-img {
         width: 100%; height: 100%; border-radius: 50%;
         object-fit: cover;
@@ -105,9 +118,9 @@ html {
         color: #fff; font-size: 1.1rem; font-weight: 800;
     }
     .profile-card-body {
-        padding: 2rem 2.5rem;
-        display: flex; flex-direction: column; gap: 1.2rem;
-    }
+    padding: 1.5rem 2.5rem;
+    display: flex; flex-direction: column; gap: 1rem;
+}
 
     /* Campos */
     .form-group label {
@@ -142,7 +155,7 @@ html {
 
     /* Footer do card */
     .profile-card-footer {
-        padding: 1.2rem 2.5rem;
+        padding: 1rem 2.5rem;
         border-top: 1px solid var(--border);
         background: var(--surface-2);
         display: flex; gap: .6rem; align-items: center;
