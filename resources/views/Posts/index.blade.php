@@ -17,7 +17,6 @@
     --danger:    #ef4444;
     --warn:      #f59e0b;
     --radius:    16px;
-    --feed-w:    640px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,9 +27,8 @@ body {
     color: var(--ink);
 }
 
-/* ── Feed layout ── */
 .feed-wrap {
-    max-width: var(--feed-w);
+    max-width: 1100px;
     margin: 0 auto;
     padding: 2rem 1rem 4rem;
 }
@@ -68,7 +66,6 @@ body {
     box-shadow: 0 6px 20px rgba(99,102,241,.45);
 }
 
-/* ── Alert ── */
 .alert-success {
     background: #ecfdf5;
     border: 1px solid #a7f3d0;
@@ -83,15 +80,22 @@ body {
     gap: .5rem;
 }
 
-/* ── Post card ── */
+/* ── Grid masonry ── */
+.posts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    align-items: start;
+}
+
 .post-card {
     background: var(--surface);
     border-radius: var(--radius);
     border: 1px solid var(--border);
-    margin-bottom: 1.25rem;
     overflow: hidden;
     transition: box-shadow .25s, transform .25s;
     animation: fadeUp .4s ease both;
+    break-inside: avoid;
 }
 .post-card:hover {
     box-shadow: 0 8px 32px rgba(15,23,42,.1);
@@ -102,14 +106,12 @@ body {
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* stagger cards */
 .post-card:nth-child(1) { animation-delay: .05s; }
 .post-card:nth-child(2) { animation-delay: .10s; }
 .post-card:nth-child(3) { animation-delay: .15s; }
 .post-card:nth-child(4) { animation-delay: .20s; }
 .post-card:nth-child(5) { animation-delay: .25s; }
 
-/* ── Card header ── */
 .card-head {
     display: flex;
     align-items: flex-start;
@@ -156,7 +158,6 @@ body {
     padding-top: .15rem;
 }
 
-/* ── Card actions (edit/delete) ── */
 .card-actions {
     display: flex;
     gap: .4rem;
@@ -180,20 +181,16 @@ body {
 .btn-del   { background: #fef2f2; color: var(--danger); border: 1.5px solid #fecaca; }
 .btn-del:hover   { background: var(--danger); color: #fff; border-color: var(--danger); }
 
-/* ── Divider ── */
 .card-divider { height: 1px; background: var(--border); margin: 0 1.25rem; }
 
-/* ── Content area ── */
 .card-body { padding: 1rem 1.25rem 1.25rem; }
 
-/* Texto */
 .post-text {
     color: var(--ink-2);
     font-size: .95rem;
     line-height: 1.65;
 }
 
-/* Imagens */
 .img-grid {
     display: grid;
     gap: 4px;
@@ -227,7 +224,6 @@ body {
     color: #fff; font-size: 1.4rem; font-weight: 700;
 }
 
-/* Vídeo */
 .video-wrap {
     border-radius: 12px;
     overflow: hidden;
@@ -240,7 +236,6 @@ body {
     aspect-ratio: 16/9;
 }
 
-/* ── Enquete ── */
 .poll-wrap { margin-top: .2rem; }
 .poll-label {
     font-size: .8rem;
@@ -251,10 +246,7 @@ body {
     margin-bottom: .75rem;
 }
 .poll-options { display: flex; flex-direction: column; gap: .5rem; }
-.poll-option {
-    position: relative;
-    cursor: pointer;
-}
+.poll-option { position: relative; cursor: pointer; }
 .poll-option input[type=radio] { display: none; }
 .poll-option label {
     display: flex;
@@ -280,19 +272,10 @@ body {
     flex-shrink: 0;
     transition: border-color .18s, background .18s;
 }
-.poll-option input:checked + label {
-    border-color: var(--accent);
-    background: var(--accent-lt);
-    color: var(--accent-d);
-}
-.poll-option input:checked + label::before {
-    border-color: var(--accent);
-    background: var(--accent);
-}
-.poll-option label:hover {
-    border-color: var(--accent);
-    background: var(--accent-lt);
-}
+.poll-option input:checked + label { border-color: var(--accent); background: var(--accent-lt); color: var(--accent-d); }
+.poll-option input:checked + label::before { border-color: var(--accent); background: var(--accent); }
+.poll-option label:hover { border-color: var(--accent); background: var(--accent-lt); }
+
 .btn-vote {
     display: inline-flex;
     align-items: center;
@@ -312,7 +295,6 @@ body {
 }
 .btn-vote:hover { background: var(--accent-d); transform: translateY(-1px); }
 
-/* ── Resultados da enquete ── */
 .poll-results { display: flex; flex-direction: column; gap: .5rem; }
 .result-row { display: flex; flex-direction: column; gap: .3rem; }
 .result-label {
@@ -335,13 +317,8 @@ body {
     transition: width 1s cubic-bezier(.4,0,.2,1);
 }
 .result-bar.winner { background: linear-gradient(90deg, var(--success), #059669); }
-.poll-total {
-    font-size: .75rem;
-    color: var(--muted);
-    margin-top: .4rem;
-}
+.poll-total { font-size: .75rem; color: var(--muted); margin-top: .4rem; }
 
-/* ── Modal imagem ── */
 #imgModal {
     display: none;
     position: fixed; inset: 0;
@@ -363,7 +340,6 @@ body {
     to   { transform: scale(1);   opacity: 1; }
 }
 
-/* ── Empty state ── */
 .empty-state {
     text-align: center;
     padding: 4rem 1rem;
@@ -372,7 +348,8 @@ body {
 .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
 .empty-state p { font-size: .95rem; }
 
-@media(max-width: 560px) {
+@media(max-width: 700px) {
+    .posts-grid { grid-template-columns: 1fr; }
     .feed-title { font-size: 1.5rem; }
     .img-grid.many { grid-template-columns: repeat(2, 1fr); }
 }
@@ -382,7 +359,6 @@ body {
 @section('conteudo')
 <div class="feed-wrap">
 
-    {{-- Cabeçalho ── --}}
     <div class="feed-header">
         <h1 class="feed-title">📰 Posts</h1>
         <a href="{{ route('posts.create') }}" class="btn-new">
@@ -402,9 +378,9 @@ body {
         </div>
     @endif
 
+    <div class="posts-grid">
     @foreach($posts as $post)
     @php
-        // Votos da enquete
         $votos      = [];
         $totalVotos = 0;
         $jaVotou    = false;
@@ -417,7 +393,6 @@ body {
     @endphp
     <div class="post-card">
 
-        {{-- Cabeçalho do card ── --}}
         <div class="card-head">
             <div class="card-meta">
                 @php
@@ -434,31 +409,27 @@ body {
             @endif
         </div>
 
-        {{-- Botões de ação ── --}}
         @if(!$post->aprovado)
-        <span class="badge bg-warning text-dark me-1">⏳ Pendente</span>
-        <form action="{{ route('posts.aprovar', $post->id) }}" method="POST" style="display:inline">
-            @csrf
-            <button class="btn btn-success btn-sm">✅ Aprovar</button>
-        </form>
-        <form action="{{ route('posts.rejeitar', $post->id) }}" method="POST" style="display:inline"
-              onsubmit="return confirm('Rejeitar e excluir este post?')">
-            @csrf
-            <button class="btn btn-danger btn-sm">❌ Rejeitar</button>
-        </form>
-    @endif
+            <span class="badge bg-warning text-dark me-1">⏳ Pendente</span>
+            <form action="{{ route('posts.aprovar', $post->id) }}" method="POST" style="display:inline">
+                @csrf
+                <button class="btn btn-success btn-sm">✅ Aprovar</button>
+            </form>
+            <form action="{{ route('posts.rejeitar', $post->id) }}" method="POST" style="display:inline"
+                  onsubmit="return confirm('Rejeitar e excluir este post?')">
+                @csrf
+                <button class="btn btn-danger btn-sm">❌ Rejeitar</button>
+            </form>
+        @endif
 
         <div class="card-divider"></div>
 
-        {{-- Conteúdo ── --}}
         <div class="card-body">
 
-            {{-- TEXTO --}}
             @if($post->tipo === 'texto')
                 <p class="post-text">{{ $post->texto }}</p>
             @endif
 
-            {{-- IMAGENS --}}
             @if($post->tipo === 'imagem')
                 @php
                     $imgs = $post->imagens->count()
@@ -471,7 +442,7 @@ body {
                         $count === 3 => 'three',
                         default      => 'many',
                     };
-                    $show = min($count, 9); // máx. 9 células visíveis
+                    $show = min($count, 9);
                 @endphp
                 @if($count)
                 <div class="img-grid {{ $gridClass }}">
@@ -490,7 +461,6 @@ body {
                 @endif
             @endif
 
-            {{-- VÍDEO --}}
             @if($post->tipo === 'video' && $post->video)
                 @php
                     $isYt    = str_contains($post->video,'youtube') || str_contains($post->video,'youtu.be');
@@ -510,13 +480,11 @@ body {
                 </div>
             @endif
 
-            {{-- ENQUETE --}}
             @if($post->tipo === 'enquete')
                 <div class="poll-wrap">
                     <p class="poll-label">📊 Enquete · {{ $totalVotos }} {{ $totalVotos === 1 ? 'voto' : 'votos' }}</p>
 
                     @if($jaVotou || $totalVotos > 0 && !auth()->check())
-                        {{-- Resultados --}}
                         <div class="poll-results">
                             @foreach(range(1,8) as $i)
                                 @php $opcao = $post->{'opcao'.$i}; if(!$opcao) continue; @endphp
@@ -538,9 +506,7 @@ body {
                             @endforeach
                         </div>
                         <p class="poll-total">Você já votou nesta enquete.</p>
-
                     @else
-                        {{-- Formulário de votação --}}
                         <form method="POST" action="{{ route('posts.votar', $post->id) }}">
                             @csrf
                             <div class="poll-options">
@@ -561,10 +527,10 @@ body {
         </div>
     </div>
     @endforeach
+    </div>
 
 </div>
 
-{{-- Modal de imagem --}}
 <div id="imgModal" onclick="this.style.display='none'">
     <img id="imgModalSrc" src="" alt="imagem ampliada">
 </div>
@@ -579,3 +545,4 @@ document.addEventListener('keydown', e => {
 });
 </script>
 @endsection
+    

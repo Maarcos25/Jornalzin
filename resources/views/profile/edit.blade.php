@@ -275,14 +275,17 @@ html, body {
 
                 <div class="profile-card-footer">
                     <button type="submit" class="btn-salvar">💾 Salvar Alterações</button>
+                </div>
+            </form>
 
-                    @if(auth()->user()->avatar)
-                        <form method="POST" action="{{ route('profile.deleteAvatar') }}" style="margin-left:auto;">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn-remover-foto"
-                                    onclick="return confirm('Remover foto?')">🗑️ Remover foto atual</button>
-                        </form>
-                    @endif
+            @if(auth()->user()->avatar)
+                <form method="POST" action="{{ route('profile.deleteAvatar') }}"
+                      style="padding: .8rem 2.5rem; background: var(--surface-2); display:flex; border-top: 1px solid var(--border);">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="btn-remover-foto"
+                            onclick="return confirm('Remover foto?')">🗑️ Remover foto atual</button>
+                </form>
+            @endif
                 </div>
             </form>
         </div>
