@@ -169,7 +169,9 @@
                         <td>
                             <div class="actions-wrap">
                                 <a href="{{ route('users.show', $user->id) }}" class="btn-ver">👁 Ver</a>
+                                @if(auth()->user()->tipo === 'administrador')
                                 <a href="{{ route('users.edit', $user->id) }}" class="btn-editar">✏️ Editar</a>
+                            @endif
 
                                 {{-- Botão excluir: apenas administradores veem e conseguem excluir --}}
                                 @if(auth()->user()->tipo === 'administrador')

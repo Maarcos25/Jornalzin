@@ -212,16 +212,18 @@
         {{-- Footer ── botões --}}
         <div class="user-detail-footer">
             <a href="{{ route('users.index') }}" class="btn-voltar">← Voltar</a>
-            <a href="{{ route('users.edit', $user->id) }}" class="btn-editar">✏️ Editar</a>
 
-            <form action="{{ route('users.destroy', $user->id) }}" method="POST"
-                  onsubmit="return confirm('Excluir este usuário?')">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn-excluir">🗑️ Excluir</button>
-            </form>
-        </div>
+            @if(auth()->user()->tipo === 'administrador')
+                <a href="{{ route('users.edit', $user->id) }}" class="btn-editar">✏️ Editar</a>
 
+                <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                      onsubmit="return confirm('Excluir este usuário?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn-excluir">🗑️ Excluir</button>
+                </form>
+            @endif
+        </div>  
     </div>
 </div>
 @endsection
