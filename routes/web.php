@@ -8,6 +8,10 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\Auth\GoogleController;
+
+Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 
 // Login
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->middleware('guest')->name('login');
@@ -21,15 +25,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::middleware('auth')->group(function () {
     Route::post('/like/{post}', [LikeController::class, 'altera_like'])->name('posts.like');
 
-    // Perfil
     Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Senha  ← ROTA NOVA
     Route::put('/alterar-senha', [ProfileController::class, 'updatePassword'])->name('senha.update');
-
-    // Avatar
     Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.deleteAvatar');
 });
 
