@@ -36,9 +36,9 @@
 
     /* ── Search ── */
     .search-wrap {
-        position: relative;
-        margin-bottom: 2rem;
-    }
+    position: relative;
+    margin-bottom: .4rem;
+}
     .search-wrap input {
         width: 100%;
         padding: .85rem 3.5rem .85rem 1.3rem;
@@ -249,6 +249,24 @@
         .home-img-grid.many { grid-template-columns: repeat(2,1fr); }
         .post-actions { width: 100%; justify-content: flex-end; margin-left: 0; }
     }
+    .filtro-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all .2s;
+}
+
+.filtro-link:hover {
+    background: #eef2ff;
+    color: var(--brand);
+}
+
+.filtro-link.active {
+    background: var(--brand);
+    color: #fff;
+}
 </style>
 @endpush
 
@@ -260,10 +278,36 @@
     {{-- PESQUISA --}}
     <form method="GET" action="/" class="search-wrap">
         <input type="text" name="pesquisa"
-               placeholder="Pesquisar postagens..."
-               value="{{ request('pesquisa') }}">
+            placeholder="Pesquisar postagens..."
+            value="{{ request('pesquisa') }}">
         <button type="submit">🔍</button>
     </form>
+
+    <div style="
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:0;
+    margin-bottom:1rem;
+    font-size:14px;
+">
+    <span style="color:var(--muted); font-weight:600;">Ordenar:</span>
+
+    <a href="?filtro=views&pesquisa={{ request('pesquisa') }}"
+       class="filtro-link {{ request('filtro')=='views' ? 'active' : '' }}">
+        mais vistos
+    </a>
+
+    <a href="?filtro=likes&pesquisa={{ request('pesquisa') }}"
+       class="filtro-link {{ request('filtro')=='likes' ? 'active' : '' }}">
+        mais curtidos
+    </a>
+
+    <a href="?filtro=recentes&pesquisa={{ request('pesquisa') }}"
+       class="filtro-link {{ request('filtro')=='recentes' ? 'active' : '' }}">
+        mais recentes
+    </a>
+</div>
 
     @if(request('pesquisa'))
         <p style="color:var(--muted);font-size:.95rem;margin-bottom:1rem;">

@@ -36,30 +36,25 @@ class HomeController extends Controller
             });
         }
 
-        // 🔥 FILTROS
+        // 🔥 FILTRO (AGORA FUNCIONA)
         if ($filtro == 'views') {
             $query->orderBy('visualizacoes', 'desc');
         }
         elseif ($filtro == 'likes') {
-            $query->whereHas('likes')
-                  ->withCount('likes')
+            $query->withCount('likes')
+                  ->having('likes_count', '>', 0) // 👈 só posts com likes
                   ->orderBy('likes_count', 'desc');
         }
-        else {
-            // padrão = mais recentes
+        else { // recentes
             $query->orderBy('created_at', 'desc');
         }
 
         // 📦 PAGINAÇÃO
         $posts = $query->paginate(20);
 
-        // 🧠 AQUI É O PULO DO GATO
-        if ($filtro) {
-            $postsPorDia = null; // ❌ NÃO AGRUPA quando tem filtro
-        } else {
-            $postsPorDia = $posts->getCollection()
-                ->groupBy(fn($post) => Carbon::parse($post->data)->format('Y-m-d'));
-        }
+        // 📅 AGRUPAR POR DIA
+        $postsPorDia = $posts->getCollection()
+            ->groupBy(fn($post) => Carbon::parse($post->data)->format('Y-m-d'));
 
         // ⭐ DESTAQUE
         $destaque = Post::with(['usuario', 'imagens'])
@@ -72,6 +67,6 @@ class HomeController extends Controller
             ->limit(5)
             ->get();
 
-        return view('home', compact('posts', 'postsPorDia', 'maisVistos', 'destaque', 'filtro'));
+        return view('home', compact('posts', 'postsPorDia', 'maisVistos', 'destaque'));
     }
 }
