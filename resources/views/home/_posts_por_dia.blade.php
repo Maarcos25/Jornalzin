@@ -2,248 +2,308 @@
     function binPackPosts(iterable $posts): array
     {
         $widths = ['P' => 3, 'M' => 4, 'G' => 6, 'GG' => 12];
-        $sorted = collect($posts)
-            ->sortByDesc(fn($p) => $widths[$p->tamanho] ?? 4)
-            ->values()->all();
+        $sorted = collect($posts)->sortByDesc(fn($p) => $widths[$p->tamanho] ?? 4)->values()->all();
         $rows = [];
         while (!empty($sorted)) {
-            $row = []; $rowWidth = 0; $notFit = [];
+            $row = [];
+            $rowWidth = 0;
+            $notFit = [];
             foreach ($sorted as $post) {
                 $w = $widths[$post->tamanho] ?? 4;
-                if ($rowWidth + $w <= 12) { $row[] = $post; $rowWidth += $w; }
-                else { $notFit[] = $post; }
+                if ($rowWidth + $w <= 12) {
+                    $row[] = $post;
+                    $rowWidth += $w;
+                } else {
+                    $notFit[] = $post;
+                }
             }
-            if (empty($row)) { $rows[] = [array_shift($sorted)]; $sorted = array_values($sorted); }
-            else { $rows[] = $row; $sorted = $notFit; }
+            if (empty($row)) {
+                $rows[] = [array_shift($sorted)];
+                $sorted = array_values($sorted);
+            } else {
+                $rows[] = $row;
+                $sorted = $notFit;
+            }
         }
         return $rows;
     }
 @endphp
 
 @foreach ($postsPorDia as $dia => $postsNoDia)
-@php
-    $dataFormatada = \Carbon\Carbon::parse($dia)->locale('pt_BR')->isoFormat('dddd, D [de] MMMM [de] YYYY');
-    $rows = binPackPosts($postsNoDia);
-@endphp
+    @php
+        $isTodos = $dia === 'todos';
 
-<div class="day-block" data-dia="{{ $dia }}">
+        $dataFormatada = $isTodos
+            ? 'Resultados ordenados'
+            : \Carbon\Carbon::parse($dia)->locale('pt_BR')->isoFormat('dddd, D [de] MMMM [de] YYYY');
 
-    {{-- Separador de dia --}}
-    <div class="day-sep">
-        <span class="day-sep-badge">📅 {{ ucfirst($dataFormatada) }}</span>
-        <div class="day-sep-line"></div>
-    </div>
+        $rows = binPackPosts($postsNoDia);
+    @endphp
 
-    <div class="posts-col">
-        @foreach ($rows as $linha)
-        <div class="row g-3 mb-1">
-            @foreach ($linha as $post)
-            @php
-                $votos = $totalVotos = $jaVotou = 0;
-                $votosArr = [];
-                if ($post->tipo === 'enquete') {
-                    $votosArr   = $post->votos()->get()->groupBy('opcao')->map->count()->toArray();
-                    $totalVotos = array_sum($votosArr);
-                    $jaVotou    = auth()->check() && $post->votos()->where('id_usuario', auth()->id())->exists();
-                }
-                $maxVotos = $totalVotos > 0 ? max($votosArr) : 0;
+    <div class="day-block" data-dia="{{ $dia }}">
 
-                $imgs = [];
-                if ($post->tipo === 'imagem') {
-                    $imgs = $post->imagens->count()
-                        ? $post->imagens->map(fn($i) => Storage::url($i->caminho))->toArray()
-                        : ($post->imagem ? [str_starts_with($post->imagem,'/storage/') ? asset($post->imagem) : Storage::url($post->imagem)] : []);
-                }
+        {{-- Separador de dia --}}
+        <div class="day-sep">
+            <span class="day-sep-badge">
+                {{ $isTodos ? '🔥 ' : '📅 ' }}{{ ucfirst($dataFormatada) }}
+            </span>
+            <div class="day-sep-line"></div>
+        </div>
 
-                $totalComentarios = $post->comments ? $post->comments->count() : 0;
-                $jaLikei = auth()->check() && $post->likes()->where('user_id', auth()->id())->exists();
-                $totalLikes = $post->likes()->count();
-            @endphp
+        <div class="posts-col">
+            @foreach ($rows as $linha)
+                <div class="row g-3 mb-1">
+                    @foreach ($linha as $post)
+                        @php
+                            $votos = $totalVotos = $jaVotou = 0;
+                            $votosArr = [];
+                            if ($post->tipo === 'enquete') {
+                                $votosArr = $post->votos()->get()->groupBy('opcao')->map->count()->toArray();
+                                $totalVotos = array_sum($votosArr);
+                                $jaVotou =
+                                    auth()->check() &&
+                                    $post
+                                        ->votos()
+                                        ->where('id_usuario', auth()->id())
+                                        ->exists();
+                            }
+                            $maxVotos = $totalVotos > 0 ? max($votosArr) : 0;
 
-            <div class="{{ $post->coluna_bootstrap }}">
-                <div class="post-card">
+                            $imgs = [];
+                            if ($post->tipo === 'imagem') {
+                                $imgs = $post->imagens->count()
+                                    ? $post->imagens->map(fn($i) => Storage::url($i->caminho))->toArray()
+                                    : ($post->imagem
+                                        ? [
+                                            str_starts_with($post->imagem, '/storage/')
+                                                ? asset($post->imagem)
+                                                : Storage::url($post->imagem),
+                                        ]
+                                        : []);
+                            }
 
-                    {{-- MÍDIA --}}
-                    @if($post->tipo === 'imagem' && count($imgs))
-                        @php $c = count($imgs); @endphp
-                        <div class="post-media">
-                            @if($c === 1)
-                                <img src="{{ $imgs[0] }}" class="home-img-single"
-                                     onclick="abrirImagem('{{ $imgs[0] }}')" alt="{{ $post->titulo }}">
-                            @elseif($c === 2)
-                                <div class="home-img-grid two">
-                                    @foreach($imgs as $src)
-                                    <div class="home-img-cell" onclick="abrirImagem('{{ $src }}')">
-                                        <img src="{{ $src }}" alt="">
-                                    </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                @php $show = min($c, 6); @endphp
-                                <div class="home-img-grid many">
-                                    @foreach(array_slice($imgs,0,$show) as $idx => $src)
-                                    <div class="home-img-cell" onclick="abrirImagem('{{ $src }}')">
-                                        <img src="{{ $src }}" alt="">
-                                        @if($idx === $show-1 && $c > $show)
-                                            <div class="home-img-more">+{{ $c - $show }}</div>
+                            $totalComentarios = $post->comments ? $post->comments->count() : 0;
+                            $jaLikei =
+                                auth()->check() &&
+                                $post
+                                    ->likes()
+                                    ->where('user_id', auth()->id())
+                                    ->exists();
+                            $totalLikes = $post->likes()->count();
+                        @endphp
+
+                        <div class="{{ $post->coluna_bootstrap }}">
+                            <div class="post-card">
+
+                                {{-- MÍDIA --}}
+                                @if ($post->tipo === 'imagem' && count($imgs))
+                                    @php $c = count($imgs); @endphp
+                                    <div class="post-media">
+                                        @if ($c === 1)
+                                            <img src="{{ $imgs[0] }}" class="home-img-single"
+                                                onclick="abrirImagem('{{ $imgs[0] }}')" alt="{{ $post->titulo }}">
+                                        @elseif($c === 2)
+                                            <div class="home-img-grid two">
+                                                @foreach ($imgs as $src)
+                                                    <div class="home-img-cell"
+                                                        onclick="abrirImagem('{{ $src }}')">
+                                                        <img src="{{ $src }}" alt="">
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            @php $show = min($c, 6); @endphp
+                                            <div class="home-img-grid many">
+                                                @foreach (array_slice($imgs, 0, $show) as $idx => $src)
+                                                    <div class="home-img-cell"
+                                                        onclick="abrirImagem('{{ $src }}')">
+                                                        <img src="{{ $src }}" alt="">
+                                                        @if ($idx === $show - 1 && $c > $show)
+                                                            <div class="home-img-more">+{{ $c - $show }}</div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         @endif
                                     </div>
-                                    @endforeach
-                                </div>
-                            @endif
-                        </div>
-                    @endif
+                                @endif
 
-                    @if($post->tipo === 'video' && $post->video)
-                        @php
-                            $isYt    = str_contains($post->video,'youtube') || str_contains($post->video,'youtu.be');
-                            $isVimeo = str_contains($post->video,'vimeo');
-                        @endphp
-                        <div class="home-video-wrap">
-                            @if($isYt)
-                                @php preg_match('/(?:watch\?v=|youtu\.be\/)([^&\s]+)/',$post->video,$m); @endphp
-                                <iframe src="https://www.youtube.com/embed/{{ $m[1]??'' }}" frameborder="0" allowfullscreen></iframe>
-                            @elseif($isVimeo)
-                                @php preg_match('/vimeo\.com\/(\d+)/',$post->video,$m); @endphp
-                                <iframe src="https://player.vimeo.com/video/{{ $m[1]??'' }}" frameborder="0" allowfullscreen></iframe>
-                            @else
-                                @php $vs = str_starts_with($post->video,'/storage/') ? asset($post->video) : Storage::url($post->video); @endphp
-                                <video controls style="width:100%;display:block;"><source src="{{ $vs }}"></video>
-                            @endif
-                        </div>
-                    @endif
+                                @if ($post->tipo === 'video' && $post->video)
+                                    @php
+                                        $isYt =
+                                            str_contains($post->video, 'youtube') ||
+                                            str_contains($post->video, 'youtu.be');
+                                        $isVimeo = str_contains($post->video, 'vimeo');
+                                    @endphp
+                                    <div class="home-video-wrap">
+                                        @if ($isYt)
+                                            @php preg_match('/(?:watch\?v=|youtu\.be\/)([^&\s]+)/',$post->video,$m); @endphp
+                                            <iframe src="https://www.youtube.com/embed/{{ $m[1] ?? '' }}"
+                                                frameborder="0" allowfullscreen></iframe>
+                                        @elseif($isVimeo)
+                                            @php preg_match('/vimeo\.com\/(\d+)/',$post->video,$m); @endphp
+                                            <iframe src="https://player.vimeo.com/video/{{ $m[1] ?? '' }}"
+                                                frameborder="0" allowfullscreen></iframe>
+                                        @else
+                                            @php $vs = str_starts_with($post->video,'/storage/') ? asset($post->video) : Storage::url($post->video); @endphp
+                                            <video controls style="width:100%;display:block;">
+                                                <source src="{{ $vs }}">
+                                            </video>
+                                        @endif
+                                    </div>
+                                @endif
 
-                    {{-- CORPO --}}
-                    <div class="post-body">
-                        <a class="post-title" href="{{ route('posts.show', $post->id) }}">
-                            {{ $post->titulo }}
-                        </a>
+                                {{-- CORPO --}}
+                                <div class="post-body">
+                                    <a class="post-title" href="{{ route('posts.show', $post->id) }}">
+                                        {{ $post->titulo }}
+                                    </a>
 
-                        @if($post->tipo === 'texto' && $post->texto)
-                            <p class="post-excerpt">
-                                {{ Str::limit($post->texto, $post->tamanho === 'GG' ? 400 : ($post->tamanho === 'G' ? 250 : 120)) }}
-                            </p>
-                        @endif
+                                    @if ($post->tipo === 'texto' && $post->texto)
+                                        <p class="post-excerpt">
+                                            {{ Str::limit($post->texto, $post->tamanho === 'GG' ? 400 : ($post->tamanho === 'G' ? 250 : 120)) }}
+                                        </p>
+                                    @endif
 
-                        {{-- ENQUETE --}}
-                        @if($post->tipo === 'enquete')
-                            <div class="home-poll">
-                                <p class="home-poll-label">📊 {{ $totalVotos }} {{ $totalVotos === 1 ? 'voto' : 'votos' }}</p>
-                                @if($jaVotou)
-                                    @foreach(range(1,8) as $i)
-                                        @php $op = $post->{'opcao'.$i}; if(!$op) continue; @endphp
-                                        @php $qtd=$votosArr[$i]??0; $pct=$totalVotos>0?round($qtd/$totalVotos*100):0; $win=$qtd===$maxVotos&&$maxVotos>0; @endphp
-                                        <div class="poll-res-row">
-                                            <div class="poll-res-label">
-                                                <span>{{ $op }}@if($win) 🏆@endif</span>
-                                                <span>{{ $pct }}%</span>
-                                            </div>
-                                            <div class="poll-res-bg">
-                                                <div class="poll-res-bar {{ $win?'win':'' }}" style="width:{{ $pct }}%"></div>
-                                            </div>
+                                    {{-- ENQUETE --}}
+                                    @if ($post->tipo === 'enquete')
+                                        <div class="home-poll">
+                                            <p class="home-poll-label">📊 {{ $totalVotos }}
+                                                {{ $totalVotos === 1 ? 'voto' : 'votos' }}</p>
+                                            @if ($jaVotou)
+                                                @foreach (range(1, 8) as $i)
+                                                    @php
+                                                        $op = $post->{'opcao' . $i};
+                                                        if (!$op) {
+                                                            continue;
+                                                        }
+                                                    @endphp
+                                                    @php
+                                                        $qtd = $votosArr[$i] ?? 0;
+                                                        $pct = $totalVotos > 0 ? round(($qtd / $totalVotos) * 100) : 0;
+                                                        $win = $qtd === $maxVotos && $maxVotos > 0;
+                                                    @endphp
+                                                    <div class="poll-res-row">
+                                                        <div class="poll-res-label">
+                                                            <span>{{ $op }}@if ($win)
+                                                                    🏆
+                                                                @endif
+                                                            </span>
+                                                            <span>{{ $pct }}%</span>
+                                                        </div>
+                                                        <div class="poll-res-bg">
+                                                            <div class="poll-res-bar {{ $win ? 'win' : '' }}"
+                                                                style="width:{{ $pct }}%"></div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <form method="POST" action="{{ route('posts.votar', $post->id) }}">
+                                                    @csrf
+                                                    @foreach (range(1, 8) as $i)
+                                                        @php
+                                                            $op = $post->{'opcao' . $i};
+                                                            if (!$op) {
+                                                                continue;
+                                                            }
+                                                        @endphp
+                                                        <label class="home-poll-opt">
+                                                            <input type="radio" name="opcao"
+                                                                value="{{ $i }}" required>
+                                                            {{ $op }}
+                                                        </label>
+                                                    @endforeach
+                                                    <button type="submit" class="btn-vote-mini">🗳️ Votar</button>
+                                                </form>
+                                            @endif
                                         </div>
-                                    @endforeach
-                                @else
-                                    <form method="POST" action="{{ route('posts.votar', $post->id) }}">
-                                        @csrf
-                                        @foreach(range(1,8) as $i)
-                                            @php $op = $post->{'opcao'.$i}; if(!$op) continue; @endphp
-                                            <label class="home-poll-opt">
-                                                <input type="radio" name="opcao" value="{{ $i }}" required>
-                                                {{ $op }}
-                                            </label>
-                                        @endforeach
-                                        <button type="submit" class="btn-vote-mini">🗳️ Votar</button>
-                                    </form>
-                                @endif
-                            </div>
-                        @endif
-                    </div>
+                                    @endif
+                                </div>
 
-                    {{-- FOOTER DO CARD --}}
-                    <div class="post-footer">
-                        <span class="post-meta">
-                            @if($post->usuario && $post->usuario->avatar)
-                                <img src="{{ asset('storage/'.$post->usuario->avatar) }}"
-                                     style="width:22px;height:22px;border-radius:50%;object-fit:cover;">
-                            @else
-                                <span>✍️</span>
-                            @endif
-                            {{ $post->usuario->nome ?? 'Desconhecido' }}
-                        </span>
-                        <span class="post-meta-sep">·</span>
-                        <span class="post-meta">👁 {{ $post->visualizacoes }}</span>
+                                {{-- FOOTER DO CARD --}}
+                                <div class="post-footer">
+                                    <span class="post-meta">
+                                        @if ($post->usuario && $post->usuario->avatar)
+                                            <img src="{{ asset('storage/' . $post->usuario->avatar) }}"
+                                                style="width:22px;height:22px;border-radius:50%;object-fit:cover;">
+                                        @else
+                                            <span>✍️</span>
+                                        @endif
+                                        {{ $post->usuario->nome ?? 'Desconhecido' }}
+                                    </span>
+                                    <span class="post-meta-sep">·</span>
+                                    <span class="post-meta">👁 {{ $post->visualizacoes }}</span>
 
-                        <div class="post-actions">
-                            {{-- LIKE --}}
-                            <button
-                                class="btn-like {{ $jaLikei ? 'liked' : '' }}"
-                                onclick="toggleLike(this, {{ $post->id }})"
-                                type="button">
-                                <span class="like-icon">{{ $jaLikei ? '❤️' : '🤍' }}</span>
-                                <span class="like-count">{{ $totalLikes }}</span>
-                            </button>
+                                    <div class="post-actions">
+                                        {{-- LIKE --}}
+                                        <button class="btn-like {{ $jaLikei ? 'liked' : '' }}"
+                                            onclick="toggleLike(this, {{ $post->id }})" type="button">
+                                            <span class="like-icon">{{ $jaLikei ? '❤️' : '🤍' }}</span>
+                                            <span class="like-count">{{ $totalLikes }}</span>
+                                        </button>
 
-                            {{-- COMENTÁRIOS --}}
-                            <button
-                                class="btn-comment"
-                                onclick="toggleComentarios(this, {{ $post->id }})"
-                                type="button">
-                                💬
-                                @if($totalComentarios > 0)
-                                    <span>{{ $totalComentarios }}</span>
-                                @endif
-                            </button>
-                        </div>
-                    </div>
-
-                    {{-- PAINEL DE COMENTÁRIOS (oculto por padrão) --}}
-                    <div class="comments-panel" id="comments-{{ $post->id }}">
-
-                        @if($post->comments && $post->comments->count() > 0)
-                            @foreach($post->comments as $comment)
-                                <div class="comment-item">
-                                    <div class="comment-avatar">
-                                        {{ strtoupper(substr($comment->user->nome ?? $comment->user->name ?? 'U', 0, 1)) }}
-                                    </div>
-                                    <div>
-                                        <span class="comment-author">{{ $comment->user->nome ?? $comment->user->name ?? 'Usuário' }}</span>
-                                        <span class="comment-text">{{ $comment->texto }}</span>
+                                        {{-- COMENTÁRIOS --}}
+                                        <button class="btn-comment"
+                                            onclick="toggleComentarios(this, {{ $post->id }})" type="button">
+                                            💬
+                                            @if ($totalComentarios > 0)
+                                                <span>{{ $totalComentarios }}</span>
+                                            @endif
+                                        </button>
                                     </div>
                                 </div>
-                            @endforeach
-                        @else
-                            <p style="color:var(--muted);font-size:.83rem;text-align:center;padding:.4rem 0;">
-                                Nenhum comentário ainda. Seja o primeiro! 💬
-                            </p>
-                        @endif
 
-                        @auth
-                        <form method="POST" action="{{ route('comments.store') }}" class="comment-form">
-                            @csrf
-                            <input type="hidden" name="post_id" value="{{ $post->id }}">
-                            <input type="text" name="texto" placeholder="Escreva um comentário..." required>
-                            <button type="submit">Enviar</button>
-                        </form>
-                        @else
-                            <p style="color:var(--muted);font-size:.82rem;text-align:center;margin-top:.5rem;">
-                                <a href="{{ route('login') }}" style="color:var(--brand);">Entre</a> para comentar.
-                            </p>
-                        @endauth
+                                {{-- PAINEL DE COMENTÁRIOS (oculto por padrão) --}}
+                                <div class="comments-panel" id="comments-{{ $post->id }}">
 
-                    </div>
+                                    @if ($post->comments && $post->comments->count() > 0)
+                                        @foreach ($post->comments as $comment)
+                                            <div class="comment-item">
+                                                <div class="comment-avatar">
+                                                    {{ strtoupper(substr($comment->user->nome ?? ($comment->user->name ?? 'U'), 0, 1)) }}
+                                                </div>
+                                                <div>
+                                                    <span
+                                                        class="comment-author">{{ $comment->user->nome ?? ($comment->user->name ?? 'Usuário') }}</span>
+                                                    <span class="comment-text">{{ $comment->texto }}</span>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @else
+                                        <p
+                                            style="color:var(--muted);font-size:.83rem;text-align:center;padding:.4rem 0;">
+                                            Nenhum comentário ainda. Seja o primeiro! 💬
+                                        </p>
+                                    @endif
 
+                                    @auth
+                                        <form method="POST" action="{{ route('comments.store') }}" class="comment-form">
+                                            @csrf
+                                            <input type="hidden" name="post_id" value="{{ $post->id }}">
+                                            <input type="text" name="texto" placeholder="Escreva um comentário..."
+                                                required>
+                                            <button type="submit">Enviar</button>
+                                        </form>
+                                    @else
+                                        <p style="color:var(--muted);font-size:.82rem;text-align:center;margin-top:.5rem;">
+                                            <a href="{{ route('login') }}" style="color:var(--brand);">Entre</a> para
+                                            comentar.
+                                        </p>
+                                    @endauth
+
+                                </div>
+
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
-            </div>
             @endforeach
         </div>
-        @endforeach
-    </div>
 
-</div>
+    </div>
 @endforeach
 
-@if($postsPorDia->isEmpty())
+@if ($postsPorDia->isEmpty())
     <div style="text-align:center;padding:4rem 1rem;color:var(--muted);">
         <div style="font-size:3rem;margin-bottom:1rem;">📭</div>
         <p>Nenhuma postagem encontrada.</p>

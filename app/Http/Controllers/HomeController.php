@@ -32,20 +32,18 @@ class HomeController extends Controller
         if ($pesquisa) {
             $query->where(function ($q) use ($pesquisa) {
                 $q->where('titulo', 'like', "%{$pesquisa}%")
-                  ->orWhere('texto', 'like', "%{$pesquisa}%");
+                    ->orWhere('texto', 'like', "%{$pesquisa}%");
             });
         }
 
         // 🔥 FILTRO (AGORA FUNCIONA)
         if ($filtro == 'views') {
             $query->orderBy('visualizacoes', 'desc');
-        }
-        elseif ($filtro == 'likes') {
+        } elseif ($filtro == 'likes') {
             $query->withCount('likes')
-                  ->having('likes_count', '>', 0) // 👈 só posts com likes
-                  ->orderBy('likes_count', 'desc');
-        }
-        else { // recentes
+                ->having('likes_count', '>', 0) // 👈 só posts com likes
+                ->orderBy('likes_count', 'desc');
+        } else { // recentes
             $query->orderBy('created_at', 'desc');
         }
 
@@ -53,8 +51,12 @@ class HomeController extends Controller
         $posts = $query->paginate(20);
 
         // 📅 AGRUPAR POR DIA
-        $postsPorDia = $posts->getCollection()
-            ->groupBy(fn($post) => Carbon::parse($post->data)->format('Y-m-d'));
+        if ($filtro) {
+            $postsPorDia = collect(['todos' => $posts->items()]);
+        } else {
+            $postsPorDia = $posts->getCollection()
+                ->groupBy(fn($post) => Carbon::parse($post->data)->format('Y-m-d'));
+        }
 
         // ⭐ DESTAQUE
         $destaque = Post::with(['usuario', 'imagens'])
