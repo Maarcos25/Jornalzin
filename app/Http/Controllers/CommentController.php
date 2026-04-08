@@ -37,7 +37,8 @@ class CommentController extends Controller
         $comment = Comment::create([
             'texto' => $request->texto,
             'user_id' => auth()->id(),
-            'post_id' => $request->post_id
+            'post_id' => $request->post_id,
+            'status' => 'pendente'
         ]);
 
         return redirect()->route('posts.show', $comment->post_id)
@@ -74,5 +75,27 @@ class CommentController extends Controller
 
         return redirect()->route('comments.index')
             ->with('success', 'Comentário removido com sucesso!');
+    }
+
+    public function aprovar($id)
+    {
+        $this->apenasAdmin();
+
+        $comment = Comment::findOrFail($id); // ✅ CORRETO
+        $comment->status = 'aprovado';
+        $comment->save();
+
+        return back()->with('success', 'Comentário aprovado!');
+    }
+
+    public function ocultar($id)
+    {
+        $this->apenasAdmin();
+
+        $comment = Comment::findOrFail($id); // ✅ CORRETO
+        $comment->status = 'oculto';
+        $comment->save();
+
+        return back()->with('success', 'Comentário ocultado!');
     }
 }

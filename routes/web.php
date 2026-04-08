@@ -36,6 +36,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('comments', CommentController::class);
     Route::resource('posts', PostController::class);
     Route::resource('users', UserController::class);
+Route::post('/comments/{id}/aprovar', [CommentController::class, 'aprovar'])
+    ->name('comments.aprovar');
+Route::post('/comments/{id}/ocultar', [CommentController::class, 'ocultar'])
+    ->name('comments.ocultar');
     Route::post('/posts/{post}/aprovar',  [PostController::class, 'aprovar'])->name('posts.aprovar');
     Route::post('/posts/{post}/rejeitar', [PostController::class, 'rejeitar'])->name('posts.rejeitar');
     Route::post('/posts/{post}/votar',    [PostController::class, 'votar'])->name('posts.votar');

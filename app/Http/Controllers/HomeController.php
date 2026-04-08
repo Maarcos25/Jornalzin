@@ -11,28 +11,67 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $pesquisa = $request->input('pesquisa');
+        $status   = $request->input('status');
+        $filtro   = $request->input('filtro');
 
-        $posts = Post::with(['usuario', 'comments.user', 'imagens', 'votos'])
-            ->when($pesquisa, function ($query, $pesquisa) {
-                return $query->where('titulo', 'like', "%{$pesquisa}%")
-                            ->orWhere('texto', 'like', "%{$pesquisa}%");
-            })
-            ->orderBy('data', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $query = Post::with([
+            'usuario',
+            'imagens',
+            'votos',
+            'comments' => function ($q) use ($status) {
+                if ($status) {
+                    $q->where('status', $status);
+                } else {
+                    $q->where('status', 'aprovado');
+                }
+            },
+            'comments.user'
+        ]);
 
-        $postsPorDia = $posts->getCollection()
-            ->groupBy(fn($post) => Carbon::parse($post->data)->format('Y-m-d'));
+        // 🔍 PESQUISA
+        if ($pesquisa) {
+            $query->where(function ($q) use ($pesquisa) {
+                $q->where('titulo', 'like', "%{$pesquisa}%")
+                  ->orWhere('texto', 'like', "%{$pesquisa}%");
+            });
+        }
 
-        // Destaque: score = visualizacoes + (curtidas * 3)
-        // Multiplicador 3 dá mais peso a curtidas (ação ativa) vs visualizações (passiva)
+        // 🔥 FILTROS
+        if ($filtro == 'views') {
+            $query->orderBy('visualizacoes', 'desc');
+        }
+        elseif ($filtro == 'likes') {
+            $query->whereHas('likes')
+                  ->withCount('likes')
+                  ->orderBy('likes_count', 'desc');
+        }
+        else {
+            // padrão = mais recentes
+            $query->orderBy('created_at', 'desc');
+        }
+
+        // 📦 PAGINAÇÃO
+        $posts = $query->paginate(20);
+
+        // 🧠 AQUI É O PULO DO GATO
+        if ($filtro) {
+            $postsPorDia = null; // ❌ NÃO AGRUPA quando tem filtro
+        } else {
+            $postsPorDia = $posts->getCollection()
+                ->groupBy(fn($post) => Carbon::parse($post->data)->format('Y-m-d'));
+        }
+
+        // ⭐ DESTAQUE
         $destaque = Post::with(['usuario', 'imagens'])
             ->selectRaw('*, (visualizacoes + (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) * 3) as score')
             ->orderByDesc('score')
             ->first();
 
-        $maisVistos = Post::orderBy('visualizacoes', 'desc')->limit(5)->get();
+        // 👁 MAIS VISTOS
+        $maisVistos = Post::orderBy('visualizacoes', 'desc')
+            ->limit(5)
+            ->get();
 
-        return view('home', compact('posts', 'postsPorDia', 'maisVistos', 'destaque'));
+        return view('home', compact('posts', 'postsPorDia', 'maisVistos', 'destaque', 'filtro'));
     }
 }
