@@ -545,7 +545,12 @@
     margin-bottom:1rem;
     font-size:14px;
 ">
-            <span style="color:var(--muted); font-weight:600;">Ordenar:</span>
+<span style="color:var(--muted); font-weight:600; display:flex; align-items:center; gap:.3rem;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 8h10M11 12h2M12 16h0"/>
+    </svg>
+    Ordenar:
+</span>
 
             <a href="?filtro=views&pesquisa={{ request('pesquisa') }}"
                 class="filtro-link {{ request('filtro') == 'views' ? 'active' : '' }}">
