@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;  // ← adiciona essa linha
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -22,15 +23,24 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
-        $request->authenticate();
+        $verify = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => config('services.recaptcha.secret'),
+            'response' => $request->input('g-recaptcha-response'),
+        ]);
 
+        if (!$verify->json('success')) {
+            return back()
+                ->withErrors(['g-recaptcha-response' => 'Verificação reCAPTCHA falhou. Tente novamente.'])
+                ->withInput();
+        }
+
+        $request->authenticate();
         $request->session()->regenerate();
 
-        return redirect()->intended('/');
+        return redirect()->intended(route('home'));
     }
-
     /**
      * Destroy an authenticated session.
      */

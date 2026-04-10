@@ -26,7 +26,7 @@ class HomeController extends Controller
                 }
             },
             'comments.user'
-        ]);
+        ])->where('aprovado', true);
 
         // 🔍 PESQUISA
         if ($pesquisa) {
@@ -60,14 +60,16 @@ class HomeController extends Controller
 
         // ⭐ DESTAQUE
         $destaque = Post::with(['usuario', 'imagens'])
-            ->selectRaw('*, (visualizacoes + (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) * 3) as score')
-            ->orderByDesc('score')
-            ->first();
+        ->where('aprovado', true)  // ← adiciona isso
+        ->selectRaw('*, (visualizacoes + (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) * 3) as score')
+        ->orderByDesc('score')
+        ->first();
 
         // 👁 MAIS VISTOS
-        $maisVistos = Post::orderBy('visualizacoes', 'desc')
-            ->limit(5)
-            ->get();
+        $maisVistos = Post::where('aprovado', true)  // ← adiciona isso
+        ->orderBy('visualizacoes', 'desc')
+        ->limit(5)
+        ->get();
 
         return view('home', compact('posts', 'postsPorDia', 'maisVistos', 'destaque'));
     }

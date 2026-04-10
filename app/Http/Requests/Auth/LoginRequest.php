@@ -27,8 +27,9 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'email'                => ['required', 'string', 'email'],
+            'password'             => ['required', 'string'],
+            'g-recaptcha-response' => ['required'],
         ];
     }
 
@@ -82,4 +83,5 @@ class LoginRequest extends FormRequest
     {
         return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
     }
+
 }

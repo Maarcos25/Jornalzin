@@ -385,14 +385,15 @@
                     <div class="form-section">
                         <label>Imagens <span style="font-weight:400;text-transform:none;font-size:.8rem;">(até 10 arquivos · JPG, PNG, WEBP)</span></label>
 
-                        <div class="drop-zone" id="dropZone">
-                            <input type="file" name="imagens[]" id="inputImagens"
-                                   accept="image/jpeg,image/png,image/webp" multiple>
+                        <div class="drop-zone" id="dropZone" onclick="document.getElementById('inputImagens').click()">
                             <span class="drop-zone-icon">📂</span>
                             <p><strong>Clique para selecionar</strong> ou arraste as imagens aqui</p>
                             <p style="font-size:.78rem;margin-top:.3rem;">JPG · PNG · WEBP — máx. 5 MB cada</p>
                         </div>
-
+                        <input type="file" name="imagens[]" id="inputImagens"
+                               accept="image/jpeg,image/png,image/webp" multiple
+                               style="display:none;"
+                               onchange="mostrarPreview(this)">
                         <div class="img-preview-grid" id="imgPreviewGrid"></div>
                         <span class="img-count-badge" id="imgCountBadge" style="display:none"></span>
                     </div>

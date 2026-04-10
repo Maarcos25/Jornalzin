@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SolicitacaoEditorController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\Auth\GoogleController;
 
@@ -44,6 +45,15 @@ Route::post('/comments/{id}/ocultar', [CommentController::class, 'ocultar'])
     Route::post('/posts/{post}/rejeitar', [PostController::class, 'rejeitar'])->name('posts.rejeitar');
     Route::post('/posts/{post}/votar',    [PostController::class, 'votar'])->name('posts.votar');
     Route::delete('/posts/{post}/midia',  [PostController::class, 'removerMidia'])->name('posts.removerMidia');
+
+});
+
+// Solicitação de editor
+Route::middleware(['auth'])->group(function () {
+    Route::post('/solicitar-editor', [SolicitacaoEditorController::class, 'store'])->name('editor.solicitar');
+    Route::get('/admin/solicitacoes', [SolicitacaoEditorController::class, 'index'])->name('admin.solicitacoes');
+    Route::post('/admin/solicitacoes/{id}/aprovar', [SolicitacaoEditorController::class, 'aprovar'])->name('editor.aprovar');
+    Route::post('/admin/solicitacoes/{id}/rejeitar', [SolicitacaoEditorController::class, 'rejeitar'])->name('editor.rejeitar');
 });
 
 Route::resource('users', UserController::class)->only(['create', 'store']);

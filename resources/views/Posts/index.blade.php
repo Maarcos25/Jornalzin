@@ -82,10 +82,8 @@ body {
 
 /* ── Grid masonry ── */
 .posts-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-    align-items: start;
+    columns: 2;
+    column-gap: 1.25rem;
 }
 
 .post-card {
@@ -96,7 +94,11 @@ body {
     transition: box-shadow .25s, transform .25s;
     animation: fadeUp .4s ease both;
     break-inside: avoid;
+    margin-bottom: 1.25rem;
+    display: inline-block;
+    width: 100%;
 }
+
 .post-card:hover {
     box-shadow: 0 8px 32px rgba(15,23,42,.1);
     transform: translateY(-2px);
@@ -349,7 +351,7 @@ body {
 .empty-state p { font-size: .95rem; }
 
 @media(max-width: 700px) {
-    .posts-grid { grid-template-columns: 1fr; }
+    .posts-grid { columns: 1; }
     .feed-title { font-size: 1.5rem; }
     .img-grid.many { grid-template-columns: repeat(2, 1fr); }
 }
@@ -545,4 +547,3 @@ document.addEventListener('keydown', e => {
 });
 </script>
 @endsection
-    

@@ -16,13 +16,16 @@ class PostController extends Controller
 
     public function index()
     {
-        if (!$this->isAdmin()) abort(403);
+        if (!$this->isAdmin() && auth()->user()->tipo !== 'editor') abort(403);
         $posts = Post::with('imagens', 'usuario')->latest()->get();
         return view('posts.index', compact('posts'));
     }
 
     public function create()
     {
+        if (auth()->user()->tipo === 'leitor') {
+            abort(403, 'Apenas editores e administradores podem criar posts.');
+        }
         return view('posts.create');
     }
 
@@ -39,10 +42,10 @@ class PostController extends Controller
             case 'texto':
                 $rules['texto'] = 'required|string';
                 break;
-            case 'imagem':
-                $rules['imagens']   = 'required|array|min:1|max:10';
-                $rules['imagens.*'] = 'image|mimes:jpg,jpeg,png,webp|max:5120';
-                break;
+                case 'imagem':
+                    $rules['imagens']   = 'nullable|array|max:10';
+                    $rules['imagens.*'] = 'image|mimes:jpg,jpeg,png,webp|max:5120';
+                    break;
             case 'video':
                 $hasUrl  = $request->filled('video_url');
                 $hasFile = $request->hasFile('video_file');
