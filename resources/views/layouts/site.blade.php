@@ -50,8 +50,14 @@
         <div class="collapse navbar-collapse" id="menu">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('posts.index') }}">Posts</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">Usuários</a></li>
+
+                {{-- Posts e Usuários só para admin e editor --}}
+                @auth
+                    @if(auth()->user()->tipo !== 'leitor')
+                        <li class="nav-item"><a class="nav-link" href="{{ route('posts.index') }}">Posts</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">Usuários</a></li>
+                    @endif
+                @endauth
             </ul>
         </div>
 
@@ -66,6 +72,9 @@
                 {{-- Perfil sempre visível --}}
                 <li><a class="dropdown-item py-2" href="{{ route('profile.edit') }}">👤 Perfil</a></li>
 
+                {{-- Contato para todos --}}
+                <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalContato">📩 Contato</a></li>
+
                 {{-- Leitor: solicitar editor --}}
                 @if(auth()->user()->tipo === 'leitor')
                     <li><hr class="dropdown-divider my-1"></li>
@@ -78,7 +87,6 @@
                     <li><span class="dropdown-item-text text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Admin</span></li>
                     <li><a class="dropdown-item py-2" href="{{ route('comments.index') }}">💬 Comentários</a></li>
                     <li><a class="dropdown-item py-2" href="{{ route('admin.solicitacoes') }}">📋 Solicitações de Editor</a></li>
-                    <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalContato">📩 Contato</a></li>
                 @endif
 
                 <li><hr class="dropdown-divider my-1"></li>
@@ -93,7 +101,7 @@
         @endauth
 
         @guest
-        <div class="ms-auto d-flex align-items-center gap-2">
+        <div class="ms-auto d-flex align-items: center gap-2">
             <a href="{{ route('login') }}" class="btn-nav-login">Entrar</a>
             <a href="{{ url('/users/create') }}" class="btn-nav-cadastro">Cadastro</a>
         </div>
@@ -195,3 +203,4 @@
     </script>
 </body>
 </html>
+    
