@@ -63,6 +63,11 @@ class PostController extends Controller
 
         $request->validate($rules);
 
+        // Validação manual para imagens
+        if ($request->tipo === 'imagem' && !$request->hasFile('imagens')) {
+            return back()->withErrors(['imagens' => 'Selecione pelo menos uma imagem.'])->withInput();
+        }
+
         $aprovado = $this->isAdmin();
 
         $dados = [

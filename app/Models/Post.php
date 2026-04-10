@@ -17,12 +17,17 @@ class Post extends Model
         'opcao2',
         'opcao3',
         'opcao4',
+        'opcao5',
+        'opcao6',
+        'opcao7',
+        'opcao8',
         'data',
         'tamanho',
         'visualizacoes',
         'id_usuario',
         'aprovado',
     ];
+
     public function usuario()
     {
         return $this->belongsTo(User::class, 'id_usuario');
@@ -55,17 +60,19 @@ class Post extends Model
     }
 
     // Relacionamento: um post tem muitas imagens
-public function imagens()
-{
-    return $this->hasMany(PostMedia::class, 'post_id')->orderBy('ordem');
-}
+    public function imagens()
+    {
+        return $this->hasMany(PostMedia::class, 'post_id')->orderBy('ordem');
+    }
+
     // Retorna array de URLs de todas as imagens
     public function getImagensUrlAttribute(): array
     {
-        return $this->imagens->map(fn($i) => $i->url)->toArray();
+        return $this->imagens->map(fn ($i) => $i->url)->toArray();
     }
+
     public function votos()
-{
-    return $this->hasMany(Voto::class, 'post_id');
-}
+    {
+        return $this->hasMany(Voto::class, 'post_id');
+    }
 }

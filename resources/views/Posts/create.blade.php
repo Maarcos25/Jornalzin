@@ -738,5 +738,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             .find(b => b.querySelector('input')?.value === tipoInicial);
     if (btnAtivo) setTipo(tipoInicial, btnAtivo);
 });
+document.getElementById('postForm').addEventListener('submit', function(e) {
+        if (document.querySelector('input[name="tipo"]:checked')?.value === 'imagem') {
+            syncInputFiles();
+        }
+    });
 </script>
 @endpush

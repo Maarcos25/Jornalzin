@@ -522,6 +522,25 @@
             background: var(--brand);
             color: #fff;
         }
+/* ── Masonry Grid ── */
+.masonry-grid {
+    column-count: 3;
+    column-gap: 1rem;
+}
+.masonry-item {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    display: block;
+    width: 100%;
+}
+.masonry-item.masonry-full {
+    column-span: all;
+}
+.masonry-item.masonry-wide {
+    column-span: none;
+}
+@media(max-width: 900px) { .masonry-grid { column-count: 2; } }
+@media(max-width: 580px) { .masonry-grid { column-count: 1; } }
     </style>
 @endpush
 
