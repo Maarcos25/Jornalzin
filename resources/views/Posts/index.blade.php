@@ -14,7 +14,7 @@
 body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); }
 
 .feed-wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem 4rem; }
-.feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.6rem; }
+.feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
 .feed-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--ink); letter-spacing: -.02em; }
 .btn-new {
     display: inline-flex; align-items: center; gap: .4rem;
@@ -23,6 +23,47 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     transition: all .2s; box-shadow: 0 4px 14px rgba(99,102,241,.35);
 }
 .btn-new:hover { background: var(--accent-d); transform: translateY(-1px); color: #fff; }
+
+/* ── Barra de pesquisa ── */
+.search-bar {
+    position: relative;
+    margin-bottom: 1.4rem;
+}
+.search-bar input {
+    width: 100%;
+    padding: .75rem 3.5rem .75rem 1.2rem;
+    border: 2px solid var(--border);
+    border-radius: 50px;
+    font-size: .95rem;
+    font-family: inherit;
+    background: var(--surface);
+    color: var(--ink);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+.search-bar input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+}
+.search-bar button {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    background: var(--accent); color: #fff; border: none;
+    border-radius: 50px; padding: .45rem 1rem;
+    font-size: .88rem; font-weight: 600; cursor: pointer;
+    transition: background .2s;
+}
+.search-bar button:hover { background: var(--accent-d); }
+.search-bar .clear-btn {
+    position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--muted);
+    font-size: 1rem; cursor: pointer; padding: .2rem .4rem;
+    transition: color .15s;
+}
+.search-bar .clear-btn:hover { color: var(--danger); }
+.search-info {
+    font-size: .88rem; color: var(--muted); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: .4rem;
+}
 
 .alert-success {
     background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46;
@@ -54,7 +95,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 .card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--ink); line-height: 1.3; flex: 1; min-width: 0; }
 .card-date { font-size: .76rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; padding-top: .15rem; }
 
-/* ── Info do autor ── */
 .card-author {
     display: flex; align-items: center; gap: .5rem;
     padding: .5rem 1.25rem; border-bottom: 1px solid var(--border);
@@ -70,7 +110,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 .author-name { font-size: .82rem; font-weight: 600; color: var(--ink-2); }
 .author-date { font-size: .75rem; color: var(--muted); margin-left: auto; }
 
-/* ── Status badge ── */
 .status-badge {
     display: inline-flex; align-items: center; gap: .3rem;
     padding: .22rem .7rem; border-radius: 20px;
@@ -79,7 +118,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 .status-aprovado  { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
 .status-pendente  { background: #fefce8; color: #92400e; border: 1px solid #fde68a; }
 
-/* ── Ações admin ── */
 .card-actions {
     display: flex; gap: .4rem; padding: .6rem 1.25rem;
     border-top: 1px solid var(--border); background: #fafbff;
@@ -148,14 +186,33 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
         </a>
     </div>
 
+    {{-- Barra de pesquisa --}}
+    <form method="GET" action="{{ route('posts.index') }}" class="search-bar">
+        <input type="text" name="pesquisa"
+               placeholder="Pesquisar por título, texto ou tipo..."
+               value="{{ request('pesquisa') }}"
+               autocomplete="off">
+        @if(request('pesquisa'))
+            <a href="{{ route('posts.index') }}" class="clear-btn" title="Limpar pesquisa">✕</a>
+        @endif
+        <button type="submit">🔍 Buscar</button>
+    </form>
+
+    @if(request('pesquisa'))
+        <div class="search-info">
+            🔎 Resultados para <strong>"{{ request('pesquisa') }}"</strong>
+            — {{ $posts->total() }} post(s) encontrado(s)
+        </div>
+    @endif
+
     @if(session('success'))
         <div class="alert-success">✅ {{ session('success') }}</div>
     @endif
 
     @if($posts->isEmpty())
         <div class="empty-state">
-            <div class="icon">📭</div>
-            <p>Nenhum post ainda. Que tal criar o primeiro?</p>
+            <div class="icon">{{ request('pesquisa') ? '🔍' : '📭' }}</div>
+            <p>{{ request('pesquisa') ? 'Nenhum post encontrado para "' . request('pesquisa') . '".' : 'Nenhum post ainda. Que tal criar o primeiro?' }}</p>
         </div>
     @endif
 
@@ -171,7 +228,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     @endphp
     <div class="post-card">
 
-        {{-- Cabeçalho --}}
         <div class="card-head">
             <div class="card-meta">
                 @php
@@ -188,7 +244,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
             @endif
         </div>
 
-        {{-- Info do autor --}}
         <div class="card-author">
             <div class="author-avatar">
                 @if($post->usuario && $post->usuario->avatar)
@@ -206,7 +261,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 
         <div class="card-divider"></div>
 
-        {{-- Conteúdo --}}
         <div class="card-body">
             @if($post->tipo === 'texto')
                 <p class="post-text">{{ Str::limit($post->texto, 200) }}</p>
@@ -279,16 +333,13 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
             @endif
         </div>
 
-        {{-- Ações --}}
         <div class="card-actions">
             <a href="{{ route('posts.edit', $post->id) }}" class="btn-action btn-edit">✏️ Editar</a>
-
             <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
                   onsubmit="return confirm('Excluir este post permanentemente?')" style="display:inline">
                 @csrf @method('DELETE')
                 <button class="btn-action btn-del">🗑️ Excluir</button>
             </form>
-
             @if(!$post->aprovado)
                 <form action="{{ route('posts.aprovar', $post->id) }}" method="POST" style="display:inline">
                     @csrf
@@ -305,6 +356,14 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     </div>
     @endforeach
     </div>
+
+    {{-- Paginação --}}
+    @if($posts->hasPages())
+        <div style="margin-top:1.5rem;">
+            {{ $posts->appends(request()->query())->links() }}
+        </div>
+    @endif
+
 </div>
 
 <div id="imgModal" onclick="this.style.display='none'">

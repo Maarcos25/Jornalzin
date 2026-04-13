@@ -1,10 +1,17 @@
 @foreach ($postsPorDia as $dia => $postsNoDia)
-    @php
-        $isTodos = $dia === 'todos';
-        $dataFormatada = $isTodos
-            ? 'Resultados ordenados'
-            : \Carbon\Carbon::parse($dia)->locale('pt_BR')->isoFormat('dddd, D [de] MMMM [de] YYYY');
-    @endphp
+@php
+    $isTodos = $dia === 'todos';
+    $filtro = request('filtro');
+    $labelFiltro = match($filtro) {
+        'views'    => 'Mais vistos',
+        'likes'    => 'Mais curtidos',
+        'recentes' => 'Mais recentes',
+        default    => 'Resultados ordenados',
+    };
+    $dataFormatada = $isTodos
+        ? $labelFiltro
+        : \Carbon\Carbon::parse($dia)->locale('pt_BR')->isoFormat('dddd, D [de] MMMM [de] YYYY');
+@endphp
 
     <div class="day-block" data-dia="{{ $dia }}">
         <div class="day-sep">

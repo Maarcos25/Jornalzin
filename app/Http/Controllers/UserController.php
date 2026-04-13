@@ -15,10 +15,23 @@ class UserController extends Controller
         // 'segundo@admin.com',
     ];
 
-    public function index()
+
+    public function index(Request $request)
     {
-        $users = User::paginate(10);
-        return view('users.index', compact('users'));
+        $pesquisa = $request->input('pesquisa');
+        $query = User::query();
+
+        if ($pesquisa) {
+            $query->where(function($q) use ($pesquisa) {
+                $q->where('nome', 'like', "%{$pesquisa}%")
+                ->orWhere('sobrenome', 'like', "%{$pesquisa}%")
+                ->orWhere('email', 'like', "%{$pesquisa}%")
+                ->orWhere('ra', 'like', "%{$pesquisa}%");
+            });
+        }
+
+        $users = $query->paginate(10);
+        return view('users.index', compact('users', 'pesquisa'));
     }
 
     public function create()
@@ -60,6 +73,9 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        if (auth()->user()->tipo !== 'administrador') {
+            abort(403);
+        }
         return view('users.show', compact('user'));
     }
 

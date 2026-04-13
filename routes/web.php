@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\Auth\GoogleCompletarController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserController;
@@ -55,6 +55,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/solicitacoes/{id}/aprovar', [SolicitacaoEditorController::class, 'aprovar'])->name('editor.aprovar');
     Route::post('/admin/solicitacoes/{id}/rejeitar', [SolicitacaoEditorController::class, 'rejeitar'])->name('editor.rejeitar');
 });
+
+Route::get('/auth/google/completar',  [GoogleCompletarController::class, 'create'])->name('auth.google.completar');
+Route::post('/auth/google/completar', [GoogleCompletarController::class, 'store'])->name('auth.google.completar.store');
 
 Route::resource('users', UserController::class)->only(['create', 'store']);
 

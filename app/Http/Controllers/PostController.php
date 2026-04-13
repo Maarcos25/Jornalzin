@@ -14,11 +14,22 @@ class PostController extends Controller
         return auth()->check() && auth()->user()->tipo === 'administrador';
     }
 
-    public function index()
+    public function index(Request $request)
     {
         if (!$this->isAdmin() && auth()->user()->tipo !== 'editor') abort(403);
-        $posts = Post::with('imagens', 'usuario')->latest()->get();
-        return view('posts.index', compact('posts'));
+
+        $pesquisa = $request->input('pesquisa');
+        $query = Post::with('imagens', 'usuario')->latest();
+
+        if ($pesquisa) {
+            $query->where(function($q) use ($pesquisa) {
+                $q->where('titulo', 'like', "%{$pesquisa}%")
+                ->orWhere('texto', 'like', "%{$pesquisa}%");
+            });
+        }
+
+        $posts = $query->paginate(12);
+        return view('posts.index', compact('posts', 'pesquisa'));
     }
 
     public function create()

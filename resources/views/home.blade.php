@@ -522,32 +522,40 @@
             background: var(--brand);
             color: #fff;
         }
-/* ── Masonry Grid ── */
-.masonry-grid {
-    column-count: 3;
-    column-gap: 1rem;
-}
-.masonry-item {
-    break-inside: avoid;
-    margin-bottom: 1rem;
-    display: block;
-    width: 100%;
-}
-.masonry-item.masonry-full {
-    column-span: all;
-}
-.masonry-item.masonry-wide {
-    column-span: none;
-}
-@media(max-width: 900px) { .masonry-grid { column-count: 2; } }
-@media(max-width: 580px) { .masonry-grid { column-count: 1; } }
+        /* ── Masonry Grid ── */
+        .masonry-grid {
+            column-count: 3;
+            column-gap: 1rem;
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1rem;
+            display: block;
+            width: 100%;
+        }
+        .masonry-item.masonry-full {
+            column-span: all;
+        }
+        .masonry-item.masonry-wide {
+            column-span: none;
+        }
+        @media(max-width: 900px) { .masonry-grid { column-count: 2; } }
+        @media(max-width: 580px) { .masonry-grid { column-count: 1; } }
     </style>
 @endpush
 
 @section('conteudo')
     <div class="home-wrap">
 
-        <h1 class="home-title">📰 Início</h1>
+        @php
+            $titulos = [
+                'views'    => '🔥 Mais Vistos',
+                'likes'    => '❤️ Mais Curtidos',
+                'recentes' => '🕐 Mais Recentes',
+            ];
+        @endphp
+
+<h1 class="home-title">{{ request('filtro') ? $titulos[request('filtro')] : '📰 Início' }}</h1>
 
         {{-- PESQUISA --}}
         <form method="GET" action="/" class="search-wrap">
@@ -564,26 +572,26 @@
     margin-bottom:1rem;
     font-size:14px;
 ">
-<span style="color:var(--muted); font-weight:600; display:flex; align-items:center; gap:.3rem;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 8h10M11 12h2M12 16h0"/>
-    </svg>
-    Ordenar:
-</span>
+            <span style="color:var(--muted); font-weight:600; display:flex; align-items:center; gap:.3rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 8h10M11 12h2M12 16h0"/>
+                </svg>
+                Ordenar:
+            </span>
 
             <a href="?filtro=views&pesquisa={{ request('pesquisa') }}"
                 class="filtro-link {{ request('filtro') == 'views' ? 'active' : '' }}">
-                mais vistos
+                mais vistos🔥
             </a>
 
             <a href="?filtro=likes&pesquisa={{ request('pesquisa') }}"
                 class="filtro-link {{ request('filtro') == 'likes' ? 'active' : '' }}">
-                mais curtidos
+                mais curtidos❤️
             </a>
 
             <a href="?filtro=recentes&pesquisa={{ request('pesquisa') }}"
                 class="filtro-link {{ request('filtro') == 'recentes' ? 'active' : '' }}">
-                mais recentes
+                mais recentes🕐
             </a>
         </div>
 

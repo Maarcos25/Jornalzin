@@ -98,7 +98,7 @@
 
                             {{-- Excluir --}}
                             <form action="{{ route('comments.destroy', $comment->id) }}" method="POST"
-                                  onsubmit="return confirm('Excluir este comentário?')">
+                                onsubmit="return confirm('Excluir este comentário?')">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-excluir">🗑️ Excluir</button>
