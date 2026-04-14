@@ -52,10 +52,24 @@ class SolicitacaoEditorController extends Controller
     public function index()
     {
         if (auth()->user()->tipo !== 'administrador') abort(403);
+
         $solicitacoes = SolicitacaoEditor::with('user')
             ->where('status', 'pendente')
             ->latest()
             ->get();
-        return view('admin.solicitacoes', compact('solicitacoes'));
+
+        $editores = \App\Models\User::where('tipo', 'editor')->get();
+
+        return view('admin.solicitacoes', compact('solicitacoes', 'editores'));
     }
+
+    public function removerEditor($id)
+{
+    if (auth()->user()->tipo !== 'administrador') abort(403);
+
+    $user = \App\Models\User::findOrFail($id);
+    $user->update(['tipo' => 'aluno']);
+
+    return back()->with('success', "🔄 {$user->nome} removido dos editores.");
+}
 }

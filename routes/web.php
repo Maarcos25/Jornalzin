@@ -55,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/solicitacoes/{id}/aprovar', [SolicitacaoEditorController::class, 'aprovar'])->name('editor.aprovar');
     Route::post('/admin/solicitacoes/{id}/rejeitar', [SolicitacaoEditorController::class, 'rejeitar'])->name('editor.rejeitar');
 });
-
+Route::post('/admin/editores/{id}/remover', [SolicitacaoEditorController::class, 'removerEditor'])->name('editor.remover');
 Route::get('/auth/google/completar',  [GoogleCompletarController::class, 'create'])->name('auth.google.completar');
 Route::post('/auth/google/completar', [GoogleCompletarController::class, 'store'])->name('auth.google.completar.store');
 

@@ -53,10 +53,12 @@
 
                 {{-- Posts e Usuários só para admin e editor --}}
                 @auth
-                    @if(auth()->user()->tipo !== 'leitor')
-                        <li class="nav-item"><a class="nav-link" href="{{ route('posts.index') }}">Posts</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">Usuários</a></li>
-                    @endif
+                @if(auth()->user()->tipo !== 'leitor')
+                <li class="nav-item"><a class="nav-link" href="{{ route('posts.index') }}">Posts</a></li>
+            @endif
+            @if(auth()->user()->tipo === 'administrador')
+                <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">Usuários</a></li>
+            @endif
                 @endauth
             </ul>
         </div>
@@ -83,11 +85,23 @@
 
                 {{-- Admin: painel --}}
                 @if(auth()->user()->tipo === 'administrador')
-                    <li><hr class="dropdown-divider my-1"></li>
-                    <li><span class="dropdown-item-text text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Admin</span></li>
-                    <li><a class="dropdown-item py-2" href="{{ route('comments.index') }}">💬 Comentários</a></li>
-                    <li><a class="dropdown-item py-2" href="{{ route('admin.solicitacoes') }}">📋 Solicitações de Editor</a></li>
-                @endif
+                @php
+                    $totalPendentes = \App\Models\SolicitacaoEditor::where('status', 'pendente')->count();
+                @endphp
+                <li><hr class="dropdown-divider my-1"></li>
+                <li><span class="dropdown-item-text text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Admin</span></li>
+                <li><a class="dropdown-item py-2" href="{{ route('comments.index') }}">💬 Comentários</a></li>
+                <li>
+                    <a class="dropdown-item py-2 d-flex align-items-center justify-content-between" href="{{ route('admin.solicitacoes') }}">
+                        <span>📋 Solicitações de Editor</span>
+                        @if($totalPendentes > 0)
+                            <span style="background:#ef4444;color:#fff;border-radius:50px;padding:.1rem .55rem;font-size:.75rem;font-weight:700;">
+                                {{ $totalPendentes }}
+                            </span>
+                        @endif
+                    </a>
+                </li>
+            @endif
 
                 <li><hr class="dropdown-divider my-1"></li>
                 <li>
@@ -203,4 +217,3 @@
     </script>
 </body>
 </html>
-    
