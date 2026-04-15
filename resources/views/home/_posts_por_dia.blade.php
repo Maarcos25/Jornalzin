@@ -1,3 +1,9 @@
+@php
+    $topCurtido = $posts->sortByDesc('likes_count')->first();
+    $topComentado = $posts->sortByDesc('comments_count')->first();
+    $topVisto = $posts->sortByDesc('views')->first();
+@endphp
+
 @foreach ($postsPorDia as $dia => $postsNoDia)
 @php
     $isTodos = $dia === 'todos';
@@ -53,7 +59,11 @@
                 @endphp
 
                 <div class="masonry-item {{ $masonryClass }}">
-                    <div class="post-card">
+                    <div class="post-card
+                    {{ $topCurtido && $post->id == $topCurtido->id ? 'destaque-curtido' : '' }}
+                    {{ $topComentado && $post->id == $topComentado->id ? 'destaque-comentado' : '' }}
+                    {{ $topVisto && $post->id == $topVisto->id ? 'destaque-visto' : '' }}
+                ">
 
                         {{-- MÍDIA --}}
                         @if ($post->tipo === 'imagem' && count($imgs))

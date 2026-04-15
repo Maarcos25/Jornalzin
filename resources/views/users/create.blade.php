@@ -109,6 +109,47 @@
     }
     .btn-salvar:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99,102,241,.45); }
     .btn-salvar:active { transform: translateY(0); }
+
+    body {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.user-creator-wrap {
+    height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.creator-card {
+    width: 100%;
+    max-width: 760px;
+    height: 90vh; /* 👈 controla tudo */
+    display: flex;
+    flex-direction: column;
+}
+
+.creator-body {
+    flex: 1;
+    overflow: hidden; /* 👈 remove scroll interno */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.creator-body::-webkit-scrollbar {
+    display: none; /* Chrome, Edge */
+}
+.creator-header {
+    flex-shrink: 0;
+}
+
+.creator-footer {
+    flex-shrink: 0;
+}
+.user-creator-wrap {
+    padding-bottom: 40px;
+}
 </style>
 @endpush
 

@@ -18,10 +18,10 @@
     }
 
     .user-creator-wrap {
-        max-width: 760px;
-        margin: 2rem auto;
-        font-family: 'Nunito', sans-serif;
-    }
+    max-width: 760px;
+    margin: 0.6rem auto;   /* era 2rem */
+    font-family: 'Nunito', sans-serif;
+}
 
     .creator-card {
         background: var(--surface);
@@ -101,6 +101,7 @@
     }
     .btn-salvar:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99,102,241,.45); }
     .btn-salvar:active { transform: translateY(0); }
+    
 </style>
 @endpush
 

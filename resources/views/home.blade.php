@@ -115,7 +115,34 @@
             margin-bottom: 1.1rem;
             overflow: hidden;
             transition: box-shadow .2s;
+            position: relative;
+    overflow: visible;
         }
+
+        /* 🔥 destaque com brilho */
+.post-card.destaque {
+    position: relative;
+    z-index: 1;
+}
+
+.post-card.destaque::before {
+    content: "";
+    position: absolute;
+    inset: -8px; /* aumenta pra sair pra fora */
+    border-radius: 18px;
+    background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff416c);
+    z-index: -1;
+    filter: blur(18px); /* mais forte */
+    opacity: 0.9;
+    animation: glow 3s linear infinite;
+}
+
+
+@keyframes glow {
+    0% { filter: blur(8px); opacity: 0.6; }
+    50% { filter: blur(14px); opacity: 1; }
+    100% { filter: blur(8px); opacity: 0.6; }
+}
 
         .post-card:hover {
             box-shadow: 0 4px 24px rgba(0, 0, 0, .11);
@@ -541,6 +568,43 @@
         }
         @media(max-width: 900px) { .masonry-grid { column-count: 2; } }
         @media(max-width: 580px) { .masonry-grid { column-count: 1; } }
+        .post-card {
+    position: relative;
+    overflow: visible;
+}
+
+/* ❤️ MAIS CURTIDO */
+.post-card.destaque-curtido::before {
+    content: "";
+    position: absolute;
+    inset: -10px;
+    border-radius: 20px;
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    z-index: -1;
+    filter: blur(20px);
+}
+
+/* 💬 MAIS COMENTADO */
+.post-card.destaque-comentado::before {
+    content: "";
+    position: absolute;
+    inset: -10px;
+    border-radius: 20px;
+    background: linear-gradient(45deg, #3b82f6, #06b6d4);
+    z-index: -1;
+    filter: blur(20px);
+}
+
+/* 👁 MAIS VISTO */
+.post-card.destaque-visto::before {
+    content: "";
+    position: absolute;
+    inset: -10px;
+    border-radius: 20px;
+    background: linear-gradient(45deg, #f59e0b, #ef4444);
+    z-index: -1;
+    filter: blur(20px);
+}
     </style>
 @endpush
 

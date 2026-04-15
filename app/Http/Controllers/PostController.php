@@ -269,4 +269,11 @@ class PostController extends Controller
 
         return back()->with('success', 'Mídia removida com sucesso!');
     }
+    public function destaque()
+{
+    $maisCurtidos = Post::orderBy('likes', 'desc')->take(5)->get();
+    $maisVistos = Post::orderBy('views', 'desc')->take(5)->get();
+
+    return view('destaques', compact('maisCurtidos', 'maisVistos'));
+}
 }
