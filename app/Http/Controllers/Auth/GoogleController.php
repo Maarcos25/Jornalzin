@@ -1,40 +1,47 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
 {
     public function redirect()
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->stateless()->redirect();
     }
 
     public function callback()
     {
-        $googleUser = Socialite::driver('google')->user();
-
-        $user = User::where('email', $googleUser->getEmail())->first();
-
-        if ($user) {
-            $user->update(['google_id' => $googleUser->getId()]);
-        } else {
-            $user = User::create([
-                'nome'       => $googleUser->getName(),
-                'email'      => $googleUser->getEmail(),
-                'google_id'  => $googleUser->getId(),
-                'password'   => bcrypt(str()->random(24)),
-                'tipo'       => 'leitor',
-                'ra'         => '00000',
-                'sobrenome'  => '',
-            ]);
+        try {
+            $googleUser = Socialite::driver('google')->stateless()->user();
+        } catch (\Throwable $e) {
+            return redirect('/login')->withErrors(['Login com Google falhou. Tente novamente.']);
         }
 
-        Auth::login($user);
+        $user = User::where('google_id', $googleUser->getId())
+                    ->orWhere('email', $googleUser->getEmail())
+                    ->first();
 
-        return redirect('/');
+        if ($user) {
+            if (!$user->google_id) {
+                $user->update(['google_id' => $googleUser->getId()]);
+            }
+            Auth::login($user);
+            return redirect('/');
+        }
+
+        Session::put('google_user', [
+            'google_id' => $googleUser->getId(),
+            'nome'      => $googleUser->user['given_name']  ?? explode(' ', $googleUser->getName())[0],
+            'sobrenome' => $googleUser->user['family_name'] ?? implode(' ', array_slice(explode(' ', $googleUser->getName()), 1)),
+            'email'     => $googleUser->getEmail(),
+        ]);
+
+        return redirect()->route('auth.google.completar');
     }
 }
