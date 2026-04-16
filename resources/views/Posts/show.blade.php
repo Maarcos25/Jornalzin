@@ -136,6 +136,7 @@
         padding: 1.2rem 1.3rem;
     }
     .comment-form-card h5 { font-weight: 800; font-size: .95rem; color: var(--text); margin: 0 0 .8rem; }
+    .comment-hint { font-size: .82rem; color: var(--muted); margin: 0 0 .7rem; }
     .comment-form { display: flex; gap: .5rem; }
     .comment-form textarea {
         flex: 1; padding: .6rem .95rem;
@@ -151,6 +152,13 @@
         cursor: pointer; transition: background .2s; align-self: flex-end;
     }
     .btn-comentar:hover { background: var(--brand-dark); }
+
+    /* ── Alert sucesso ── */
+    .alert-success {
+        background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534;
+        border-radius: 10px; padding: .75rem 1rem; margin-bottom: 1rem;
+        font-size: .92rem; font-weight: 600;
+    }
 
     /* ── Lightbox ── */
     #lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.88); z-index: 9999; align-items: center; justify-content: center; cursor: zoom-out; }
@@ -184,6 +192,11 @@
 @endphp
 
 <div class="show-wrap">
+
+    {{-- Alert de sucesso (ex: comentário enviado) --}}
+    @if(session('success'))
+        <div class="alert-success">✅ {{ session('success') }}</div>
+    @endif
 
     <div class="post-card">
 
@@ -298,6 +311,7 @@
     </div>
 
     {{-- COMENTÁRIOS --}}
+    {{-- ✅ $post->comments já vem filtrado (só aprovados) pelo PostController --}}
     <div class="comments-card">
         <div class="comments-header">💬 Comentários ({{ $post->comments->count() }})</div>
 
@@ -313,7 +327,7 @@
                 </div>
             </div>
         @empty
-            <div class="empty-comments">Nenhum comentário ainda...</div>
+            <div class="empty-comments">Nenhum comentário ainda. Seja o primeiro! 💬</div>
         @endforelse
     </div>
 
@@ -321,6 +335,8 @@
     @auth
         <div class="comment-form-card">
             <h5>Adicionar Comentário</h5>
+            {{-- ✅ Aviso de moderação --}}
+            <p class="comment-hint">⏳ Seu comentário será exibido após aprovação do administrador.</p>
             <form action="{{ route('comments.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="post_id" value="{{ $post->id }}">

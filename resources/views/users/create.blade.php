@@ -110,46 +110,24 @@
     .btn-salvar:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99,102,241,.45); }
     .btn-salvar:active { transform: translateY(0); }
 
-    body {
-    height: 100vh;
-    overflow: hidden;
-}
-
-.user-creator-wrap {
-    height: calc(100vh - 80px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.creator-card {
-    width: 100%;
-    max-width: 760px;
-    height: 90vh; /* 👈 controla tudo */
-    display: flex;
-    flex-direction: column;
-}
-
-.creator-body {
-    flex: 1;
-    overflow: hidden; /* 👈 remove scroll interno */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-.creator-body::-webkit-scrollbar {
-    display: none; /* Chrome, Edge */
-}
-.creator-header {
-    flex-shrink: 0;
-}
-
-.creator-footer {
-    flex-shrink: 0;
-}
-.user-creator-wrap {
-    padding-bottom: 40px;
-}
+    /* Wrapper de senha com botão olho */
+    .senha-wrap {
+        position: relative;
+    }
+    .senha-wrap .form-control-styled {
+        padding-right: 2.8rem;
+    }
+    .btn-olho {
+        position: absolute;
+        right: 10px; top: 50%;
+        transform: translateY(-50%);
+        background: none; border: none;
+        cursor: pointer; color: var(--muted);
+        font-size: 1.1rem; line-height: 1;
+        padding: 0;
+        transition: color .2s;
+    }
+    .btn-olho:hover { color: var(--brand); }
 </style>
 @endpush
 
@@ -224,12 +202,11 @@
                 <div class="fields-row">
                     <div class="form-section">
                         <label>Telefone</label>
-                        <input type="text" name="telefone"
+                        <input type="text" name="telefone" id="telefone"
                                class="form-control-styled @error('telefone') is-invalid @enderror"
                                value="{{ old('telefone') }}"
-                               maxlength="11"
-                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                               placeholder="18912345678">
+                               maxlength="15"
+                               placeholder="(18) 91234-5678">
                         @error('telefone') <div class="invalid-msg">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-section">
@@ -247,15 +224,22 @@
                 <div class="fields-row">
                     <div class="form-section">
                         <label>Senha</label>
-                        <input type="password" name="password"
-                               class="form-control-styled @error('password') is-invalid @enderror"
-                               placeholder="Mínimo 6 caracteres">
+                        <div class="senha-wrap">
+                            <input type="password" name="password" id="senha"
+                                   class="form-control-styled @error('password') is-invalid @enderror"
+                                   placeholder="Mínimo 6 caracteres">
+                            <button type="button" class="btn-olho" id="olho1" onclick="toggleSenha('senha','olho1')">👁</button>
+                        </div>
                         @error('password') <div class="invalid-msg">{{ $message }}</div> @enderror
                     </div>
                     <div class="form-section">
                         <label>Confirmar Senha</label>
-                        <input type="password" name="password_confirmation"
-                               class="form-control-styled" placeholder="Repita a senha">
+                        <div class="senha-wrap">
+                            <input type="password" name="password_confirmation" id="senha2"
+                                   class="form-control-styled"
+                                   placeholder="Repita a senha">
+                            <button type="button" class="btn-olho" id="olho2" onclick="toggleSenha('senha2','olho2')">👁</button>
+                        </div>
                     </div>
                 </div>
 
@@ -263,10 +247,42 @@
         </div>
 
         <div class="creator-footer">
-            <a href="{{ route('users.index') }}" class="btn-voltar">← Cancelar</a>
+            <a href="{{ url()->previous() }}" class="btn-voltar">← Cancelar</a>
             <button type="submit" form="userForm" class="btn-salvar">✓ Salvar Usuário</button>
         </div>
 
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    // Máscara de telefone: (18) 91234-5678
+    document.getElementById('telefone').addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, '').substring(0, 11);
+        if (v.length > 10) {
+            v = v.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+        } else if (v.length > 6) {
+            v = v.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3');
+        } else if (v.length > 2) {
+            v = v.replace(/^(\d{2})(\d{0,5})$/, '($1) $2');
+        } else {
+            v = v.replace(/^(\d*)$/, '($1');
+        }
+        e.target.value = v;
+    });
+
+    // Mostrar / ocultar senha
+    function toggleSenha(inputId, btnId) {
+        const input = document.getElementById(inputId);
+        const btn   = document.getElementById(btnId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁';
+        }
+    }
+</script>
+@endpush

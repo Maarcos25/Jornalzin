@@ -28,7 +28,7 @@ class CommentController extends Controller
 
     public function store(Request $request)
     {
-        $this->apenasAdmin();
+        // ❌ Remova o apenasAdmin() daqui
         $request->validate([
             'texto' => 'required',
             'post_id' => 'required|exists:posts,id'
@@ -42,8 +42,8 @@ class CommentController extends Controller
         ]);
 
         return redirect()->route('posts.show', $comment->post_id)
-            ->with('success', 'Comentário criado!');
-    }
+        ->with('success', 'Comentário enviado e aguardando aprovação!');
+}
 
     public function show(Comment $comment)
     {

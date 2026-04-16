@@ -11,7 +11,6 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $pesquisa = $request->input('pesquisa');
-        $status   = $request->input('status');
         $filtro   = $request->input('filtro');
 
         $query = Post::with([
@@ -19,74 +18,47 @@ class HomeController extends Controller
             'imagens',
             'votos',
             'likes',
-            'comments' => function ($q) use ($status) {
-                if ($status) {
-                    $q->where('status', $status);
-                } else {
-                    $q->where('status', 'aprovado');
-                }
-            },
-            'comments.user'
-        ])->where('aprovado', true);
+            'comments' => fn($q) => $q->where('status', 'aprovado')->with('user'),
+        ])
+        ->withCount(['likes', 'comments'])
+        ->where('aprovado', true);
 
-        // 🔍 PESQUISA
+        // Pesquisa
         if ($pesquisa) {
             $query->where(function ($q) use ($pesquisa) {
                 $q->where('titulo', 'like', "%{$pesquisa}%")
-                  ->orWhere('texto', 'like', "%{$pesquisa}%");
+                  ->orWhere('texto',  'like', "%{$pesquisa}%");
             });
         }
 
-        // 🔥 FILTRO
-        if ($filtro == 'views') {
-            $query->orderBy('visualizacoes', 'desc');
-        } elseif ($filtro == 'likes') {
-            $query->withCount('likes')
-                  ->orderBy('likes_count', 'desc');
+        // Ordenação
+        if ($filtro === 'views') {
+            $query->orderByDesc('visualizacoes');
+        } elseif ($filtro === 'likes') {
+            $query->having('likes_count', '>', 0)
+                  ->orderByDesc('likes_count');
         } else {
-            $query->orderBy('created_at', 'desc');
+            $query->orderByDesc('created_at');
         }
 
         $posts = $query->paginate(20);
 
-        // 📅 AGRUPAR
-        if ($filtro) {
-            $postsPorDia = collect(['todos' => $posts->items()]);
+        // Agrupamento por dia ou "todos" quando filtro ativo
+        if ($filtro || $pesquisa) {
+            $postsPorDia = collect(['todos' => collect($posts->items())]);
         } else {
             $postsPorDia = $posts->getCollection()
                 ->groupBy(fn($post) => Carbon::parse($post->data)->format('Y-m-d'));
         }
 
-        // ⭐ POST MAIS RELEVANTE
-        $destaque = Post::where('aprovado', true)
-            ->selectRaw('posts.*, (visualizacoes + (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) * 3) as score')
-            ->orderByDesc('score')
-            ->first();
+        // Post mais relevante (likes*3 + comentarios*2 + visualizacoes)
+        $destaqueId = Post::where('aprovado', true)
+            ->withCount(['likes', 'comments'])
+            ->get()
+            ->sortByDesc(fn($p) => ($p->likes_count * 3) + ($p->comments_count * 2) + $p->visualizacoes)
+            ->first()
+            ?->id;
 
-        // 👁 MAIS VISTO
-        $maisVisto = Post::where('aprovado', true)
-            ->orderByDesc('visualizacoes')
-            ->first();
-
-        // ❤️ MAIS CURTIDO
-        $maisCurtido = Post::where('aprovado', true)
-            ->withCount('likes')
-            ->orderByDesc('likes_count')
-            ->first();
-
-        // 💬 MAIS COMENTADO (NOVO)
-        $maisComentado = Post::where('aprovado', true)
-            ->withCount('comments')
-            ->orderByDesc('comments_count')
-            ->first();
-
-        return view('home', compact(
-            'posts',
-            'postsPorDia',
-            'maisVisto',
-            'maisCurtido',
-            'maisComentado',
-            'destaque'
-        ));
+        return view('home', compact('posts', 'postsPorDia', 'destaqueId'));
     }
 }

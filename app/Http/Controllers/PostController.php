@@ -130,6 +130,12 @@ class PostController extends Controller
     public function show(Post $post)
     {
         $post->increment('visualizacoes');
+
+        // ✅ Carrega apenas comentários aprovados com o usuário
+        $post->load([
+            'comments' => fn($q) => $q->where('status', 'aprovado')->with('user'),
+        ]);
+
         return view('posts.show', compact('post'));
     }
 
@@ -269,11 +275,12 @@ class PostController extends Controller
 
         return back()->with('success', 'Mídia removida com sucesso!');
     }
-    public function destaque()
-{
-    $maisCurtidos = Post::orderBy('likes', 'desc')->take(5)->get();
-    $maisVistos = Post::orderBy('views', 'desc')->take(5)->get();
 
-    return view('destaques', compact('maisCurtidos', 'maisVistos'));
-}
+    public function destaque()
+    {
+        $maisCurtidos = Post::orderBy('likes', 'desc')->take(5)->get();
+        $maisVistos = Post::orderBy('views', 'desc')->take(5)->get();
+
+        return view('destaques', compact('maisCurtidos', 'maisVistos'));
+    }
 }
