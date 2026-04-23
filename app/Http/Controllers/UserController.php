@@ -123,6 +123,19 @@ class UserController extends Controller
 
     return back()->with('seguindo', $seguindo);
 }
+public function seguidores(User $user)
+{
+    $lista = $user->seguidores()->paginate(20);
+    $tipo  = 'seguidores';
+    return view('users.lista_usuarios', compact('user', 'lista', 'tipo'));
+}
+
+public function seguindo(User $user)
+{
+    $lista = $user->seguindo()->paginate(20);
+    $tipo  = 'seguindo';
+    return view('users.lista_usuarios', compact('user', 'lista', 'tipo'));
+}
 
     public function destroy(User $user)
     {

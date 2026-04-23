@@ -262,6 +262,43 @@
             .home-img-grid.many { grid-template-columns: repeat(2, 1fr); }
             .post-actions { width: 100%; justify-content: flex-end; margin-left: 0; }
         }
+        /* ── Previews especiais ── */
+.video-preview-thumb {
+    width: 100%; aspect-ratio: 16/9;
+    display: block; position: relative;
+    overflow: hidden;
+}
+
+.video-preview-thumb img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+}
+
+.video-preview-local {
+    width: 100%; aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #0f0f0f, #1a1a2e);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: .5rem; color: #fff;
+}
+
+.video-preview-local span { font-size: 2.5rem; }
+.video-preview-local p { font-size: .8rem; color: #aaa; margin: 0; }
+
+.play-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,.3);
+    transition: background .2s;
+}
+
+.play-overlay:hover { background: rgba(0,0,0,.5); }
+
+.play-btn {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,.9);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+}
     </style>
 @endpush
 

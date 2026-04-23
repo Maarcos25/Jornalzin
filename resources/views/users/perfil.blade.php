@@ -229,14 +229,18 @@
                     <strong>{{ $posts->total() }}</strong>
                     <span>Postagens</span>
                 </div>
-                <div class="perfil-stat">
-                    <strong>{{ $user->seguidores()->count() }}</strong>
-                    <span>Seguidores</span>
-                </div>
-                <div class="perfil-stat">
-                    <strong>{{ $user->seguindo()->count() }}</strong>
-                    <span>Seguindo</span>
-                </div>
+                <a href="{{ route('users.seguidores', $user->id) }}" style="text-decoration:none;color:inherit;">
+                    <div class="perfil-stat">
+                        <strong>{{ $user->seguidores()->count() }}</strong>
+                        <span>Seguidores</span>
+                    </div>
+                </a>
+                <a href="{{ route('users.seguindo', $user->id) }}" style="text-decoration:none;color:inherit;">
+                    <div class="perfil-stat">
+                        <strong>{{ $user->seguindo()->count() }}</strong>
+                        <span>Seguindo</span>
+                    </div>
+                </a>
                 <div class="perfil-stat">
                     <strong>{{ $user->posts()->where('aprovado', true)->sum('visualizacoes') }}</strong>
                     <span>Visualizações</span>
@@ -274,12 +278,46 @@
                 <a href="{{ route('posts.show', $post->id) }}" class="perfil-card">
                     @if ($thumb)
                         <img src="{{ $thumb }}" class="perfil-card-thumb" alt="{{ $post->titulo }}">
-                    @elseif ($post->tipo === 'video')
-                        <div class="perfil-card-thumb-placeholder">🎥</div>
-                    @elseif ($post->tipo === 'enquete')
-                        <div class="perfil-card-thumb-placeholder">📊</div>
+                        @elseif ($post->tipo === 'video')
+                        @php
+                            $isYtP = str_contains($post->video ?? '', 'youtube') || str_contains($post->video ?? '', 'youtu.be');
+                            $ytIdP = null;
+                            if ($isYtP) { preg_match('/(?:watch\?v=|youtu\.be\/)([^&\s]+)/', $post->video, $mp); $ytIdP = $mp[1] ?? null; }
+                        @endphp
+                        @if ($isYtP && $ytIdP)
+                            <div style="position:relative;">
+                                <img src="https://img.youtube.com/vi/{{ $ytIdP }}/hqdefault.jpg" class="perfil-card-thumb" alt="{{ $post->titulo }}">
+                                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);">
+                                    <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">▶️</div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="perfil-card-thumb-placeholder" style="background:linear-gradient(135deg,#0f0f0f,#1a1a2e);color:#fff;flex-direction:column;gap:.3rem;">
+                                <span style="font-size:2rem;">🎬</span>
+                                <span style="font-size:.75rem;color:#aaa;">Clique para assistir</span>
+                            </div>
+                        @endif
+                        @elseif ($post->tipo === 'enquete')
+                        <div class="perfil-card-thumb-placeholder" style="flex-direction:column;gap:.5rem;padding:1rem;text-align:center;">
+                            <span style="font-size:1.5rem;">📊</span>
+                            @php $opcoes = array_filter([1,2,3,4], fn($i) => $post->{'opcao'.$i}); @endphp
+                            @foreach(array_slice($opcoes, 0, 3) as $i)
+                                <div style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);border-radius:6px;padding:.25rem .6rem;font-size:.75rem;color:#a5b4fc;width:100%;text-align:left;">
+                                    {{ Str::limit($post->{'opcao'.$i}, 25) }}
+                                </div>
+                            @endforeach
+                        </div>
                     @else
-                        <div class="perfil-card-thumb-placeholder">📝</div>
+                        <div class="perfil-card-thumb-placeholder" style="flex-direction:column;gap:.4rem;padding:1rem;text-align:left;align-items:flex-start;">
+                            <span style="font-size:1.2rem;">📝</span>
+                            @if($post->texto)
+                                <p style="font-size:.78rem;color:#64748b;line-height:1.5;margin:0;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;">
+                                    {{ Str::limit($post->texto, 120) }}
+                                </p>
+                            @else
+                                <p style="font-size:.78rem;color:#64748b;margin:0;">Sem prévia disponível</p>
+                            @endif
+                        </div>
                     @endif
 
                     <div class="perfil-card-body">

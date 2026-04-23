@@ -96,5 +96,6 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 });
 Route::get('/u/{user}', [UserController::class, 'perfil'])->name('users.perfil');
 Route::post('/u/{user}/seguir', [UserController::class, 'seguir'])->name('users.seguir')->middleware('auth');
-
+Route::get('/u/{user}/seguidores', [UserController::class, 'seguidores'])->name('users.seguidores');
+Route::get('/u/{user}/seguindo', [UserController::class, 'seguindo'])->name('users.seguindo');
 require __DIR__.'/auth.php';

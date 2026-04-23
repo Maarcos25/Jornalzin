@@ -68,4 +68,5 @@ public function seguidores()
 {
     return $this->belongsToMany(User::class, 'seguidores', 'seguido_id', 'seguidor_id');
 }
+
 }
