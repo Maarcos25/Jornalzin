@@ -8,13 +8,10 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // ── Emails com acesso de administrador ───────────────────────────────
-    // Para adicionar um segundo admin, coloque o email aqui:
     const ADMIN_EMAILS = [
         'playerxx606@gmail.com',
         // 'segundo@admin.com',
     ];
-
 
     public function index(Request $request)
     {
@@ -24,9 +21,9 @@ class UserController extends Controller
         if ($pesquisa) {
             $query->where(function($q) use ($pesquisa) {
                 $q->where('nome', 'like', "%{$pesquisa}%")
-                ->orWhere('sobrenome', 'like', "%{$pesquisa}%")
-                ->orWhere('email', 'like', "%{$pesquisa}%")
-                ->orWhere('ra', 'like', "%{$pesquisa}%");
+                  ->orWhere('sobrenome', 'like', "%{$pesquisa}%")
+                  ->orWhere('email', 'like', "%{$pesquisa}%")
+                  ->orWhere('ra', 'like', "%{$pesquisa}%");
             });
         }
 
@@ -51,7 +48,6 @@ class UserController extends Controller
             'password'        => 'required|min:6|confirmed',
         ]);
 
-        // Tipo definido automaticamente pelo email — sem escolha do usuário
         $tipo = in_array($request->email, self::ADMIN_EMAILS)
             ? 'administrador'
             : 'leitor';
@@ -93,12 +89,8 @@ class UserController extends Controller
             'ra'              => 'required|unique:users,ra,' . $user->id,
             'telefone'        => 'nullable|string',
             'data_nascimento' => 'nullable|date',
+            'tipo'            => 'required|in:leitor,editor,administrador',
         ]);
-
-        // Recalcula o tipo se o email mudar
-        $tipo = in_array($request->email, self::ADMIN_EMAILS)
-            ? 'administrador'
-            : $user->tipo; // mantém o tipo atual se não for email de admin
 
         $user->update([
             'nome'            => $request->nome,
@@ -107,7 +99,7 @@ class UserController extends Controller
             'ra'              => $request->ra,
             'telefone'        => $request->telefone,
             'data_nascimento' => $request->data_nascimento,
-            'tipo'            => $tipo,
+            'tipo'            => $request->tipo,
         ]);
 
         return redirect()->route('users.index')
@@ -116,7 +108,6 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        // Só administradores podem excluir
         if (auth()->user()->tipo !== 'administrador') {
             abort(403, 'Apenas administradores podem excluir usuários.');
         }

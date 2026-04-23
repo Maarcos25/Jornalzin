@@ -81,6 +81,41 @@
         margin-top: .25rem;
     }
 
+    /* ── Seletor de tipo visual ── */
+    .tipo-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: .6rem;
+    }
+
+    .tipo-opt { display: none; }
+
+    .tipo-opt + label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: .3rem;
+        padding: .75rem .5rem;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: .82rem;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        transition: all .2s;
+        background: var(--surface-2);
+    }
+
+    .tipo-opt + label:hover { border-color: #818cf8; color: var(--brand); }
+
+    .tipo-opt + label .tipo-icon { font-size: 1.4rem; }
+
+    #tipo_leitor:checked       + label { border-color: #22c55e; background: #f0fdf4; color: #15803d; }
+    #tipo_editor:checked       + label { border-color: #f59e0b; background: #fffbeb; color: #b45309; }
+    #tipo_administrador:checked + label{ border-color: #ef4444; background: #fef2f2; color: #b91c1c; }
+
     .edit-footer {
         display: flex;
         gap: .6rem;
@@ -108,10 +143,7 @@
         box-shadow: 0 4px 14px rgba(79,70,229,.3);
         transition: all .2s;
     }
-    .btn-salvar:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(79,70,229,.4);
-    }
+    .btn-salvar:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79,70,229,.4); }
 </style>
 @endpush
 
@@ -164,11 +196,46 @@
                     @error('data_nascimento') <div class="form-error">{{ $message }}</div> @enderror
                 </div>
 
+                {{-- ── Nível de acesso ── --}}
+                <div class="form-group">
+                    <label>Nível de Acesso</label>
+                    <div class="tipo-grid">
+                        <div>
+                            <input type="radio" name="tipo" value="leitor"
+                                   id="tipo_leitor" class="tipo-opt"
+                                   {{ old('tipo', $user->tipo) === 'leitor' ? 'checked' : '' }}>
+                            <label for="tipo_leitor">
+                                <span class="tipo-icon">👤</span>
+                                Leitor
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" name="tipo" value="editor"
+                                   id="tipo_editor" class="tipo-opt"
+                                   {{ old('tipo', $user->tipo) === 'editor' ? 'checked' : '' }}>
+                            <label for="tipo_editor">
+                                <span class="tipo-icon">✍️</span>
+                                Editor
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" name="tipo" value="administrador"
+                                   id="tipo_administrador" class="tipo-opt"
+                                   {{ old('tipo', $user->tipo) === 'administrador' ? 'checked' : '' }}>
+                            <label for="tipo_administrador">
+                                <span class="tipo-icon">🛡️</span>
+                                Admin
+                            </label>
+                        </div>
+                    </div>
+                    @error('tipo') <div class="form-error">{{ $message }}</div> @enderror
+                </div>
+
             </div>
 
             <div class="edit-footer">
                 <a href="{{ route('users.index') }}" class="btn-voltar">← Voltar</a>
-                <button type="submit" class="btn-salvar">💾 Salvar</button>
+                <button type="submit" class="btn-salvar">✓ Salvar</button>
             </div>
         </form>
 

@@ -3,19 +3,24 @@
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
+/* ── Variáveis extras não definidas no layout ── */
 :root {
-    --ink: #0f172a; --ink-2: #334155; --muted: #64748b;
-    --border: #e2e8f0; --surface: #ffffff; --bg: #f1f5f9;
-    --accent: #6366f1; --accent-d: #4f46e5; --accent-lt: #eef2ff;
-    --success: #10b981; --danger: #ef4444; --warn: #f59e0b;
-    --radius: 16px;
+    --ink:      var(--text);
+    --ink-2:    var(--muted);
+    --accent:   #6366f1;
+    --accent-d: #4f46e5;
+    --accent-lt:#eef2ff;
+    --success:  #10b981;
+    --warn:     #f59e0b;
+    --radius:   16px;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); }
+
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; }
 
 .feed-wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem 4rem; }
 .feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
-.feed-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--ink); letter-spacing: -.02em; }
+.feed-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--text); letter-spacing: -.02em; }
 .btn-new {
     display: inline-flex; align-items: center; gap: .4rem;
     background: var(--accent); color: #fff; font-weight: 600; font-size: .875rem;
@@ -24,52 +29,37 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 }
 .btn-new:hover { background: var(--accent-d); transform: translateY(-1px); color: #fff; }
 
-/* ── Barra de pesquisa ── */
-.search-bar {
-    position: relative;
-    margin-bottom: 1.4rem;
-}
+.search-bar { position: relative; margin-bottom: 1.4rem; }
 .search-bar input {
-    width: 100%;
-    padding: .75rem 3.5rem .75rem 1.2rem;
-    border: 2px solid var(--border);
-    border-radius: 50px;
-    font-size: .95rem;
-    font-family: inherit;
-    background: var(--surface);
-    color: var(--ink);
-    outline: none;
-    transition: border-color .2s, box-shadow .2s;
+    width: 100%; padding: .75rem 3.5rem .75rem 1.2rem;
+    border: 2px solid var(--border); border-radius: 50px;
+    font-size: .95rem; font-family: inherit;
+    background: var(--surface); color: var(--text);
+    outline: none; transition: border-color .2s, box-shadow .2s;
 }
-.search-bar input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(99,102,241,.12);
-}
+.search-bar input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,.12); }
+.search-bar input::placeholder { color: var(--muted); }
 .search-bar button {
     position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
     background: var(--accent); color: #fff; border: none;
     border-radius: 50px; padding: .45rem 1rem;
-    font-size: .88rem; font-weight: 600; cursor: pointer;
-    transition: background .2s;
+    font-size: .88rem; font-weight: 600; cursor: pointer; transition: background .2s;
 }
 .search-bar button:hover { background: var(--accent-d); }
 .search-bar .clear-btn {
     position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
     background: none; border: none; color: var(--muted);
-    font-size: 1rem; cursor: pointer; padding: .2rem .4rem;
-    transition: color .15s;
+    font-size: 1rem; cursor: pointer; padding: .2rem .4rem; transition: color .15s;
 }
 .search-bar .clear-btn:hover { color: var(--danger); }
-.search-info {
-    font-size: .88rem; color: var(--muted); margin-bottom: 1rem;
-    display: flex; align-items: center; gap: .4rem;
-}
+.search-info { font-size: .88rem; color: var(--muted); margin-bottom: 1rem; display: flex; align-items: center; gap: .4rem; }
 
-.alert-success {
+.alert-success-box {
     background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46;
     border-radius: 12px; padding: .85rem 1.1rem; font-size: .9rem;
     font-weight: 500; margin-bottom: 1.4rem; display: flex; align-items: center; gap: .5rem;
 }
+html.dark .alert-success-box { background: #052e16; border-color: #166534; color: #86efac; }
 
 .posts-grid { columns: 2; column-gap: 1.25rem; }
 
@@ -81,6 +71,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     display: inline-block; width: 100%;
 }
 .post-card:hover { box-shadow: 0 8px 32px rgba(15,23,42,.1); transform: translateY(-2px); }
+html.dark .post-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.4); }
 
 .card-head {
     display: flex; align-items: flex-start; justify-content: space-between;
@@ -88,17 +79,22 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 }
 .card-meta { display: flex; align-items: center; gap: .65rem; flex: 1; min-width: 0; }
 .tipo-pill { flex-shrink: 0; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: .22rem .65rem; border-radius: 20px; }
-.tipo-texto  { background: #dbeafe; color: #1d4ed8; }
-.tipo-imagem { background: #fce7f3; color: #9d174d; }
-.tipo-video  { background: #dcfce7; color: #166534; }
-.tipo-enquete{ background: #fef3c7; color: #92400e; }
-.card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--ink); line-height: 1.3; flex: 1; min-width: 0; }
+.tipo-texto   { background: #dbeafe; color: #1d4ed8; }
+.tipo-imagem  { background: #fce7f3; color: #9d174d; }
+.tipo-video   { background: #dcfce7; color: #166534; }
+.tipo-enquete { background: #fef3c7; color: #92400e; }
+html.dark .tipo-texto   { background: #1e3a5f; color: #93c5fd; }
+html.dark .tipo-imagem  { background: #4a1942; color: #f9a8d4; }
+html.dark .tipo-video   { background: #14532d; color: #86efac; }
+html.dark .tipo-enquete { background: #451a03; color: #fcd34d; }
+
+.card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--text); line-height: 1.3; flex: 1; min-width: 0; }
 .card-date { font-size: .76rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; padding-top: .15rem; }
 
 .card-author {
     display: flex; align-items: center; gap: .5rem;
     padding: .5rem 1.25rem; border-bottom: 1px solid var(--border);
-    background: #fafbff;
+    background: var(--surface-2);
 }
 .author-avatar {
     width: 26px; height: 26px; border-radius: 50%;
@@ -107,20 +103,18 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     font-size: .7rem; font-weight: 800; flex-shrink: 0; overflow: hidden;
 }
 .author-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.author-name { font-size: .82rem; font-weight: 600; color: var(--ink-2); }
+.author-name { font-size: .82rem; font-weight: 600; color: var(--text); }
 .author-date { font-size: .75rem; color: var(--muted); margin-left: auto; }
 
-.status-badge {
-    display: inline-flex; align-items: center; gap: .3rem;
-    padding: .22rem .7rem; border-radius: 20px;
-    font-size: .72rem; font-weight: 700;
-}
-.status-aprovado  { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-.status-pendente  { background: #fefce8; color: #92400e; border: 1px solid #fde68a; }
+.status-badge { display: inline-flex; align-items: center; gap: .3rem; padding: .22rem .7rem; border-radius: 20px; font-size: .72rem; font-weight: 700; }
+.status-aprovado { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+.status-pendente { background: #fefce8; color: #92400e; border: 1px solid #fde68a; }
+html.dark .status-aprovado { background: #052e16; color: #86efac; border-color: #166534; }
+html.dark .status-pendente { background: #451a03; color: #fcd34d; border-color: #92400e; }
 
 .card-actions {
     display: flex; gap: .4rem; padding: .6rem 1.25rem;
-    border-top: 1px solid var(--border); background: #fafbff;
+    border-top: 1px solid var(--border); background: var(--surface-2);
     flex-wrap: wrap; align-items: center;
 }
 .btn-action {
@@ -129,18 +123,24 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     border-radius: 8px; border: none; cursor: pointer;
     text-decoration: none; transition: all .18s;
 }
-.btn-edit   { background: #fef9c3; color: #713f12; border: 1.5px solid #fde68a; }
-.btn-edit:hover   { background: #fde68a; }
-.btn-del    { background: #fef2f2; color: var(--danger); border: 1.5px solid #fecaca; }
-.btn-del:hover    { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn-edit    { background: #fef9c3; color: #713f12; border: 1.5px solid #fde68a; }
+.btn-edit:hover    { background: #fde68a; }
+.btn-del     { background: #fef2f2; color: var(--danger); border: 1.5px solid #fecaca; }
+.btn-del:hover     { background: var(--danger); color: #fff; border-color: var(--danger); }
 .btn-aprovar { background: #f0fdf4; color: #15803d; border: 1.5px solid #bbf7d0; }
 .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #22c55e; }
 .btn-rejeitar { background: #fef2f2; color: var(--danger); border: 1.5px solid #fecaca; }
 .btn-rejeitar:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+html.dark .btn-edit    { background: #2d1f02; color: #fcd34d; border-color: #78350f; }
+html.dark .btn-edit:hover { background: #78350f; color: #fff; }
+html.dark .btn-del     { background: #2d0a0a; color: #fca5a5; border-color: #7f1d1d; }
+html.dark .btn-del:hover { background: var(--danger); color: #fff; }
+html.dark .btn-aprovar { background: #052e16; color: #86efac; border-color: #166534; }
+html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #22c55e; }
 
 .card-divider { height: 1px; background: var(--border); margin: 0 1.25rem; }
 .card-body { padding: 1rem 1.25rem 1.25rem; }
-.post-text { color: var(--ink-2); font-size: .95rem; line-height: 1.65; }
+.post-text { color: var(--muted); font-size: .95rem; line-height: 1.65; }
 
 .img-grid { display: grid; gap: 4px; border-radius: 12px; overflow: hidden; margin-top: .2rem; }
 .img-grid.one   { grid-template-columns: 1fr; }
@@ -159,8 +159,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 .poll-wrap { margin-top: .2rem; }
 .poll-label { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: .75rem; }
 .result-row { display: flex; flex-direction: column; gap: .3rem; margin-bottom: .5rem; }
-.result-label { display: flex; justify-content: space-between; font-size: .88rem; font-weight: 500; color: var(--ink-2); }
-.result-bar-bg { background: var(--bg); border-radius: 99px; height: 8px; overflow: hidden; }
+.result-label { display: flex; justify-content: space-between; font-size: .88rem; font-weight: 500; color: var(--text); }
+.result-bar-bg { background: var(--surface-2); border-radius: 99px; height: 8px; overflow: hidden; border: 1px solid var(--border); }
 .result-bar { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent-d)); transition: width 1s; }
 .result-bar.winner { background: linear-gradient(90deg, var(--success), #059669); }
 .poll-total { font-size: .75rem; color: var(--muted); margin-top: .4rem; }
@@ -186,14 +186,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
         </a>
     </div>
 
-    {{-- Barra de pesquisa --}}
     <form method="GET" action="{{ route('posts.index') }}" class="search-bar">
         <input type="text" name="pesquisa"
                placeholder="Pesquisar por título, texto ou tipo..."
-               value="{{ request('pesquisa') }}"
-               autocomplete="off">
+               value="{{ request('pesquisa') }}" autocomplete="off">
         @if(request('pesquisa'))
-            <a href="{{ route('posts.index') }}" class="clear-btn" title="Limpar pesquisa">✕</a>
+            <a href="{{ route('posts.index') }}" class="clear-btn" title="Limpar">✕</a>
         @endif
         <button type="submit">🔍 Buscar</button>
     </form>
@@ -206,13 +204,13 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     @endif
 
     @if(session('success'))
-        <div class="alert-success">✅ {{ session('success') }}</div>
+        <div class="alert-success-box">✅ {{ session('success') }}</div>
     @endif
 
     @if($posts->isEmpty())
         <div class="empty-state">
             <div class="icon">{{ request('pesquisa') ? '🔍' : '📭' }}</div>
-            <p>{{ request('pesquisa') ? 'Nenhum post encontrado para "' . request('pesquisa') . '".' : 'Nenhum post ainda. Que tal criar o primeiro?' }}</p>
+            <p>{{ request('pesquisa') ? 'Nenhum post encontrado.' : 'Nenhum post ainda. Que tal criar o primeiro?' }}</p>
         </div>
     @endif
 
@@ -227,7 +225,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
         $maxVotos = $totalVotos > 0 ? max($votos) : 0;
     @endphp
     <div class="post-card">
-
         <div class="card-head">
             <div class="card-meta">
                 @php
@@ -305,7 +302,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
                         <iframe src="https://player.vimeo.com/video/{{ $m[1] ?? '' }}" frameborder="0" allowfullscreen></iframe>
                     @else
                         @php $vsrc = str_starts_with($post->video,'/storage/') ? asset($post->video) : Storage::url($post->video); @endphp
-                        <video controls><source src="{{ $vsrc }}">Seu navegador não suporta vídeo HTML5.</video>
+                        <video controls><source src="{{ $vsrc }}"></video>
                     @endif
                 </div>
             @endif
@@ -323,7 +320,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
                                     <span>{{ $pct }}% ({{ $qtd }})</span>
                                 </div>
                                 <div class="result-bar-bg">
-                                    <div class="result-bar {{ $win ? 'winner' : '' }}" style="width: {{ $pct }}%"></div>
+                                    <div class="result-bar {{ $win ? 'winner' : '' }}" style="width:{{ $pct }}%"></div>
                                 </div>
                             </div>
                         @endforeach
@@ -352,12 +349,10 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
                 </form>
             @endif
         </div>
-
     </div>
     @endforeach
     </div>
 
-    {{-- Paginação --}}
     @if($posts->hasPages())
         <div style="margin-top:1.5rem;">
             {{ $posts->appends(request()->query())->links() }}

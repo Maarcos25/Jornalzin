@@ -419,8 +419,8 @@
     let mx = 0, my = 0, cx = 0, cy = 0;
     document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
     function animateGlow() {
-        cx += (mx - cx) * 0.10;
-        cy += (my - cy) * 0.10;
+        cx += (mx - cx) * 0.18;
+        cy += (my - cy) * 0.18;
         glow.style.left = cx + 'px';
         glow.style.top  = cy + 'px';
         requestAnimationFrame(animateGlow);
