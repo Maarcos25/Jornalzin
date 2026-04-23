@@ -25,15 +25,18 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $verify = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-            'secret' => config('services.recaptcha.secret'),
-            'response' => $request->input('g-recaptcha-response'),
-        ]);
+        if (config('app.env') == 'production')
+        {
+            $verify = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => config('services.recaptcha.secret'),
+                'response' => $request->input('g-recaptcha-response'),
+            ]);
 
-        if (!$verify->json('success')) {
-            return back()
-                ->withErrors(['g-recaptcha-response' => 'Verificação reCAPTCHA falhou. Tente novamente.'])
-                ->withInput();
+            if (!$verify->json('success')) {
+                return back()
+                    ->withErrors(['g-recaptcha-response' => 'Verificação reCAPTCHA falhou. Tente novamente.'])
+                    ->withInput();
+            }
         }
 
         $request->authenticate();

@@ -65,12 +65,12 @@
     </div>
 
     {{-- reCAPTCHA v2 --}}
-    <div class="recaptcha-wrap">
+    {{-- <div class="recaptcha-wrap">
         <div class="g-recaptcha" data-sitekey="6LdEkq8sAAAAAN2mOiAGTzFvRU_KegRSD3CAzkfV"></div>
     </div>
     @error('g-recaptcha-response')
         <p class="recaptcha-error">⚠️ Por favor, confirme que você não é um robô.</p>
-    @enderror
+    @enderror --}}
 
     <div class="d-grid mb-2 mt-2">
         <button type="submit" class="btn btn-primary btn-entrar">
