@@ -305,7 +305,7 @@
                 </button>
 
                 {{-- Voltar --}}
-                <a href="{{ route('home') }}" class="btn-back">← Voltar</a>
+                <a href="javascript:history.back()" class="btn-back">← Voltar</a>
             </div>
         </div>
     </div>

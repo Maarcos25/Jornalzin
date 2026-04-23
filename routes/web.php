@@ -94,5 +94,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::post('/admin/solicitacoes/{id}/rejeitar', [SolicitacaoEditorController::class, 'rejeitar'])->name('editor.rejeitar');
     Route::post('/admin/editores/{id}/remover', [SolicitacaoEditorController::class, 'removerEditor'])->name('editor.remover');
 });
+Route::get('/u/{user}', [UserController::class, 'perfil'])->name('users.perfil');
+Route::post('/u/{user}/seguir', [UserController::class, 'seguir'])->name('users.seguir')->middleware('auth');
 
 require __DIR__.'/auth.php';

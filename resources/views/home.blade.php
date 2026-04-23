@@ -65,15 +65,20 @@
 
         /* ── Post card ── */
         .post-card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            margin-bottom: 1.1rem;
-            overflow: hidden;
-            transition: box-shadow .2s, background .3s, border-color .3s;
-        }
-        .post-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,.18); }
+    background: var(--surface);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.10);
+    border: 1px solid var(--border);
+    margin-bottom: 1.1rem;
+    overflow: hidden;
+    transition: box-shadow .3s, transform .3s;
+    transform: translateY(0px);
+}
+
+.post-card:hover {
+    box-shadow: 0 16px 48px rgba(0,0,0,.28), 0 4px 16px rgba(0,0,0,.15);
+    transform: translateY(-6px);
+}
 
         /* ── Destaque relevância ── */
         .destaque-wrap {

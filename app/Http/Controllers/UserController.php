@@ -105,6 +105,24 @@ class UserController extends Controller
         return redirect()->route('users.index')
             ->with('success', 'Usuário atualizado com sucesso!');
     }
+    public function seguir(User $user)
+{
+    $eu = auth()->user();
+
+    if ($eu->id === $user->id) {
+        return back();
+    }
+
+    if ($eu->seguindo()->where('seguido_id', $user->id)->exists()) {
+        $eu->seguindo()->detach($user->id);
+        $seguindo = false;
+    } else {
+        $eu->seguindo()->attach($user->id);
+        $seguindo = true;
+    }
+
+    return back()->with('seguindo', $seguindo);
+}
 
     public function destroy(User $user)
     {
@@ -117,4 +135,14 @@ class UserController extends Controller
         return redirect()->route('users.index')
             ->with('success', 'Usuário removido com sucesso!');
     }
+    public function perfil(User $user)
+{
+    $posts = $user->posts()
+        ->where('aprovado', true)
+        ->withCount(['likes', 'comments'])
+        ->orderByDesc('created_at')
+        ->paginate(12);
+
+    return view('users.perfil', compact('user', 'posts'));
+}
 }

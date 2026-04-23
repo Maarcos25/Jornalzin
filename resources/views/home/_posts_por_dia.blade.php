@@ -173,7 +173,13 @@
                                     @else
                                         <span>✍️</span>
                                     @endif
-                                    {{ $post->usuario->nome ?? 'Desconhecido' }}
+                                    @if ($post->usuario)
+                                    <a href="{{ route('users.perfil', $post->usuario->id) }}" style="color:inherit;text-decoration:none;font-weight:700;">
+                                        {{ $post->usuario->nome }}
+                                    </a>
+                                @else
+                                    Desconhecido
+                                @endif
                                 </span>
                                 <span class="post-meta-sep">·</span>
                                 <span class="post-meta">👁 {{ $post->visualizacoes }}</span>
