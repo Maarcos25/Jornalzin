@@ -55,7 +55,6 @@
 
                     $isDestaque = isset($destaqueId) && $post->id === $destaqueId;
 
-                    // Variáveis de vídeo
                     $isYt = false; $isVimeo = false; $ytId = null;
                     if ($post->tipo === 'video' && $post->video) {
                         $isYt    = str_contains($post->video, 'youtube') || str_contains($post->video, 'youtu.be');
@@ -104,21 +103,17 @@
 
                             {{-- MÍDIA VÍDEO --}}
                             @elseif ($post->tipo === 'video' && $post->video)
-                                @if ($isYt && $ytId)
-                                    <a href="{{ route('posts.show', $post->id) }}" class="video-preview-thumb">
-                                        <img src="https://img.youtube.com/vi/{{ $ytId }}/hqdefault.jpg" alt="{{ $post->titulo }}">
-                                        <div class="play-overlay">
-                                            <div class="play-btn">▶️</div>
-                                        </div>
-                                    </a>
-                                @else
-                                    <a href="{{ route('posts.show', $post->id) }}" style="text-decoration:none;">
-                                        <div class="video-preview-local">
-                                            <span>🎬</span>
-                                            <p>Clique para assistir</p>
-                                        </div>
-                                    </a>
-                                @endif
+                                <div class="home-video-wrap">
+                                    @if ($isYt && $ytId)
+                                        <iframe src="https://www.youtube.com/embed/{{ $ytId }}" frameborder="0" allowfullscreen></iframe>
+                                    @elseif ($isVimeo)
+                                        @php preg_match('/vimeo\.com\/(\d+)/', $post->video, $vm); @endphp
+                                        <iframe src="https://player.vimeo.com/video/{{ $vm[1] ?? '' }}" frameborder="0" allowfullscreen></iframe>
+                                    @else
+                                        @php $vs = str_starts_with($post->video, '/storage/') ? asset($post->video) : Storage::url($post->video); @endphp
+                                        <video controls style="width:100%;display:block;"><source src="{{ $vs }}"></video>
+                                    @endif
+                                </div>
                             @endif
 
                             {{-- CORPO --}}
@@ -243,4 +238,3 @@
         <p>Nenhuma postagem encontrada.</p>
     </div>
 @endif
-    
