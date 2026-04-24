@@ -1,3 +1,4 @@
+@use('Illuminate\Support\Facades\Storage')
 @extends('layouts.site')
 
 @section('conteudo')
@@ -24,8 +25,8 @@
             ">
                 {{-- Avatar --}}
                 <a href="{{ route('users.perfil', $u->id) }}" style="text-decoration:none;flex-shrink:0;">
-                    @if ($u->avatar)
-                        <img src="{{ asset('storage/' . $u->avatar) }}"
+                    @if ($u->avatar && Storage::disk('public')->exists($u->avatar))
+                    <img src="{{ asset('storage/' . $u->avatar) }}"
                              style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--brand);">
                     @else
                         <div style="
