@@ -136,7 +136,16 @@ public function seguindo(User $user)
     $tipo  = 'seguindo';
     return view('users.lista_usuarios', compact('user', 'lista', 'tipo'));
 }
+public function removerSeguidor(User $user, User $seguidor)
+{
+    if (auth()->id() !== $user->id) {
+        abort(403);
+    }
 
+    $user->seguidores()->detach($seguidor->id);
+
+    return back()->with('success', 'Seguidor removido.');
+}
     public function destroy(User $user)
     {
         if (auth()->user()->tipo !== 'administrador') {

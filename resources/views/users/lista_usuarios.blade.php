@@ -15,17 +15,15 @@
 
     @if ($lista->count())
         @foreach ($lista as $u)
-            <a href="{{ route('users.perfil', $u->id) }}" style="text-decoration:none;color:inherit;">
-                <div style="
-                    display:flex;align-items:center;gap:1rem;
-                    background:var(--surface);border:1px solid var(--border);
-                    border-radius:12px;padding:1rem 1.2rem;
-                    margin-bottom:.75rem;
-                    transition:box-shadow .2s, transform .2s;
-                " onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.12)';this.style.transform='translateY(-2px)'"
-                   onmouseout="this.style.boxShadow='';this.style.transform=''">
-
-                    {{-- Avatar --}}
+            <div style="
+                display:flex;align-items:center;gap:1rem;
+                background:var(--surface);border:1px solid var(--border);
+                border-radius:12px;padding:1rem 1.2rem;
+                margin-bottom:.75rem;
+                transition:box-shadow .2s, transform .2s;
+            ">
+                {{-- Avatar --}}
+                <a href="{{ route('users.perfil', $u->id) }}" style="text-decoration:none;flex-shrink:0;">
                     @if ($u->avatar)
                         <img src="{{ asset('storage/' . $u->avatar) }}"
                              style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--brand);">
@@ -34,29 +32,51 @@
                             width:48px;height:48px;border-radius:50%;
                             background:linear-gradient(135deg,var(--brand),var(--brand-dark));
                             display:flex;align-items:center;justify-content:center;
-                            font-size:1.2rem;font-weight:800;color:#fff;flex-shrink:0;
+                            font-size:1.2rem;font-weight:800;color:#fff;
                         ">{{ strtoupper(substr($u->nome, 0, 1)) }}</div>
                     @endif
+                </a>
 
-                    {{-- Info --}}
-                    <div style="flex:1;">
-                        <div style="font-weight:700;font-size:1rem;color:var(--text);">
-                            {{ $u->nome }} {{ $u->sobrenome }}
-                        </div>
-                        <div style="font-size:.8rem;color:var(--muted);margin-top:.15rem;">
-                            {{ $u->posts()->where('aprovado', true)->count() }} postagens
-                        </div>
+                {{-- Info --}}
+                <a href="{{ route('users.perfil', $u->id) }}" style="text-decoration:none;color:inherit;flex:1;">
+                    <div style="font-weight:700;font-size:1rem;color:var(--text);">
+                        {{ $u->nome }} {{ $u->sobrenome }}
                     </div>
+                    <div style="font-size:.8rem;color:var(--muted);margin-top:.15rem;">
+                        {{ $u->posts()->where('aprovado', true)->count() }} postagens
+                    </div>
+                </a>
 
-                    {{-- Badge tipo --}}
-                    <span style="
-                        padding:.2rem .7rem;border-radius:50px;font-size:.72rem;font-weight:700;
-                        text-transform:uppercase;
-                        background:{{ $u->tipo === 'administrador' ? '#fef3c7' : ($u->tipo === 'editor' ? '#dcfce7' : '#e0f2fe') }};
-                        color:{{ $u->tipo === 'administrador' ? '#b45309' : ($u->tipo === 'editor' ? '#15803d' : '#0369a1') }};
-                    ">{{ ucfirst($u->tipo) }}</span>
-                </div>
-            </a>
+                {{-- Badge tipo --}}
+                <span style="
+                    padding:.2rem .7rem;border-radius:50px;font-size:.72rem;font-weight:700;
+                    text-transform:uppercase;flex-shrink:0;
+                    background:{{ $u->tipo === 'administrador' ? '#fef3c7' : ($u->tipo === 'editor' ? '#dcfce7' : '#e0f2fe') }};
+                    color:{{ $u->tipo === 'administrador' ? '#b45309' : ($u->tipo === 'editor' ? '#15803d' : '#0369a1') }};
+                ">{{ ucfirst($u->tipo) }}</span>
+
+                {{-- Botão remover (só para o dono do perfil na aba seguidores) --}}
+                @auth
+                    @if ($tipo === 'seguidores' && auth()->id() === $user->id)
+                        <form method="POST" action="{{ route('users.removerSeguidor', [$user->id, $u->id]) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                onclick="return confirm('Remover {{ $u->nome }} dos seus seguidores?')"
+                                style="
+                                    padding:.35rem .85rem;border-radius:50px;
+                                    border:1.5px solid #ef4444;background:transparent;
+                                    color:#ef4444;font-size:.78rem;font-weight:700;
+                                    cursor:pointer;transition:all .2s;white-space:nowrap;
+                                "
+                                onmouseover="this.style.background='#ef4444';this.style.color='#fff'"
+                                onmouseout="this.style.background='transparent';this.style.color='#ef4444'">
+                                ✕ Remover
+                            </button>
+                        </form>
+                    @endif
+                @endauth
+            </div>
         @endforeach
 
         <div class="mt-4">{{ $lista->links() }}</div>
