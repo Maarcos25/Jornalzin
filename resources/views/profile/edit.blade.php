@@ -1,134 +1,109 @@
-@extends('layouts.autenticacao')
+@extends('layouts.site')
 
 @section('conteudo')
 <style>
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background: #f1f5f9 !important;
-}
-    :root {
-        --brand:      #4f46e5;
-        --brand-dark: #3730a3;
-        --surface:    #ffffff;
-        --surface-2:  #f8fafc;
-        --border:     #e2e8f0;
-        --text:       #1e293b;
-        --muted:      #64748b;
-        --danger:     #ef4444;
-        --radius:     14px;
-        --shadow:     0 2px 12px rgba(0,0,0,.07);
+    footer { display: none !important; }
+
+    .page-content {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        height: auto;
+        overflow: visible;
+        padding: 2rem 1rem;
     }
-    body { display: flex; align-items: center; justify-content: center; zoom: 0.95; }
 
-    .profile-wrap { max-width: 960px; width: 100%; margin: 0 auto; padding: 1rem 1.5rem; }
+    .profile-wrap {
+        max-width: 750px;
+        width: 100%;
+        background: var(--surface);
+        border-radius: 14px;
+        box-shadow: 0 8px 32px rgba(0,0,0,.2);
+        padding: 1.5rem 2rem;
+        max-height: none;
+        overflow-y: visible;
+    }
 
-    .profile-page-header { text-align: center; margin-bottom: 1rem; position: relative; }
+    .profile-page-header { text-align: center; margin-bottom: 0.5rem; position: relative; }
     .profile-page-header .logo {
-        font-size: 1.9rem; font-weight: 800; color: var(--text);
-        letter-spacing: .03em; text-decoration: none;
-        display: inline-flex; align-items: center; gap: .4rem;
+        font-family: 'UnifrakturMaguntia', cursive;
+        font-size: 3rem;
+        font-weight: 400;
+        color: var(--text);
+        letter-spacing: .02em;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
     }
     .profile-page-header p { color: var(--muted); font-size: .9rem; margin: .3rem 0 0; }
 
-    /* X de fechar */
-    .btn-fechar {
-        position: absolute;
-        top: 50%;
-        right: 0;
-        transform: translateY(-50%);
-        width: 36px; height: 36px;
-        background: #fef2f2;
-        border: 2px solid #fecaca;
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.1rem; font-weight: 900;
-        color: var(--danger);
-        text-decoration: none;
-        transition: all .2s;
-        line-height: 1;
-    }
+    .btn-fechar { position: absolute; top: 50%; right: 0; transform: translateY(-50%); width: 36px; height: 36px; background: #fef2f2; border: 2px solid #fecaca; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 900; color: var(--danger); text-decoration: none; transition: all .2s; }
     .btn-fechar:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
 
-    .avatar-section { display: flex; justify-content: center; margin-bottom: 1rem; }
-    .avatar-wrapper { position: relative; width: 130px; height: 130px; cursor: pointer; transition: transform .2s; }
+    .avatar-section { display: flex; justify-content: center; margin-bottom: 0.5rem; }
+    .avatar-wrapper { position: relative; width: 110px; height: 110px; cursor: pointer; }
     .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--brand); }
-    .avatar-placeholder {
-        width: 100%; height: 100%; border-radius: 50%;
-        background: var(--surface-2); border: 2px dashed var(--border);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 2.5rem; color: var(--muted);
-    }
-    .pencil-icon {
-        position: absolute; bottom: 4px; right: 4px;
-        background: var(--brand); color: #fff;
-        border-radius: 50%; width: 32px; height: 32px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 13px; border: 3px solid #f1f5f9;
-    }
+    .avatar-placeholder { width: 100%; height: 100%; border-radius: 50%; background: var(--surface-2); border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--muted); }
+    .pencil-icon { position: absolute; bottom: 4px; right: 4px; background: var(--brand); color: #fff; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--surface); }
 
-    .profile-tabs { display: flex; justify-content: center; gap: .5rem; margin-bottom: 1rem; }
-    .profile-tab-btn {
-        display: inline-flex; align-items: center; gap: .35rem;
-        padding: .55rem 1.4rem; border-radius: 50px;
-        border: 1.5px solid var(--border); background: var(--surface);
-        color: var(--muted); font-weight: 600; font-size: .9rem;
-        cursor: pointer; transition: all .2s;
-    }
+    .profile-tabs { display: flex; justify-content: center; gap: .5rem; margin-bottom: 0.6rem; }
+    .profile-tab-btn { display: inline-flex; align-items: center; gap: .35rem; padding: .55rem 1.4rem; border-radius: 50px; border: 1.5px solid var(--border); background: var(--surface); color: var(--muted); font-weight: 600; font-size: .9rem; cursor: pointer; transition: all .2s; }
     .profile-tab-btn:hover { border-color: var(--brand); color: var(--brand); }
-    .profile-tab-btn.active {
-        background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-        color: #fff; border-color: transparent;
-        box-shadow: 0 4px 14px rgba(79,70,229,.3);
-    }
+    .profile-tab-btn.active { background: linear-gradient(135deg, var(--brand), var(--brand-dark)); color: #fff; border-color: transparent; }
 
-    .profile-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
-    .profile-card-header { background: linear-gradient(135deg, var(--brand), var(--brand-dark)); padding: 1.2rem 2rem; color: #fff; font-size: 1.1rem; font-weight: 800; }
-    .profile-card-body { padding: 1.5rem 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .profile-card { background: var(--surface); border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
+    .profile-card-header { background: linear-gradient(135deg, var(--brand), var(--brand-dark)); padding: 1rem 1.5rem; color: #fff; font-size: 1rem; font-weight: 800; }
+    .profile-card-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; background: var(--surface); }
+    .profile-card-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); background: var(--surface-2); display: flex; gap: .6rem; align-items: center; }
 
     .form-group label { display: block; font-size: .8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: .4rem; }
     .form-group input { width: 100%; padding: .7rem 1rem; border: 1.5px solid var(--border); border-radius: 10px; font-size: 1rem; color: var(--text); background: var(--surface); transition: border .2s; box-sizing: border-box; }
     .form-group input:focus { outline: none; border-color: var(--brand); }
     .form-error { color: var(--danger); font-size: .8rem; margin-top: .25rem; }
 
-    .alert-ok { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; border-radius: 10px; padding: .75rem 1rem; font-size: .9rem; }
+    .alert-ok  { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; border-radius: 10px; padding: .75rem 1rem; font-size: .9rem; }
     .alert-err { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; border-radius: 10px; padding: .75rem 1rem; font-size: .9rem; }
 
-    .profile-card-footer { padding: 1rem 2.5rem; border-top: 1px solid var(--border); background: var(--surface-2); display: flex; gap: .6rem; align-items: center; }
-    .btn-salvar {
-        display: inline-flex; align-items: center; gap: .4rem;
-        padding: .6rem 1.6rem; border-radius: 50px;
-        background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-        color: #fff; font-weight: 700; font-size: .95rem;
-        border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(79,70,229,.3); transition: all .2s;
-    }
-    .btn-salvar:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79,70,229,.4); }
+    .btn-salvar { display: inline-flex; align-items: center; gap: .4rem; padding: .6rem 1.6rem; border-radius: 50px; background: linear-gradient(135deg, var(--brand), var(--brand-dark)); color: #fff; font-weight: 700; font-size: .95rem; border: none; cursor: pointer; transition: all .2s; }
+    .btn-salvar:hover { transform: translateY(-1px); }
     .btn-remover-foto { background: none; border: none; cursor: pointer; color: var(--danger); font-size: .88rem; font-weight: 600; margin-left: auto; text-decoration: underline; }
 
-    .danger-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); border-left: 4px solid var(--danger); overflow: hidden; }
-    .danger-card-body { padding: 2rem 2.5rem; }
-    .danger-card-body h5 { color: var(--danger); font-weight: 800; margin: 0 0 .4rem; font-size: 1.1rem; }
-    .danger-card-body p  { color: var(--muted); font-size: .9rem; margin: 0 0 1rem; }
-    .btn-excluir-conta { width: 100%; padding: .7rem; border: 1.5px solid var(--danger); background: #fef2f2; color: var(--danger); border-radius: 10px; font-weight: 700; font-size: .95rem; cursor: pointer; transition: all .2s; }
+    .danger-card { background: var(--surface); border-radius: 14px; border: 1px solid var(--border); border-left: 4px solid var(--danger); overflow: hidden; }
+    .danger-card-body { padding: 2.5rem 2rem; }
+    .danger-card-body h5 { color: var(--danger); font-weight: 800; font-size: 1.3rem; margin: 0 0 .8rem; }
+    .danger-card-body p  { color: var(--muted); font-size: 1rem; margin: 0 0 1.5rem; line-height: 1.6; }
+    .btn-excluir-conta { width: 100%; padding: 1rem; border: 1.5px solid var(--danger); background: #fef2f2; color: var(--danger); border-radius: 10px; font-weight: 700; cursor: pointer; transition: all .2s; font-size: 1rem; }
     .btn-excluir-conta:hover { background: var(--danger); color: #fff; }
+
+    html.dark .profile-wrap        { background: var(--surface); }
+    html.dark .profile-card        { background: var(--surface); border-color: var(--border); }
+    html.dark .profile-card-body   { background: var(--surface); }
+    html.dark .profile-card-footer { background: var(--surface-2); border-color: var(--border); }
+    html.dark .form-group input    { background: var(--surface-2); border-color: var(--border); color: var(--text); }
+    html.dark .profile-tab-btn     { background: var(--surface); border-color: var(--border); color: var(--muted); }
+    html.dark .danger-card         { background: var(--surface); border-color: var(--border); }
+    html.dark .btn-fechar          { background: #2d1b1b; border-color: #7f1d1d; }
+    html.dark .alert-ok            { background: #14532d; border-color: #166534; color: #bbf7d0; }
+    html.dark .alert-err           { background: #450a0a; border-color: #7f1d1d; color: #fecaca; }
 
     #senhaMsg { font-size: .82rem; font-weight: 700; margin-top: .3rem; }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
+    #tab-senha .profile-card-body { gap: 0.5rem; padding: 0.8rem 1.5rem; }
+    #tab-senha .form-group input { padding: .45rem .9rem; }
+    #tab-senha .profile-card-footer { padding: 0.6rem 1.5rem; }
+    .container.mt-4 { margin-top: 0 !important; }
 </style>
 
 <div class="profile-wrap">
 
-    {{-- Logo + X fechar --}}
     <div class="profile-page-header">
         <a href="/" class="logo">📰 Jornalzin</a>
         <p>Gerencie suas informações e segurança</p>
         <a href="{{ route('home') }}" class="btn-fechar" title="Voltar para o início">✕</a>
     </div>
 
-    {{-- Avatar --}}
     <div class="avatar-section">
         <div class="avatar-wrapper" onclick="document.getElementById('avatarInput').click()">
             @if(auth()->user()->avatar)
@@ -149,14 +124,12 @@ html, body {
         }
     @endphp
 
-    {{-- Tabs --}}
     <div class="profile-tabs">
         <button class="profile-tab-btn {{ $abaAtiva === 'perfil' ? 'active' : '' }}" onclick="trocarAba('perfil', this)">👤 Perfil</button>
         <button class="profile-tab-btn {{ $abaAtiva === 'senha'  ? 'active' : '' }}" onclick="trocarAba('senha', this)">🔒 Segurança</button>
         <button class="profile-tab-btn" onclick="trocarAba('conta', this)">⚙️ Conta</button>
     </div>
 
-    {{-- ABA PERFIL --}}
     <div class="tab-pane {{ $abaAtiva === 'perfil' ? 'active' : '' }}" id="tab-perfil">
         <div class="profile-card">
             <div class="profile-card-header">👤 Informações do Perfil</div>
@@ -193,7 +166,6 @@ html, body {
         </div>
     </div>
 
-    {{-- ABA SEGURANÇA --}}
     <div class="tab-pane {{ $abaAtiva === 'senha' ? 'active' : '' }}" id="tab-senha">
         <div class="profile-card">
             <div class="profile-card-header">🔒 Alterar Senha</div>
@@ -229,7 +201,6 @@ html, body {
         </div>
     </div>
 
-    {{-- ABA CONTA --}}
     <div class="tab-pane" id="tab-conta">
         <div class="danger-card">
             <div class="danger-card-body">

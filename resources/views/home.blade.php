@@ -1,6 +1,7 @@
 @extends('layouts.site')
 
 @push('styles')
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
     <style>
         /* ══ Variáveis herdadas do site.blade (light/dark via html.dark) ══ */
         /* NÃO redefinimos :root aqui — usamos as do layout pai */
@@ -9,19 +10,19 @@
             font-family: 'Segoe UI', sans-serif;
         }
 
-        .home-wrap {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem 4rem;
-        }
+    .home-wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 1rem; /* era 4rem no final */
+    }   
 
-        .home-title {
-            font-size: 1.9rem;
-            font-weight: 800;
-            color: var(--text);
-            margin-bottom: 1.4rem;
-            letter-spacing: -.02em;
-        }
+.home-title {
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 1.4rem;
+}
 
         /* ── Search ── */
         .search-wrap { position: relative; margin-bottom: .4rem; }
@@ -81,25 +82,29 @@
 }
 
         /* ── Destaque relevância ── */
-        .destaque-wrap {
-            border-radius: var(--radius);
-            padding: 3px;
-            background: linear-gradient(135deg, #ef4444, #f97316);
-            box-shadow: 0 0 18px rgba(239,68,68,.45);
-            animation: pulse-borda 2s infinite;
-            margin-bottom: 1.1rem;
-        }
-        @keyframes pulse-borda {
-            0%, 100% { box-shadow: 0 0 18px rgba(239,68,68,.45); }
-            50%       { box-shadow: 0 0 32px rgba(239,68,68,.75); }
-        }
+    .destaque-wrap {
+        border-radius: var(--radius);
+        padding: 2px;
+        background: linear-gradient(135deg, rgba(239,68,68,.5), rgba(249,115,22,.5));
+        box-shadow: 0 0 12px rgba(239,68,68,.25);
+        animation: pulse-borda 3s infinite;
+        margin-bottom: 1.1rem;
+    }
+    @keyframes pulse-borda {
+        0%, 100% { box-shadow: 0 0 10px rgba(239,68,68,.2); }
+        50%       { box-shadow: 0 0 20px rgba(239,68,68,.4); }
+    }
 
-        .destaque-badge {
-            background: linear-gradient(135deg, #ef4444, #f97316);
-            color: #fff; font-size: .78rem; font-weight: 800;
-            padding: .3rem .85rem; border-radius: 0 0 10px 0;
-            display: inline-block; letter-spacing: .04em; text-transform: uppercase;
-        }
+    .destaque-badge {
+        background: transparent;
+        color: #f97316;
+        font-size: .75rem;
+        font-weight: 800;
+        padding: .4rem .85rem;
+        display: inline-block;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
 
         /* ── Media ── */
         .post-media { width: 100%; }
@@ -299,6 +304,86 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 1.3rem;
 }
+/* ── Carrossel Home ── */
+.home-carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+    background: #000;
+    aspect-ratio: 16/9;
+}
+.home-carousel-track {
+    display: flex;
+    height: 100%;
+    transition: transform .35s ease;
+}
+.home-carousel-slide {
+    min-width: 100%;
+    height: 100%;
+}
+.home-carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: zoom-in;
+}
+
+/* Botões prev/next */
+.hc-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,.45);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 34px; height: 34px;
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 10;
+    transition: background .2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.hc-btn:hover { background: rgba(0,0,0,.7); }
+.hc-prev { left: 8px; }
+.hc-next { right: 8px; }
+
+/* Dots */
+.hc-dots {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    z-index: 10;
+}
+.hc-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.5);
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+}
+.hc-dot.active {
+    background: #fff;
+    transform: scale(1.3);
+}
+
+/* Contador (1/3) */
+.hc-counter {
+    position: absolute;
+    top: 8px; right: 10px;
+    background: rgba(0,0,0,.5);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    z-index: 10;
+}
     </style>
 @endpush
 
@@ -313,7 +398,20 @@
             ];
         @endphp
 
-        <h1 class="home-title">{{ request('filtro') ? $titulos[request('filtro')] : '📰 Início' }}</h1>
+ @if(!request('filtro') && !request('pesquisa'))
+    <div style="text-align:center;margin-bottom:1.8rem;">
+        <h1 style="
+            font-family: 'UnifrakturMaguntia', 'MedievalSharp', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--text);
+            letter-spacing: .02em;
+            margin: 0;
+        ">Jornalzin</h1>
+    </div>
+@else
+    <h1 class="home-title">{{ $titulos[request('filtro')] ?? '🔍 Resultados' }}</h1>
+@endif
 
         <form method="GET" action="/" class="search-wrap">
             <input type="text" name="pesquisa" placeholder="Pesquisar postagens..." value="{{ request('pesquisa') }}">

@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SolicitacaoEditorController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\DenunciaController;
 
 // Rotas autenticadas + verificadas
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -101,4 +102,15 @@ Route::get('/u/{user}/seguindo', [UserController::class, 'seguindo'])->name('use
 Route::delete('/u/{user}/seguidores/{seguidor}/remover', [UserController::class, 'removerSeguidor'])
     ->name('users.removerSeguidor')
     ->middleware('auth');
+
+    Route::get('/auth/google/completar',  [GoogleCompletarController::class, 'create'])->name('auth.google.completar');
+Route::post('/auth/google/completar', [GoogleCompletarController::class, 'store'])->name('auth.google.completar.store');
+Route::post('/denuncias', [DenunciaController::class, 'store'])->name('denuncias.store')->middleware('auth');
+Route::get('/admin/denuncias', [DenunciaController::class, 'index'])->name('admin.denuncias')->middleware('auth');
+Route::post('/admin/denuncias/{denuncia}/lida', [DenunciaController::class, 'marcarLida'])->name('admin.denuncias.lida')->middleware('auth');
+Route::delete('/admin/denuncias/{denuncia}', [DenunciaController::class, 'destroy'])->name('admin.denuncias.destroy')->middleware('auth');
+Route::delete('/admin/denuncias/{denuncia}/excluir-post', [DenunciaController::class, 'excluirPost'])
+    ->name('admin.denuncias.excluir-post')->middleware('auth');
+Route::delete('/admin/denuncias/{denuncia}/excluir-comentario', [DenunciaController::class, 'excluirComentario'])
+    ->name('admin.denuncias.excluir-comentario')->middleware('auth');
 require __DIR__.'/auth.php';

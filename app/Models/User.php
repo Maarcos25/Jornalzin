@@ -2,24 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Post;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class User extends Authenticatable
-
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'nome',
         'sobrenome',
@@ -29,44 +19,53 @@ class User extends Authenticatable
         'telefone',
         'data_nascimento',
         'tipo',
-        'avatar'
-
+        'avatar',
+        'google_id',
     ];
 
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'data_nascimento' => 'date',
+        'password'          => 'hashed',
+        'data_nascimento'   => 'date',
     ];
+
+    /* ── Relacionamentos ── */
 
     public function posts()
     {
         return $this->hasMany(Post::class, 'id_usuario');
     }
+
+    public function likes()
+    {
+        return $this->hasMany(\App\Models\Like::class, 'user_id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(\App\Models\Comment::class, 'user_id');
+    }
+
+    // Usuários que este usuário segue
     public function seguindo()
-{
-    return $this->belongsToMany(User::class, 'seguidores', 'seguidor_id', 'seguido_id');
-}
+    {
+        return $this->belongsToMany(User::class, 'seguidores', 'seguidor_id', 'seguido_id');
+    }
 
-public function seguidores()
-{
-    return $this->belongsToMany(User::class, 'seguidores', 'seguido_id', 'seguidor_id');
-}
+    // Usuários que seguem este usuário
+    public function seguidores()
+    {
+        return $this->belongsToMany(User::class, 'seguidores', 'seguido_id', 'seguidor_id');
+    }
 
+    // Verifica se está seguindo um usuário específico
+    public function seguindo_usuario(int $userId): bool
+    {
+        return $this->seguindo()->where('seguido_id', $userId)->exists();
+    }
 }

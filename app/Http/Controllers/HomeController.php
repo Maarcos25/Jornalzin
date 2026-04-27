@@ -18,7 +18,7 @@ class HomeController extends Controller
             'imagens',
             'votos',
             'likes',
-            'comments' => fn($q) => $q->where('status', 'aprovado')->with('user'),
+'comments' => fn($q) => $q->with('user'),
         ])
         ->withCount(['likes', 'comments'])
         ->where('aprovado', true);

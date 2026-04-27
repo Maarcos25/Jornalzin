@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use App\Models\PostMedia;
+use App\Models\Denuncia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,7 +24,7 @@ class PostController extends Controller
         if ($pesquisa) {
             $query->where(function($q) use ($pesquisa) {
                 $q->where('titulo', 'like', "%{$pesquisa}%")
-                ->orWhere('texto', 'like', "%{$pesquisa}%");
+                  ->orWhere('texto', 'like', "%{$pesquisa}%");
             });
         }
 
@@ -53,10 +53,10 @@ class PostController extends Controller
             case 'texto':
                 $rules['texto'] = 'required|string';
                 break;
-                case 'imagem':
-                    $rules['imagens']   = 'nullable|array|max:10';
-                    $rules['imagens.*'] = 'image|mimes:jpg,jpeg,png,webp|max:5120';
-                    break;
+            case 'imagem':
+                $rules['imagens']   = 'nullable|array|max:10';
+                $rules['imagens.*'] = 'image|mimes:jpg,jpeg,png,webp|max:5120';
+                break;
             case 'video':
                 $hasUrl  = $request->filled('video_url');
                 $hasFile = $request->hasFile('video_file');
@@ -74,12 +74,12 @@ class PostController extends Controller
 
         $request->validate($rules);
 
-        // Validação manual para imagens
         if ($request->tipo === 'imagem' && !$request->hasFile('imagens')) {
             return back()->withErrors(['imagens' => 'Selecione pelo menos uma imagem.'])->withInput();
         }
 
-        $aprovado = $this->isAdmin();
+        // Admin e Editor → aprovado automaticamente
+        $aprovado = in_array(auth()->user()->tipo, ['administrador', 'editor']);
 
         $dados = [
             'tipo'          => $request->tipo,
@@ -118,23 +118,16 @@ class PostController extends Controller
             $post->update(['imagem' => Storage::url($post->imagens()->orderBy('ordem')->first()->caminho)]);
         }
 
-        $msg = $aprovado
-            ? 'Post publicado com sucesso! 🎉'
-            : 'Post enviado! Aguardando aprovação do administrador. ⏳';
-
-        return $aprovado
-            ? redirect()->route('posts.index')->with('success', $msg)
-            : redirect()->route('home')->with('success', $msg);
+        return redirect()->route($aprovado ? 'posts.index' : 'home')
+            ->with('success', $aprovado ? 'Post publicado com sucesso! 🎉' : 'Post enviado! Aguardando aprovação. ⏳');
     }
 
     public function show(Post $post)
     {
         $post->increment('visualizacoes');
 
-        // ✅ Carrega apenas comentários aprovados com o usuário
-        $post->load([
-            'comments' => fn($q) => $q->where('status', 'aprovado')->with('user'),
-        ]);
+        // Carrega todos os comentários (sem filtro de aprovação — aprovação foi removida)
+        $post->load(['comments' => fn($q) => $q->with('user')]);
 
         return view('posts.show', compact('post'));
     }
@@ -195,8 +188,8 @@ class PostController extends Controller
         $post->update($dados);
 
         return $this->isAdmin()
-            ? redirect()->route('posts.index')->with('success', 'Post atualizado com sucesso!')
-            : redirect()->route('home')->with('success', 'Post atualizado com sucesso!');
+            ? redirect()->route('posts.index')->with('success', 'Post atualizado!')
+            : redirect()->route('home')->with('success', 'Post atualizado!');
     }
 
     public function destroy(Post $post)
@@ -217,15 +210,15 @@ class PostController extends Controller
         $post->delete();
 
         return $this->isAdmin()
-            ? redirect()->route('posts.index')->with('success', 'Post excluído com sucesso!')
-            : redirect()->route('home')->with('success', 'Post excluído com sucesso!');
+            ? redirect()->route('posts.index')->with('success', 'Post excluído!')
+            : redirect()->route('home')->with('success', 'Post excluído!');
     }
 
     public function aprovar(Post $post)
     {
         if (!$this->isAdmin()) abort(403);
         $post->update(['aprovado' => true]);
-        return back()->with('success', "Post \"{$post->titulo}\" aprovado e publicado! ✅");
+        return back()->with('success', "Post \"{$post->titulo}\" aprovado! ✅");
     }
 
     public function rejeitar(Post $post)
@@ -236,9 +229,7 @@ class PostController extends Controller
             Storage::disk('public')->delete($img->caminho);
             $img->delete();
         }
-        if ($post->imagem) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $post->imagem));
-        }
+        if ($post->imagem) Storage::disk('public')->delete(str_replace('/storage/', '', $post->imagem));
         if ($post->video && !str_contains($post->video, 'youtube') && !str_contains($post->video, 'vimeo')) {
             Storage::disk('public')->delete(str_replace('/storage/', '', $post->video));
         }
@@ -273,14 +264,6 @@ class PostController extends Controller
         $post->imagem = null;
         $post->save();
 
-        return back()->with('success', 'Mídia removida com sucesso!');
-    }
-
-    public function destaque()
-    {
-        $maisCurtidos = Post::orderBy('likes', 'desc')->take(5)->get();
-        $maisVistos = Post::orderBy('views', 'desc')->take(5)->get();
-
-        return view('destaques', compact('maisCurtidos', 'maisVistos'));
+        return back()->with('success', 'Mídia removida!');
     }
 }

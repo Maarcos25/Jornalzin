@@ -3,7 +3,6 @@
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
-/* ── Variáveis extras não definidas no layout ── */
 :root {
     --ink:      var(--text);
     --ink-2:    var(--muted);
@@ -69,6 +68,7 @@ html.dark .alert-success-box { background: #052e16; border-color: #166534; color
     transition: box-shadow .25s, transform .25s;
     break-inside: avoid; margin-bottom: 1.25rem;
     display: inline-block; width: 100%;
+    cursor: pointer;
 }
 .post-card:hover { box-shadow: 0 8px 32px rgba(15,23,42,.1); transform: translateY(-2px); }
 html.dark .post-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.4); }
@@ -223,8 +223,11 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
             $totalVotos = array_sum($votos);
         }
         $maxVotos = $totalVotos > 0 ? max($votos) : 0;
+        $isAdmin  = auth()->user()->tipo === 'administrador';
     @endphp
-    <div class="post-card">
+
+    <div class="post-card" onclick="window.location='{{ route('posts.show', $post->id) }}'">
+
         <div class="card-head">
             <div class="card-meta">
                 @php
@@ -241,7 +244,7 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
             @endif
         </div>
 
-        <div class="card-author">
+        <div class="card-author" onclick="event.stopPropagation()">
             <div class="author-avatar">
                 @if($post->usuario && $post->usuario->avatar)
                     <img src="{{ asset('storage/' . $post->usuario->avatar) }}" alt="">
@@ -249,7 +252,13 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
                     {{ strtoupper(substr($post->usuario->nome ?? 'U', 0, 1)) }}
                 @endif
             </div>
-            <span class="author-name">{{ $post->usuario->nome ?? 'Desconhecido' }}</span>
+            @if($post->usuario)
+                <a href="{{ route('users.perfil', $post->usuario->id) }}" style="text-decoration:none;color:inherit;font-weight:600;font-size:.82rem;" onclick="event.stopPropagation()">
+                    {{ $post->usuario->nome }}
+                </a>
+            @else
+                <span class="author-name">Desconhecido</span>
+            @endif
             <span class="status-badge {{ $post->aprovado ? 'status-aprovado' : 'status-pendente' }}">
                 {{ $post->aprovado ? '✅ Publicado' : '⏳ Pendente' }}
             </span>
@@ -273,7 +282,7 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
                     $show = min($count, 9);
                 @endphp
                 @if($count)
-                <div class="img-grid {{ $gridClass }}">
+                <div class="img-grid {{ $gridClass }}" onclick="event.stopPropagation()">
                     @foreach(array_slice($imgs, 0, $show) as $idx => $src)
                         <div class="img-cell" onclick="abrirImagem('{{ $src }}')">
                             <img src="{{ $src }}" alt="imagem {{ $idx + 1 }}">
@@ -293,7 +302,7 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
                     $isYt = str_contains($post->video,'youtube') || str_contains($post->video,'youtu.be');
                     $isVimeo = str_contains($post->video,'vimeo');
                 @endphp
-                <div class="video-wrap">
+                <div class="video-wrap" onclick="event.stopPropagation()">
                     @if($isYt)
                         @php preg_match('/(?:watch\?v=|youtu\.be\/)([^&\s]+)/', $post->video, $m); @endphp
                         <iframe src="https://www.youtube.com/embed/{{ $m[1] ?? '' }}" frameborder="0" allowfullscreen></iframe>
@@ -330,14 +339,15 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
             @endif
         </div>
 
-        <div class="card-actions">
+        <div class="card-actions" onclick="event.stopPropagation()">
             <a href="{{ route('posts.edit', $post->id) }}" class="btn-action btn-edit">✏️ Editar</a>
             <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
                   onsubmit="return confirm('Excluir este post permanentemente?')" style="display:inline">
                 @csrf @method('DELETE')
                 <button class="btn-action btn-del">🗑️ Excluir</button>
             </form>
-            @if(!$post->aprovado)
+            {{-- Aprovar/Rejeitar APENAS para administrador --}}
+            @if($isAdmin && !$post->aprovado)
                 <form action="{{ route('posts.aprovar', $post->id) }}" method="POST" style="display:inline">
                     @csrf
                     <button class="btn-action btn-aprovar">✅ Aprovar</button>

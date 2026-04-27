@@ -2,6 +2,7 @@
 
 @section('conteudo')
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
     .login-header h2 { font-weight: 800; color: #333; margin-bottom: 4px; }
     .form-label { font-weight: 600; font-size: 0.85rem; color: #6c757d; text-transform: uppercase; margin-bottom: 5px; }
     .form-control { border-radius: 10px; padding: 10px 12px; border: 1px solid #e0e0e0; transition: 0.3s; }
@@ -33,7 +34,7 @@
 
 <div class="login-header text-center mb-2">
     <a href="{{ route('home') }}" class="text-decoration-none d-block">
-        <h2><span>📰</span> Jornalzin</h2>
+<h2 style="font-family:'UnifrakturMaguntia',cursive;font-size:2.6rem;font-weight:400;">Jornalzin</h2>
     </a>
     <p class="text-muted small mb-0">Insira seu e-mail e senha para continuar</p>
 </div>

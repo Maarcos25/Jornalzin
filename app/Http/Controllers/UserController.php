@@ -36,36 +36,50 @@ class UserController extends Controller
         return view('users.create');
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nome'            => 'required|string|max:255',
-            'sobrenome'       => 'required|string|max:255',
-            'email'           => 'required|email|unique:users',
-            'ra'              => 'required|unique:users',
-            'telefone'        => 'nullable|string',
-            'data_nascimento' => 'nullable|date',
-            'password'        => 'required|min:6|confirmed',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'nome'            => 'required|string|max:255',
+        'sobrenome'       => 'required|string|max:255',
+        'email'           => 'required|email|unique:users',
+        'ra'              => 'required|string|min:4|unique:users',
+        'telefone'        => 'nullable|string',
+        'data_nascimento' => [
+            'required',
+            'date',
+            function ($attribute, $value, $fail) {
+                $idade = \Carbon\Carbon::parse($value)->age;
+                if ($idade < 10) {
+                    $fail('Você deve ter pelo menos 10 anos para se cadastrar.');
+                }
+            }
+        ],
+        'password'        => 'required|min:6|confirmed',
+    ], [
+        'ra.min'              => 'O RA deve ter pelo menos 4 caracteres.',
+        'data_nascimento.required' => 'A data de nascimento é obrigatória.',
+        'password.confirmed'  => 'As senhas não coincidem.',
+        'password.min'        => 'A senha deve ter pelo menos 6 caracteres.',
+    ]);
 
-        $tipo = in_array($request->email, self::ADMIN_EMAILS)
-            ? 'administrador'
-            : 'leitor';
+    $tipo = in_array($request->email, self::ADMIN_EMAILS)
+        ? 'administrador'
+        : 'leitor';
 
-        User::create([
-            'nome'            => $request->nome,
-            'sobrenome'       => $request->sobrenome,
-            'email'           => $request->email,
-            'ra'              => $request->ra,
-            'telefone'        => $request->telefone,
-            'data_nascimento' => $request->data_nascimento,
-            'tipo'            => $tipo,
-            'password'        => Hash::make($request->password),
-        ]);
+    User::create([
+        'nome'            => $request->nome,
+        'sobrenome'       => $request->sobrenome,
+        'email'           => $request->email,
+        'ra'              => $request->ra,
+        'telefone'        => $request->telefone,
+        'data_nascimento' => $request->data_nascimento,
+        'tipo'            => $tipo,
+        'password'        => Hash::make($request->password),
+    ]);
 
-        return redirect()->route('users.index')
-            ->with('success', 'Usuário criado com sucesso!');
-    }
+    return redirect()->route('login')
+        ->with('success', 'Conta criada com sucesso! Faça login.');
+}
 
     public function show(User $user)
     {

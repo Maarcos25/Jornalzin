@@ -16,7 +16,8 @@ class GoogleCompletarController extends Controller
             return redirect()->route('login');
         }
 
-        return view('auth.google-completar');
+$googleUser = session('google_user');
+return view('auth.google-completar', compact('googleUser'));
     }
 
     public function store(Request $request)
