@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\NotificacaoController;
 
 class UserController extends Controller
 {
@@ -120,23 +121,33 @@ public function store(Request $request)
             ->with('success', 'Usuário atualizado com sucesso!');
     }
     public function seguir(User $user)
-{
-    $eu = auth()->user();
+    {
+        $eu = auth()->user();
 
-    if ($eu->id === $user->id) {
-        return back();
+        if ($eu->id === $user->id) {
+            return back();
+        }
+
+        if ($eu->seguindo()->where('seguido_id', $user->id)->exists()) {
+            $eu->seguindo()->detach($user->id);
+            $seguindo = false;
+        } else {
+            $eu->seguindo()->attach($user->id);
+            $seguindo = true;
+
+            // ── Notificação de seguidor ──
+            NotificacaoController::criar(
+                $user->id,
+                $eu->id,
+                'seguidor',
+                $eu->nome . ' começou a te seguir',
+                route('users.perfil', $eu->id)
+            );
+        }
+
+        return back()->with('seguindo', $seguindo);
     }
 
-    if ($eu->seguindo()->where('seguido_id', $user->id)->exists()) {
-        $eu->seguindo()->detach($user->id);
-        $seguindo = false;
-    } else {
-        $eu->seguindo()->attach($user->id);
-        $seguindo = true;
-    }
-
-    return back()->with('seguindo', $seguindo);
-}
 public function seguidores(User $user)
 {
     $lista = $user->seguidores()->paginate(20);

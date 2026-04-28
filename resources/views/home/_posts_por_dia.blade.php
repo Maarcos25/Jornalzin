@@ -352,4 +352,52 @@ function fecharDenuncia() {
 document.getElementById('modalDenuncia').addEventListener('click', function(e) {
     if (e.target === this) fecharDenuncia();
 });
+// ── Double tap / double click para curtir ──
+(function() {
+    let lastTap = {};
+
+    document.addEventListener('click', function(e) {
+        const card = e.target.closest('.post-card');
+        if (!card) return;
+        if (e.target.closest('button,a,form,input,textarea,label,select')) return;
+
+        const postId = card.querySelector('[data-post-id]')?.dataset.postId
+                    || card.querySelector('.btn-like')?.getAttribute('onclick')?.match(/\d+/)?.[0];
+        if (!postId) return;
+
+        const now = Date.now();
+        if (lastTap[postId] && (now - lastTap[postId]) < 300) {
+            // Double click detectado!
+            lastTap[postId] = 0;
+            const btnLike = card.querySelector('.btn-like');
+            if (btnLike) {
+                // Mostra coração animado
+                mostrarCoracao(e.clientX, e.clientY);
+                // Só curte se ainda não curtiu
+                if (!btnLike.classList.contains('liked')) {
+                    toggleLike(btnLike, parseInt(postId));
+                }
+            }
+        } else {
+            lastTap[postId] = now;
+        }
+    });
+
+    function mostrarCoracao(x, y) {
+        const heart = document.createElement('div');
+        heart.textContent = '❤️';
+        heart.style.cssText = `
+            position: fixed;
+            left: ${x}px;
+            top: ${y}px;
+            font-size: 3.5rem;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%) scale(0);
+            animation: heartPop .6s ease forwards;
+        `;
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 700);
+    }
+})();   
 </script>

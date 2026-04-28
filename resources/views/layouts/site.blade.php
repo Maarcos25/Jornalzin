@@ -34,18 +34,15 @@
             --nav-bg:    #0b1120;
             --nav-border:#1e293b;
         }
-
         *, *::before, *::after {
             box-sizing: border-box;
             transition: background-color .3s ease, border-color .3s ease, color .2s ease, box-shadow .3s ease;
         }
-
         html, body { height: 100%; }
         body {
             background-color: var(--bg) !important;
             color: var(--text) !important;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
             min-height: 100vh;
             font-family: 'Segoe UI', sans-serif;
         }
@@ -59,8 +56,7 @@
         }
         .navbar-jornalzin .navbar-brand {
             font-family: 'UnifrakturMaguntia', cursive;
-            font-size: 1.6rem;
-            color: #f1f5f9 !important;
+            font-size: 1.6rem; color: #f1f5f9 !important;
         }
         .navbar-jornalzin .nav-link { color: #94a3b8 !important; font-weight: 500; }
         .navbar-jornalzin .nav-link:hover { color: #f1f5f9 !important; }
@@ -79,6 +75,23 @@
         }
         .btn-dark-mode:hover { border-color: #818cf8; color: #818cf8; }
 
+        /* ── Botão nav icon (DM, notif) ── */
+        .btn-nav-icon {
+            background: transparent;
+            border: 1.5px solid #475569;
+            color: #94a3b8;
+            border-radius: 50px;
+            padding: .32rem .7rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex; align-items: center;
+            line-height: 1;
+            text-decoration: none;
+            position: relative;
+        }
+        .btn-nav-icon:hover { border-color: #818cf8; color: #818cf8; }
+
         /* ── Botão menu ── */
         .btn-menu {
             background: #f1f5f9;
@@ -94,10 +107,7 @@
         html.dark .btn-menu:hover { background: #334155; color: #f1f5f9; }
 
         /* ── Dropdown dark ── */
-        html.dark .dropdown-menu {
-            background: #1e293b !important;
-            border-color: #334155 !important;
-        }
+        html.dark .dropdown-menu { background: #1e293b !important; border-color: #334155 !important; }
         html.dark .dropdown-item { color: #cbd5e1 !important; }
         html.dark .dropdown-item:hover { background: #334155 !important; color: #f1f5f9 !important; }
         html.dark .dropdown-divider { border-color: #334155 !important; }
@@ -120,92 +130,45 @@
         }
         .btn-nav-cadastro:hover { background: #3730a3; }
 
-        /* ── Dark mode: cards e textos ── */
-        html.dark .post-card,
-        html.dark .card {
-            background: var(--surface) !important;
-            border-color: var(--border) !important;
-            color: var(--text) !important;
+        /* Badge contador */
+        .nav-badge {
+            position: absolute; top: -4px; right: -4px;
+            background: #ef4444; color: #fff;
+            border-radius: 50px; font-size: .65rem; font-weight: 800;
+            padding: .05rem .38rem; line-height: 1.4;
+            min-width: 16px; text-align: center;
         }
+
+        /* ── Dark mode geral ── */
+        html.dark .post-card, html.dark .card { background: var(--surface) !important; border-color: var(--border) !important; color: var(--text) !important; }
         html.dark .post-title { color: #e2e8f0 !important; }
         html.dark .post-title:hover { color: #a5b4fc !important; }
         html.dark .home-title { color: #e2e8f0 !important; }
-        html.dark .post-excerpt,
-        html.dark .post-meta,
-        html.dark .comment-text,
-        html.dark .home-poll-label,
-        html.dark .text-muted { color: var(--muted) !important; }
-
-        /* Search inputs */
-        html.dark .search-wrap input,
-        html.dark .search-bar input {
-            background: var(--surface) !important;
-            border-color: var(--border) !important;
-            color: var(--text) !important;
-        }
-        html.dark .search-wrap input::placeholder,
-        html.dark .search-bar input::placeholder { color: var(--muted) !important; }
-
-        /* Filtros */
+        html.dark .post-excerpt, html.dark .post-meta, html.dark .comment-text, html.dark .home-poll-label, html.dark .text-muted { color: var(--muted) !important; }
+        html.dark .search-wrap input, html.dark .search-bar input { background: var(--surface) !important; border-color: var(--border) !important; color: var(--text) !important; }
+        html.dark .search-wrap input::placeholder, html.dark .search-bar input::placeholder { color: var(--muted) !important; }
         html.dark .filtro-link { color: var(--muted) !important; }
         html.dark .filtro-link:hover { background: #1e293b !important; color: #a5b4fc !important; }
         html.dark .filtro-link.active { background: var(--brand-dark) !important; color: #fff !important; }
-
-        /* Day separator */
         html.dark .day-sep-badge { background: #334155 !important; color: #e2e8f0 !important; }
         html.dark .day-sep-line { background: #334155 !important; }
-
-        /* Post footer */
         html.dark .post-footer { border-top-color: var(--border) !important; }
         html.dark .post-meta-sep { color: #334155 !important; }
-
-        /* Botões like / comment */
-        html.dark .btn-like,
-        html.dark .btn-comment {
-            background: #1a2744 !important;
-            border-color: #334155 !important;
-            color: #94a3b8 !important;
-        }
-        html.dark .btn-like:hover,
-        html.dark .btn-like.liked {
-            border-color: #f43f5e !important;
-            background: #2d1b26 !important;
-            color: #f43f5e !important;
-        }
-        html.dark .btn-comment:hover,
-        html.dark .btn-comment.active {
-            border-color: #a5b4fc !important;
-            background: #1e1f3a !important;
-            color: #a5b4fc !important;
-        }
-
-        /* Comments panel */
-        html.dark .comments-panel {
-            background: #1a2744 !important;
-            border-top-color: var(--border) !important;
-        }
+        html.dark .btn-like, html.dark .btn-comment { background: #1a2744 !important; border-color: #334155 !important; color: #94a3b8 !important; }
+        html.dark .btn-like:hover, html.dark .btn-like.liked { border-color: #f43f5e !important; background: #2d1b26 !important; color: #f43f5e !important; }
+        html.dark .btn-comment:hover, html.dark .btn-comment.active { border-color: #a5b4fc !important; background: #1e1f3a !important; color: #a5b4fc !important; }
+        html.dark .comments-panel { background: #1a2744 !important; border-top-color: var(--border) !important; }
         html.dark .comment-author { color: #e2e8f0 !important; }
         html.dark .comment-avatar { background: var(--brand-dark) !important; }
-        html.dark .comment-form input,
-        html.dark .comment-form textarea {
-            background: #0f172a !important;
-            border-color: #334155 !important;
-            color: #e2e8f0 !important;
-        }
-        html.dark .comment-form input::placeholder,
-        html.dark .comment-form textarea::placeholder { color: #64748b !important; }
-
-        /* Poll */
+        html.dark .comment-form input, html.dark .comment-form textarea { background: #0f172a !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+        html.dark .comment-form input::placeholder, html.dark .comment-form textarea::placeholder { color: #64748b !important; }
         html.dark .home-poll-opt { border-color: #334155 !important; color: #e2e8f0 !important; }
         html.dark .home-poll-opt:hover { border-color: #a5b4fc !important; background: #1e1f3a !important; }
         html.dark .poll-res-bg { background: #0f172a !important; border-color: #334155 !important; }
         html.dark .poll-res-label { color: #cbd5e1 !important; }
-
-        /* Post show page */
         html.dark .post-card { background: var(--surface) !important; border-color: var(--border) !important; }
         html.dark .post-title { color: var(--text) !important; }
-        html.dark .post-text,
-        html.dark .post-excerpt { color: var(--muted) !important; }
+        html.dark .post-text, html.dark .post-excerpt { color: var(--muted) !important; }
         html.dark .post-tipo.tipo-texto   { background: #1e3a5f !important; color: #93c5fd !important; }
         html.dark .post-tipo.tipo-imagem  { background: #4a1942 !important; color: #f9a8d4 !important; }
         html.dark .post-tipo.tipo-video   { background: #14532d !important; color: #86efac !important; }
@@ -217,20 +180,11 @@
         html.dark .empty-comments { color: var(--muted) !important; }
         html.dark .comment-form-card { background: var(--surface) !important; border-color: var(--border) !important; }
         html.dark .comment-form-card h5 { color: var(--text) !important; }
-        html.dark .btn-like,
-        html.dark .btn-back { background: #1a2744 !important; border-color: #334155 !important; color: #94a3b8 !important; }
+        html.dark .btn-like, html.dark .btn-back { background: #1a2744 !important; border-color: #334155 !important; color: #94a3b8 !important; }
         html.dark .btn-back:hover { border-color: var(--brand-light) !important; color: var(--brand-light) !important; }
-
-        /* Poll no show */
         html.dark .poll-opt { border-color: #334155 !important; color: #e2e8f0 !important; }
         html.dark .poll-opt:hover { border-color: var(--brand) !important; background: #1e1f3a !important; }
-        html.dark .poll-res-bg { background: #0f172a !important; border-color: #334155 !important; }
-
-        /* Perfil / usuarios */
-        html.dark .perfil-header,
-        html.dark .perfil-card,
-        html.dark .user-detail-card,
-        html.dark .users-card { background: var(--surface) !important; border-color: var(--border) !important; }
+        html.dark .perfil-header, html.dark .perfil-card, html.dark .user-detail-card, html.dark .users-card { background: var(--surface) !important; border-color: var(--border) !important; }
         html.dark .perfil-card-title { color: var(--text) !important; }
         html.dark .perfil-card-meta { color: var(--muted) !important; }
         html.dark .perfil-info h2 { color: var(--text) !important; }
@@ -240,8 +194,6 @@
         html.dark .detail-icon { background: #1e3a5f !important; color: var(--brand-light) !important; }
         html.dark .user-detail-body { border-color: var(--border) !important; }
         html.dark .detail-row { border-color: var(--border) !important; }
-
-        /* Posts index */
         html.dark .card-title { color: var(--text) !important; }
         html.dark .card-head  { border-color: var(--border) !important; }
         html.dark .card-author{ background: var(--surface-2) !important; border-color: var(--border) !important; }
@@ -254,51 +206,32 @@
         html.dark .result-label { color: var(--text) !important; }
         html.dark .result-bar-bg { background: #0f172a !important; border-color: var(--border) !important; }
         html.dark .poll-total { color: var(--muted) !important; }
-
-        /* Modais */
-        html.dark .modal-content {
-            background: #1e293b !important;
-            border-color: #334155 !important;
-            color: #e2e8f0 !important;
-        }
+        html.dark .modal-content { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
         html.dark .modal-form label { color: #94a3b8 !important; }
-        html.dark .modal-form .form-control {
-            background: #0f172a !important;
-            border-color: #334155 !important;
-            color: #e2e8f0 !important;
-        }
+        html.dark .modal-form .form-control { background: #0f172a !important; border-color: #334155 !important; color: #e2e8f0 !important; }
         html.dark .btn-outline-secondary { color: #94a3b8 !important; border-color: #475569 !important; }
         html.dark .btn-outline-secondary:hover { background: #334155 !important; color: #f1f5f9 !important; }
-
-        /* Modal denúncia dark */
         html.dark .denuncia-box { background: var(--surface) !important; }
         html.dark .denuncia-box h5 { color: var(--text) !important; }
         html.dark .denuncia-box p  { color: var(--muted) !important; }
         html.dark .denuncia-opcao { border-color: var(--border) !important; color: var(--text) !important; }
-        html.dark #modalDenuncia .denuncia-box,
-        html.dark #modalDenunciaShow .denuncia-box { background: var(--surface) !important; }
-
-        /* Paginação dark */
+        html.dark #modalDenuncia .denuncia-box, html.dark #modalDenunciaShow .denuncia-box { background: var(--surface) !important; }
         html.dark .pagination {
-            --bs-pagination-bg:                #1e293b !important;
-            --bs-pagination-border-color:      #334155 !important;
-            --bs-pagination-color:             #94a3b8 !important;
-            --bs-pagination-hover-bg:          #334155 !important;
-            --bs-pagination-hover-color:       #e2e8f0 !important;
-            --bs-pagination-hover-border-color:#475569 !important;
-            --bs-pagination-active-bg:         #4f46e5 !important;
-            --bs-pagination-active-border-color:#4f46e5 !important;
-            --bs-pagination-disabled-bg:       #1e293b !important;
-            --bs-pagination-disabled-color:    #475569 !important;
-            --bs-pagination-disabled-border-color:#334155 !important;
+            --bs-pagination-bg: #1e293b !important;
+            --bs-pagination-border-color: #334155 !important;
+            --bs-pagination-color: #94a3b8 !important;
+            --bs-pagination-hover-bg: #334155 !important;
+            --bs-pagination-hover-color: #e2e8f0 !important;
+            --bs-pagination-hover-border-color: #475569 !important;
+            --bs-pagination-active-bg: #4f46e5 !important;
+            --bs-pagination-active-border-color: #4f46e5 !important;
+            --bs-pagination-disabled-bg: #1e293b !important;
+            --bs-pagination-disabled-color: #475569 !important;
+            --bs-pagination-disabled-border-color: #334155 !important;
         }
-
-        /* Carrossel dark */
         html.dark .carousel-thumbs { background: var(--surface-2) !important; border-color: var(--border) !important; }
         html.dark .carousel-thumb  { border-color: transparent !important; }
         html.dark .carousel-thumb.active { border-color: var(--brand-light) !important; }
-
-        /* Instagram perfil dark */
         html.dark .ig-post-placeholder { background: linear-gradient(135deg, #1e3a5f, #1e293b) !important; }
         html.dark .ig-post-placeholder p { color: #94a3b8 !important; }
         html.dark .ig-username { color: var(--text) !important; }
@@ -309,19 +242,14 @@
 
         /* Footer */
         footer {
-            padding: 20px;
-            background: var(--surface-2);
-            color: var(--muted);
-            text-align: center;
-            border-top: 1px solid var(--border);
-            margin-top: auto;
+            padding: 20px; background: var(--surface-2); color: var(--muted);
+            text-align: center; border-top: 1px solid var(--border); margin-top: auto;
         }
 
-        /* Modais gradient header */
+        /* Modais */
         .modal-grad-header {
             background: linear-gradient(135deg, #4f46e5, #3730a3);
-            color: #fff; border-radius: 16px 16px 0 0;
-            border: none;
+            color: #fff; border-radius: 16px 16px 0 0; border: none;
         }
         .modal-grad-header .btn-close { filter: invert(1); }
         .modal-form label { font-weight: 600; font-size: .85rem; color: #475569; text-transform: uppercase; letter-spacing: .04em; }
@@ -329,33 +257,39 @@
         .modal-form .form-control:focus { border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,.1); }
         .btn-modal-enviar { background: linear-gradient(135deg, #4f46e5, #3730a3); color: #fff; border: none; border-radius: 50px; padding: .6rem 1.6rem; font-weight: 700; font-size: .95rem; transition: all .2s; }
         .btn-modal-enviar:hover { transform: translateY(-1px); color: #fff; }
+
+        /* Toast */
         .toast-msg {
-    display: flex; align-items: center; gap: .75rem;
-    background: #1e293b; color: #f1f5f9;
-    border-radius: 14px; padding: .85rem 1.2rem;
-    box-shadow: 0 8px 32px rgba(0,0,0,.35);
-    font-size: .93rem; font-weight: 500;
-    min-width: 280px; max-width: 380px;
-    border-left: 4px solid #22c55e;
-    animation: slideInToast .3s ease;
-    position: relative; overflow: hidden;
-}
-.toast-msg.error   { border-left-color: #ef4444; }
-.toast-msg.warning { border-left-color: #f59e0b; }
-.toast-msg .toast-icon { font-size: 1.2rem; flex-shrink: 0; }
-.toast-msg .toast-progress {
-    position: absolute; bottom: 0; left: 0; height: 3px;
-    background: #22c55e; animation: toastProgress 4s linear forwards;
-}
-.toast-msg.error   .toast-progress { background: #ef4444; }
-.toast-msg.warning .toast-progress { background: #f59e0b; }
-@keyframes slideInToast {
-    from { opacity: 0; transform: translateX(60px); }
-    to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes toastProgress {
-    from { width: 100%; }
-    to   { width: 0%; }
+            display: flex; align-items: center; gap: .75rem;
+            background: #1e293b; color: #f1f5f9;
+            border-radius: 14px; padding: .85rem 1.2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,.35);
+            font-size: .93rem; font-weight: 500;
+            min-width: 280px; max-width: 380px;
+            border-left: 4px solid #22c55e;
+            animation: slideInToast .3s ease;
+            position: relative; overflow: hidden;
+        }
+        .toast-msg.error   { border-left-color: #ef4444; }
+        .toast-msg.warning { border-left-color: #f59e0b; }
+        .toast-msg .toast-icon { font-size: 1.2rem; flex-shrink: 0; }
+        .toast-msg .toast-progress {
+            position: absolute; bottom: 0; left: 0; height: 3px;
+            background: #22c55e; animation: toastProgress 4s linear forwards;
+        }
+        .toast-msg.error   .toast-progress { background: #ef4444; }
+        .toast-msg.warning .toast-progress { background: #f59e0b; }
+        @keyframes slideInToast {
+            from { opacity: 0; transform: translateX(60px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes toastProgress {
+            from { width: 100%; } to { width: 0%; }
+        }
+        @keyframes heartPop {
+    0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+    50%  { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+    100% { transform: translate(-50%, -80%) scale(1); opacity: 0; }
 }
     </style>
     @stack('styles')
@@ -378,71 +312,101 @@
         </ul>
     </div>
 
-    <button class="btn-dark-mode me-2" id="btnDarkMode" title="Alternar modo escuro" onclick="toggleDark()">
-        <span id="darkIcon">🌙</span>
-    </button>
+    {{-- Ícones direita: DM + Notificações + Dark + Menu --}}
+    <div class="d-flex align-items-center gap-2">
 
-    @auth
-    <div class="dropdown ms-2">
-        <button class="btn-menu dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <span>☰</span>
-            <span>{{ auth()->user()->nome ?? 'Usuário' }}</span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="min-width:220px;border-radius:12px;border:1px solid #e2e8f0;">
-            {{-- Perfil → redireciona para /u/{id} estilo Instagram --}}
-            <li>
-                <a class="dropdown-item py-2" href="{{ route('users.perfil', auth()->id()) }}">
-                    👤 Perfil
-                </a>
-            </li>
-            <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalContato">📩 Contato</a></li>
-            @if(auth()->user()->tipo === 'leitor')
-                <li><hr class="dropdown-divider my-1"></li>
-                <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalSolicitarEditor">✍️ Quero ser Editor</a></li>
+        @auth
+        {{-- DM --}}
+        @php $dmNaoLidas = \App\Http\Controllers\DMController::totalNaoLidas(); @endphp
+        <a href="{{ route('dm.index') }}" class="btn-nav-icon" title="Mensagens">
+            💬
+            @if($dmNaoLidas > 0)
+                <span class="nav-badge">{{ $dmNaoLidas > 99 ? '99+' : $dmNaoLidas }}</span>
             @endif
-            @if(auth()->user()->tipo === 'administrador')
-                @php $totalPendentes = \App\Models\SolicitacaoEditor::where('status', 'pendente')->count(); @endphp
-                <li><hr class="dropdown-divider my-1"></li>
-                <li><span class="dropdown-item-text text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Admin</span></li>
-                <li><a class="dropdown-item py-2" href="{{ route('comments.index') }}">💬 Comentários</a></li>
-                @php $totalDenuncias = \App\Models\Denuncia::where('lida', false)->count(); @endphp
-<li>
-    <a class="dropdown-item py-2 d-flex align-items-center justify-content-between" href="{{ route('admin.denuncias') }}">
-        <span>🚩 Denúncias</span>
-        @if($totalDenuncias > 0)
-            <span style="background:#ef4444;color:#fff;border-radius:50px;padding:.1rem .55rem;font-size:.75rem;font-weight:700;">{{ $totalDenuncias }}</span>
-        @endif
-    </a>
-</li>
+        </a>
+
+        {{-- Notificações --}}
+        @php $totalNotif = \App\Models\Notificacao::where('user_id', auth()->id())->where('lida', false)->count(); @endphp
+        <a href="{{ route('notificacoes.index') }}" class="btn-nav-icon" title="Notificações">
+            🔔
+            @if($totalNotif > 0)
+                <span class="nav-badge">{{ $totalNotif > 99 ? '99+' : $totalNotif }}</span>
+            @endif
+        </a>
+        @endauth
+
+        {{-- Dark mode --}}
+        <button class="btn-dark-mode" id="btnDarkMode" title="Alternar modo escuro" onclick="toggleDark()">
+            <span id="darkIcon">🌙</span>
+        </button>
+
+        @auth
+        {{-- Menu dropdown --}}
+        <div class="dropdown">
+            <button class="btn-menu dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span>☰</span>
+                <span>{{ auth()->user()->nome ?? 'Usuário' }}</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="min-width:220px;border-radius:12px;border:1px solid #e2e8f0;">
                 <li>
-                    <a class="dropdown-item py-2 d-flex align-items-center justify-content-between" href="{{ route('admin.solicitacoes') }}">
-                        <span>📋 Solicitações de Editor</span>
-                        @if($totalPendentes > 0)
-                            <span style="background:#ef4444;color:#fff;border-radius:50px;padding:.1rem .55rem;font-size:.75rem;font-weight:700;">{{ $totalPendentes }}</span>
-                        @endif
+                    <a class="dropdown-item py-2" href="{{ route('users.perfil', auth()->id()) }}">
+                        👤 Perfil
                     </a>
                 </li>
-            @endif
-            <li><hr class="dropdown-divider my-1"></li>
-            <li>
-                <form method="POST" action="{{ route('logout') }}" class="m-0">
-                    @csrf
-                    <button type="submit" class="dropdown-item py-2 text-danger fw-bold">🚪 Sair</button>
-                </form>
-            </li>
-        </ul>
-    </div>
-    @endauth
+                <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalContato">📩 Contato</a></li>
 
-    @guest
-    <div class="ms-2 d-flex align-items: center gap-2">
+                @if(auth()->user()->tipo === 'leitor')
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalSolicitarEditor">✍️ Quero ser Editor</a></li>
+                @endif
+
+                @if(auth()->user()->tipo === 'administrador')
+                    @php $totalPendentes = \App\Models\SolicitacaoEditor::where('status', 'pendente')->count(); @endphp
+                    @php $totalDenuncias = \App\Models\Denuncia::where('lida', false)->count(); @endphp
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li><span class="dropdown-item-text text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Admin</span></li>
+                    <li><a class="dropdown-item py-2" href="{{ route('comments.index') }}">💬 Comentários</a></li>
+                    <li>
+                        <a class="dropdown-item py-2 d-flex align-items-center justify-content-between" href="{{ route('admin.denuncias') }}">
+                            <span>🚩 Denúncias</span>
+                            @if($totalDenuncias > 0)
+                                <span style="background:#ef4444;color:#fff;border-radius:50px;padding:.1rem .55rem;font-size:.75rem;font-weight:700;">{{ $totalDenuncias }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item py-2 d-flex align-items-center justify-content-between" href="{{ route('admin.solicitacoes') }}">
+                            <span>📋 Solicitações de Editor</span>
+                            @if($totalPendentes > 0)
+                                <span style="background:#ef4444;color:#fff;border-radius:50px;padding:.1rem .55rem;font-size:.75rem;font-weight:700;">{{ $totalPendentes }}</span>
+                            @endif
+                        </a>
+                    </li>
+                @endif
+
+                <li><hr class="dropdown-divider my-1"></li>
+                <li>
+                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                        @csrf
+                        <button type="submit" class="dropdown-item py-2 text-danger fw-bold">🚪 Sair</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+        @endauth
+
+        @guest
         <a href="{{ route('login') }}" class="btn-nav-login">Entrar</a>
         <a href="{{ url('/users/create') }}" class="btn-nav-cadastro">Cadastro</a>
+        @endguest
+
     </div>
-    @endguest
 </nav>
 
-<!-- MODAL CONTATO -->
+{{-- Toast container --}}
+<div id="toast-container" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:99998;display:flex;flex-direction:column;gap:.6rem;"></div>
+
+{{-- Modal Contato --}}
 <div class="modal fade" id="modalContato" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width:860px;width:95%;">
         <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 8px 32px rgba(0,0,0,.12);">
@@ -477,12 +441,8 @@
         </div>
     </div>
 </div>
-<!-- Toast container -->
-<div id="toast-container" style="
-    position: fixed; bottom: 1.5rem; right: 1.5rem;
-    z-index: 99998; display: flex; flex-direction: column; gap: .6rem;
-"></div>
-<!-- MODAL SOLICITAR EDITOR -->
+
+{{-- Modal Solicitar Editor --}}
 @auth
 @if(auth()->user()->tipo === 'leitor')
 <div class="modal fade" id="modalSolicitarEditor" tabindex="-1" aria-hidden="true">
@@ -535,7 +495,6 @@
     const html = document.getElementById('html-root');
     const icon = document.getElementById('darkIcon');
 
-    // Aplica dark mode salvo ANTES do render para evitar flash
     if (localStorage.getItem('dark') === '1') {
         html.classList.add('dark');
         if (icon) icon.textContent = '☀️';
@@ -553,66 +512,53 @@
         bootstrap.Modal.getInstance(document.getElementById('modalContato')).hide();
         alert('✅ Mensagem enviada com sucesso!');
     }
+
     /* ── Carrossel Home ── */
-const _carouselState = {};
+    const _carouselState = {};
+    function moverCarousel(id, dir) {
+        const el    = document.getElementById(id);
+        const track = el.querySelector('.home-carousel-track');
+        const total = el.querySelectorAll('.home-carousel-slide').length;
+        if (!_carouselState[id]) _carouselState[id] = 0;
+        _carouselState[id] = (_carouselState[id] + dir + total) % total;
+        _atualizarCarousel(id, el, track, total);
+    }
+    function irParaSlide(id, idx) {
+        const el    = document.getElementById(id);
+        const track = el.querySelector('.home-carousel-track');
+        const total = el.querySelectorAll('.home-carousel-slide').length;
+        _carouselState[id] = idx;
+        _atualizarCarousel(id, el, track, total);
+    }
+    function _atualizarCarousel(id, el, track, total) {
+        const idx = _carouselState[id];
+        track.style.transform = `translateX(-${idx * 100}%)`;
+        el.querySelectorAll('.hc-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+        const counter = el.querySelector('.hc-current');
+        if (counter) counter.textContent = idx + 1;
+    }
 
-function moverCarousel(id, dir) {
-    const el    = document.getElementById(id);
-    const track = el.querySelector('.home-carousel-track');
-    const total = el.querySelectorAll('.home-carousel-slide').length;
-
-    if (!_carouselState[id]) _carouselState[id] = 0;
-    _carouselState[id] = (_carouselState[id] + dir + total) % total;
-    _atualizarCarousel(id, el, track, total);
-}
-
-function irParaSlide(id, idx) {
-    const el    = document.getElementById(id);
-    const track = el.querySelector('.home-carousel-track');
-    const total = el.querySelectorAll('.home-carousel-slide').length;
-    _carouselState[id] = idx;
-    _atualizarCarousel(id, el, track, total);
-}
-
-function _atualizarCarousel(id, el, track, total) {
-    const idx = _carouselState[id];
-    track.style.transform = `translateX(-${idx * 100}%)`;
-
-    // dots
-    el.querySelectorAll('.hc-dot').forEach((d, i) =>
-        d.classList.toggle('active', i === idx));
-
-    // contador
-    const counter = el.querySelector('.hc-current');
-    if (counter) counter.textContent = idx + 1;
-}
-function showToast(msg, type = 'success') {
-    const icons = { success: '✅', error: '❌', warning: '⚠️' };
-    const el = document.createElement('div');
-    el.className = `toast-msg ${type !== 'success' ? type : ''}`;
-    el.innerHTML = `
-        <span class="toast-icon">${icons[type] || '✅'}</span>
-        <span>${msg}</span>
-        <div class="toast-progress"></div>
-    `;
-    document.getElementById('toast-container').appendChild(el);
-    setTimeout(() => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateX(60px)';
-        el.style.transition = 'all .3s ease';
-        setTimeout(() => el.remove(), 300);
-    }, 4000);
-}
-@if(session('success'))
-    showToast("{{ session('success') }}", 'success');
-@endif
-@if(session('error'))
-    showToast("{{ session('error') }}", 'error');
-@endif
-@if(session('warning'))
-    showToast("{{ session('warning') }}", 'warning');
-@endif
-
+    /* ── Toast ── */
+    function showToast(msg, type = 'success') {
+        const icons = { success: '✅', error: '❌', warning: '⚠️' };
+        const el = document.createElement('div');
+        el.className = `toast-msg ${type !== 'success' ? type : ''}`;
+        el.innerHTML = `
+            <span class="toast-icon">${icons[type] || '✅'}</span>
+            <span>${msg}</span>
+            <div class="toast-progress"></div>
+        `;
+        document.getElementById('toast-container').appendChild(el);
+        setTimeout(() => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(60px)';
+            el.style.transition = 'all .3s ease';
+            setTimeout(() => el.remove(), 300);
+        }, 4000);
+    }
+    @if(session('success')) showToast("{{ session('success') }}", 'success'); @endif
+    @if(session('error'))   showToast("{{ session('error') }}", 'error');     @endif
+    @if(session('warning')) showToast("{{ session('warning') }}", 'warning'); @endif
 </script>
 </body>
 </html>

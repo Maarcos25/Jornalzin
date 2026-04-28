@@ -2,6 +2,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Post;
+use App\Http\Controllers\NotificacaoController;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -28,22 +30,33 @@ class CommentController extends Controller
 
     public function store(Request $request)
     {
-        // ❌ Remova o apenasAdmin() daqui
         $request->validate([
-            'texto' => 'required',
+            'texto'   => 'required',
             'post_id' => 'required|exists:posts,id'
         ]);
 
         $comment = Comment::create([
-            'texto' => $request->texto,
+            'texto'   => $request->texto,
             'user_id' => auth()->id(),
             'post_id' => $request->post_id,
-            'status' => 'pendente'
+            'status'  => 'pendente'
         ]);
 
+        // ── Notificação de comentário ──
+        $post = Post::find($request->post_id);
+        if ($post) {
+            NotificacaoController::criar(
+                $post->id_usuario,
+                auth()->id(),
+                'comentario',
+                auth()->user()->nome . ' comentou em "' . $post->titulo . '"',
+                route('posts.show', $post->id) . '#comentarios'
+            );
+        }
+
         return redirect()->route('posts.show', $comment->post_id)
-        ->with('success', 'Comentário enviado e aguardando aprovação!');
-}
+            ->with('success', 'Comentário enviado!');
+    }
 
     public function show(Comment $comment)
     {
@@ -61,11 +74,10 @@ class CommentController extends Controller
     {
         $this->apenasAdmin();
         $request->validate(['texto' => 'required']);
-
         $comment->update(['texto' => $request->texto]);
 
         return redirect()->route('comments.index')
-            ->with('success', 'Comentário atualizado com sucesso!');
+            ->with('success', 'Comentário atualizado!');
     }
 
     public function destroy(Comment $comment)
@@ -74,14 +86,13 @@ class CommentController extends Controller
         $comment->delete();
 
         return redirect()->route('comments.index')
-            ->with('success', 'Comentário removido com sucesso!');
+            ->with('success', 'Comentário removido!');
     }
 
     public function aprovar($id)
     {
         $this->apenasAdmin();
-
-        $comment = Comment::findOrFail($id); // ✅ CORRETO
+        $comment = Comment::findOrFail($id);
         $comment->status = 'aprovado';
         $comment->save();
 
@@ -91,8 +102,7 @@ class CommentController extends Controller
     public function ocultar($id)
     {
         $this->apenasAdmin();
-
-        $comment = Comment::findOrFail($id); // ✅ CORRETO
+        $comment = Comment::findOrFail($id);
         $comment->status = 'oculto';
         $comment->save();
 

@@ -34,8 +34,6 @@ class User extends Authenticatable
         'data_nascimento'   => 'date',
     ];
 
-    /* ── Relacionamentos ── */
-
     public function posts()
     {
         return $this->hasMany(Post::class, 'id_usuario');
@@ -51,21 +49,27 @@ class User extends Authenticatable
         return $this->hasMany(\App\Models\Comment::class, 'user_id');
     }
 
-    // Usuários que este usuário segue
     public function seguindo()
     {
         return $this->belongsToMany(User::class, 'seguidores', 'seguidor_id', 'seguido_id');
     }
 
-    // Usuários que seguem este usuário
     public function seguidores()
     {
         return $this->belongsToMany(User::class, 'seguidores', 'seguido_id', 'seguidor_id');
     }
 
-    // Verifica se está seguindo um usuário específico
     public function seguindo_usuario(int $userId): bool
     {
         return $this->seguindo()->where('seguido_id', $userId)->exists();
+    }
+
+    public function conversas()
+    {
+        return \App\Models\Conversa::where('user1_id', $this->id)
+            ->orWhere('user2_id', $this->id)
+            ->with(['user1', 'user2', 'mensagens'])
+            ->orderByDesc('ultima_mensagem_at')
+            ->get();
     }
 }

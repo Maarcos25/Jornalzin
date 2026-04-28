@@ -15,8 +15,8 @@
         --shadow:     0 2px 12px rgba(0,0,0,.07);
     }
 
-    body { background: #f1f5f9 !important; font-family: 'Segoe UI', sans-serif; }
-    .show-wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.2rem 4rem; }
+    body { font-family: 'Segoe UI', sans-serif; }
+    .show-wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.2rem 4rem;background: var(--bg); }
 
     .post-card {
         background: var(--surface);
