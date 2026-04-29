@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\DenunciaController;
 use App\Http\Controllers\DMController;
 use App\Http\Controllers\NotificacaoController;
+use App\Http\Controllers\FavoritoController;
 
 // Rotas autenticadas + verificadas
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -106,4 +107,10 @@ Route::delete('/u/{user}/seguidores/{seguidor}/remover', [UserController::class,
     ->name('users.removerSeguidor')
     ->middleware('auth');
 
+    Route::middleware('auth')->group(function () {
+        Route::post('/favorito/{post}', [FavoritoController::class, 'toggle'])->name('favoritos.toggle');
+        Route::get('/favoritos', [FavoritoController::class, 'index'])->name('favoritos.index');
+    });
+    Route::get('/favoritos', [\App\Http\Controllers\FavoritoController::class, 'index'])->name('favoritos.index')->middleware('auth');
+    Route::post('/favorito/{post}', [\App\Http\Controllers\FavoritoController::class, 'toggle'])->name('favoritos.toggle')->middleware('auth');
 require __DIR__.'/auth.php';

@@ -46,6 +46,7 @@
                     $totalComentarios = $post->comments ? $post->comments->count() : 0;
                     $jaLikei = auth()->check() && $post->likes()->where('user_id', auth()->id())->exists();
                     $totalLikes = $post->likes()->count();
+                    $jaFavoritei = auth()->check() && $post->favoritos()->where('user_id', auth()->id())->exists();
 
                     $masonryClass = match($post->tamanho) {
                         'GG' => 'masonry-full',
@@ -64,11 +65,8 @@
                 @endphp
 
                 <div class="masonry-item {{ $masonryClass }}">
-                    {{-- Wrapper destaque: apenas brilho laranja pulsante, SEM borda/quadrado --}}
                     @if ($isDestaque)
-                    <div style="position:relative;border-radius:20px;overflow:hidden;margin-bottom:0;
-                                box-shadow: 0 0 0 0 rgba(249,115,22,0);
-                                animation: pulse-glow 2.5s infinite;">
+                    <div style="position:relative;border-radius:20px;overflow:hidden;margin-bottom:0;animation:pulse-glow 2.5s infinite;">
                     <style>
                         @keyframes pulse-glow {
                             0%,100% { box-shadow: 0 0 14px 2px rgba(249,115,22,.35); }
@@ -77,62 +75,46 @@
                     </style>
                     @endif
 
-                    {{-- Card inteiro clicável --}}
-<div class="post-card {{ $isDestaque ? 'destaque-relevante' : '' }}"
-     onclick="window.location='{{ route('posts.show', $post->id) }}'"
-     style="cursor:pointer;">
+                    <div class="post-card {{ $isDestaque ? 'destaque-relevante' : '' }}"
+                         onclick="window.location='{{ route('posts.show', $post->id) }}'"
+                         style="cursor:pointer;">
 
                         @if ($isDestaque)
                             <div style="padding:.45rem .9rem .0rem;background:transparent;">
-                                <span style="
-                                    color:#f97316;
-                                    font-size:.75rem;
-                                    font-weight:800;
-                                    letter-spacing:.06em;
-                                    text-transform:uppercase;
-                                    animation: pulse-text 2.5s infinite;
-                                ">🏆 Mais Relevante</span>
-                                <style>
-                                    @keyframes pulse-text {
-                                        0%,100% { opacity:1; }
-                                        50%      { opacity:.6; }
-                                    }
-                                </style>
+                                <span style="color:#f97316;font-size:.75rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;animation:pulse-text 2.5s infinite;">🏆 Mais Relevante</span>
+                                <style>@keyframes pulse-text{0%,100%{opacity:1}50%{opacity:.6}}</style>
                             </div>
                         @endif
 
-{{-- MÍDIA IMAGEM --}}
-@if ($post->tipo === 'imagem' && count($imgs))
-    @php $c = count($imgs); @endphp
-    <div class="post-media" onclick="event.stopPropagation()">
-        @if ($c === 1)
-            <img src="{{ $imgs[0] }}" class="home-img-single"
-                onclick="abrirImagem('{{ $imgs[0] }}')" alt="{{ $post->titulo }}">
-        @else
-            @php $cid = 'carousel-'.$post->id; @endphp
-            <div class="home-carousel" id="{{ $cid }}">
-                <div class="home-carousel-track">
-                    @foreach ($imgs as $src)
-                        <div class="home-carousel-slide">
-                            <img src="{{ $src }}" alt="{{ $post->titulo }}"
-                                onclick="abrirImagem('{{ $src }}')">
-                        </div>
-                    @endforeach
-                </div>
-                <button class="hc-btn hc-prev" onclick="moverCarousel('{{ $cid }}', -1)">&#8249;</button>
-                <button class="hc-btn hc-next" onclick="moverCarousel('{{ $cid }}', 1)">&#8250;</button>
-                <div class="hc-dots">
-                    @foreach ($imgs as $i => $src)
-                        <span class="hc-dot {{ $i === 0 ? 'active' : '' }}"
-                              onclick="irParaSlide('{{ $cid }}', {{ $i }})"></span>
-                    @endforeach
-                </div>
-                <div class="hc-counter">
-                    <span class="hc-current">1</span>/{{ $c }}
-                </div>
-            </div>
-        @endif
-    </div>
+                        {{-- MÍDIA IMAGEM --}}
+                        @if ($post->tipo === 'imagem' && count($imgs))
+                            @php $c = count($imgs); @endphp
+                            <div class="post-media" onclick="event.stopPropagation()">
+                                @if ($c === 1)
+                                    <img src="{{ $imgs[0] }}" class="home-img-single"
+                                        onclick="abrirImagem('{{ $imgs[0] }}')" alt="{{ $post->titulo }}">
+                                @else
+                                    @php $cid = 'carousel-'.$post->id; @endphp
+                                    <div class="home-carousel" id="{{ $cid }}">
+                                        <div class="home-carousel-track">
+                                            @foreach ($imgs as $src)
+                                                <div class="home-carousel-slide">
+                                                    <img src="{{ $src }}" alt="{{ $post->titulo }}" onclick="abrirImagem('{{ $src }}')">
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <button class="hc-btn hc-prev" onclick="moverCarousel('{{ $cid }}', -1)">&#8249;</button>
+                                        <button class="hc-btn hc-next" onclick="moverCarousel('{{ $cid }}', 1)">&#8250;</button>
+                                        <div class="hc-dots">
+                                            @foreach ($imgs as $i => $src)
+                                                <span class="hc-dot {{ $i === 0 ? 'active' : '' }}" onclick="irParaSlide('{{ $cid }}', {{ $i }})"></span>
+                                            @endforeach
+                                        </div>
+                                        <div class="hc-counter"><span class="hc-current">1</span>/{{ $c }}</div>
+                                    </div>
+                                @endif
+                            </div>
+
                         {{-- MÍDIA VÍDEO --}}
                         @elseif ($post->tipo === 'video' && $post->video)
                             <div class="home-video-wrap" onclick="event.stopPropagation()">
@@ -164,11 +146,7 @@
                                     @if ($jaVotou)
                                         @foreach (range(1, 8) as $i)
                                             @php $op = $post->{'opcao'.$i}; if (!$op) continue; @endphp
-                                            @php
-                                                $qtd = $votosArr[$i] ?? 0;
-                                                $pct = $totalVotos > 0 ? round(($qtd / $totalVotos) * 100) : 0;
-                                                $win = $qtd === $maxVotos && $maxVotos > 0;
-                                            @endphp
+                                            @php $qtd = $votosArr[$i] ?? 0; $pct = $totalVotos > 0 ? round(($qtd / $totalVotos) * 100) : 0; $win = $qtd === $maxVotos && $maxVotos > 0; @endphp
                                             <div class="poll-res-row">
                                                 <div class="poll-res-label">
                                                     <span>{{ $op }} @if($win) 🏆 @endif</span>
@@ -198,33 +176,67 @@
 
                         {{-- FOOTER --}}
                         <div class="post-footer" onclick="event.stopPropagation()">
-                            <span class="post-meta">
+                            <div style="display:flex;align-items:center;gap:.4rem;">
                                 @if ($post->usuario && $post->usuario->avatar)
                                     <img src="{{ asset('storage/' . $post->usuario->avatar) }}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;">
                                 @else
                                     <span>✍️</span>
                                 @endif
                                 @if ($post->usuario)
-                                    <a href="{{ route('users.perfil', $post->usuario->id) }}" style="color:inherit;text-decoration:none;font-weight:700;" onclick="event.stopPropagation()">
+                                    <a href="{{ route('users.perfil', $post->usuario->id) }}" style="color:inherit;text-decoration:none;font-weight:700;font-size:.88rem;" onclick="event.stopPropagation()">
                                         {{ $post->usuario->nome }}
                                     </a>
                                 @else
-                                    Desconhecido
+                                    <span style="font-size:.88rem;">Desconhecido</span>
                                 @endif
-                            </span>
-                            <span class="post-meta-sep">·</span>
-                            <span class="post-meta">👁 {{ $post->visualizacoes }}</span>
-                            <div class="post-actions">
-                                <button class="btn-like {{ $jaLikei ? 'liked' : '' }}" onclick="toggleLike(this, {{ $post->id }})" type="button">
+                                <span style="color:var(--border);">·</span>
+                                <span style="font-size:.85rem;color:var(--muted);">👁 {{ $post->visualizacoes }}</span>
+                            </div>
+
+                            <div style="display:flex;align-items:center;gap:.35rem;margin-left:auto;">
+                                @auth
+                                <button class="btn-like {{ $jaLikei ? 'liked' : '' }}"
+                                    onclick="toggleLike(this, {{ $post->id }})" type="button"
+                                    style="padding:.38rem .85rem;font-size:.88rem;">
                                     <span class="like-icon">{{ $jaLikei ? '❤️' : '🤍' }}</span>
                                     <span class="like-count">{{ $totalLikes }}</span>
                                 </button>
-<a class="btn-comment" href="{{ route('posts.show', $post->id) }}#comentarios" onclick="event.stopPropagation()">
-    💬 {{ $totalComentarios > 0 ? $totalComentarios : '' }}
-</a>
-                                <button class="btn-comment" onclick="abrirDenunciaPost({{ $post->id }})" type="button" title="Denunciar post">
-                                    🚩
-                                </button>
+                                @else
+                                <a href="{{ route('login') }}" class="btn-like" style="padding:.38rem .85rem;font-size:.88rem;">🤍 {{ $totalLikes }}</a>
+                                @endauth
+
+                                <a class="btn-comment" href="{{ route('posts.show', $post->id) }}#comentarios"
+                                    onclick="event.stopPropagation()"
+                                    style="padding:.38rem .85rem;font-size:.88rem;">
+                                    💬{{ $totalComentarios > 0 ? ' '.$totalComentarios : '' }}
+                                </a>
+
+                                <span style="width:1px;height:20px;background:var(--border);margin:0 .1rem;"></span>
+
+                                @auth
+                                <div style="position:relative;" onclick="event.stopPropagation()">
+                                    <button class="btn-comment"
+                                        onclick="toggleMenu({{ $post->id }})"
+                                        type="button"
+                                        style="padding:.38rem .7rem;font-size:.88rem;font-weight:800;letter-spacing:.1em;">
+                                        •••
+                                    </button>
+                                    <div id="menu-{{ $post->id }}" style="display:none;position:absolute;bottom:110%;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);min-width:160px;z-index:100;overflow:hidden;">
+                                        <button onclick="toggleFavorito(this, {{ $post->id }}); toggleMenu({{ $post->id }})"
+                                            type="button"
+                                            style="width:100%;padding:.7rem 1rem;border:none;background:transparent;color:var(--text);font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.6rem;"
+                                            onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background='transparent'">
+                                            {{ $jaFavoritei ? '🔖 Remover dos salvos' : '🔖 Salvar post' }}
+                                        </button>
+                                        <button onclick="abrirDenunciaPost({{ $post->id }}); toggleMenu({{ $post->id }})"
+                                            type="button"
+                                            style="width:100%;padding:.7rem 1rem;border:none;background:transparent;color:#ef4444;font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.6rem;"
+                                            onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background='transparent'">
+                                            🚩 Denunciar
+                                        </button>
+                                    </div>
+                                </div>
+                                @endauth
                             </div>
                         </div>
 
@@ -268,7 +280,6 @@
                         </div>
 
                     </div>{{-- /post-card --}}
-
                     @if ($isDestaque) </div> @endif
                 </div>
             @endforeach
@@ -287,7 +298,7 @@
 <div id="modalDenuncia" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center;">
     <div style="background:var(--surface);border-radius:16px;padding:2rem;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.2);">
         <h5 style="font-weight:800;color:var(--text);margin:0 0 .5rem;">🚩 Denunciar conteúdo</h5>
-        <p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem;">Selecione o motivo da denúncia. Ela será enviada ao administrador.</p>
+        <p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem;">Selecione o motivo da denúncia.</p>
         <form id="formDenuncia" method="POST">
             @csrf
             <input type="hidden" name="tipo" id="denunciaTipo">
@@ -302,26 +313,14 @@
             <textarea name="descricao" placeholder="Detalhes adicionais (opcional)..." rows="3"
                 style="width:100%;padding:.6rem .9rem;border:1.5px solid var(--border);border-radius:10px;font-size:.9rem;background:var(--surface);color:var(--text);resize:none;margin-bottom:1rem;"></textarea>
             <div style="display:flex;gap:.6rem;justify-content:flex-end;">
-                <button type="button" onclick="fecharDenuncia()"
-                    style="padding:.5rem 1.2rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:600;cursor:pointer;">
-                    Cancelar
-                </button>
-                <button type="submit"
-                    style="padding:.5rem 1.4rem;border-radius:8px;border:none;background:#ef4444;color:#fff;font-weight:700;cursor:pointer;">
-                    Enviar denúncia
-                </button>
+                <button type="button" onclick="fecharDenuncia()" style="padding:.5rem 1.2rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:600;cursor:pointer;">Cancelar</button>
+                <button type="submit" style="padding:.5rem 1.4rem;border-radius:8px;border:none;background:#ef4444;color:#fff;font-weight:700;cursor:pointer;">Enviar denúncia</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-function irParaPost(event, url) {
-    if (event.target.closest('button,a,form,input,textarea,label,select')) return;
-    window.location.href = url;
-}
-
-// Botão de denúncia — abre modal para todos, mas verifica login
 function abrirDenunciaPost(postId) {
     @auth
         document.getElementById('denunciaTipo').value = 'post';
@@ -352,31 +351,56 @@ function fecharDenuncia() {
 document.getElementById('modalDenuncia').addEventListener('click', function(e) {
     if (e.target === this) fecharDenuncia();
 });
-// ── Double tap / double click para curtir ──
+
+function toggleMenu(postId) {
+    const menu = document.getElementById('menu-' + postId);
+    const isOpen = menu.style.display === 'block';
+    document.querySelectorAll('[id^="menu-"]').forEach(m => m.style.display = 'none');
+    menu.style.display = isOpen ? 'none' : 'block';
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('[id^="menu-"]') && !e.target.closest('button[onclick*="toggleMenu"]')) {
+        document.querySelectorAll('[id^="menu-"]').forEach(m => m.style.display = 'none');
+    }
+});
+
+function toggleFavorito(btn, postId) {
+    fetch(`/favorito/${postId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        const menuBtn = btn.closest('[style*="position:relative"]')?.querySelector('button[onclick*="toggleMenu"]');
+        if (data.favoritado) {
+            btn.innerHTML = '🔖 Remover dos salvos';
+        } else {
+            btn.innerHTML = '🔖 Salvar post';
+        }
+    });
+}
+
 (function() {
     let lastTap = {};
-
     document.addEventListener('click', function(e) {
         const card = e.target.closest('.post-card');
         if (!card) return;
         if (e.target.closest('button,a,form,input,textarea,label,select')) return;
-
-        const postId = card.querySelector('[data-post-id]')?.dataset.postId
-                    || card.querySelector('.btn-like')?.getAttribute('onclick')?.match(/\d+/)?.[0];
+        const postId = card.querySelector('.btn-like')?.getAttribute('onclick')?.match(/\d+/)?.[0];
         if (!postId) return;
-
         const now = Date.now();
         if (lastTap[postId] && (now - lastTap[postId]) < 300) {
-            // Double click detectado!
             lastTap[postId] = 0;
             const btnLike = card.querySelector('.btn-like');
-            if (btnLike) {
-                // Mostra coração animado
+            if (btnLike && !btnLike.classList.contains('liked')) {
                 mostrarCoracao(e.clientX, e.clientY);
-                // Só curte se ainda não curtiu
-                if (!btnLike.classList.contains('liked')) {
-                    toggleLike(btnLike, parseInt(postId));
-                }
+                toggleLike(btnLike, parseInt(postId));
+            } else if (btnLike) {
+                mostrarCoracao(e.clientX, e.clientY);
             }
         } else {
             lastTap[postId] = now;
@@ -386,18 +410,15 @@ document.getElementById('modalDenuncia').addEventListener('click', function(e) {
     function mostrarCoracao(x, y) {
         const heart = document.createElement('div');
         heart.textContent = '❤️';
-        heart.style.cssText = `
-            position: fixed;
-            left: ${x}px;
-            top: ${y}px;
-            font-size: 3.5rem;
-            pointer-events: none;
-            z-index: 99999;
-            transform: translate(-50%, -50%) scale(0);
-            animation: heartPop .6s ease forwards;
-        `;
+        heart.style.cssText = `position:fixed;left:${x}px;top:${y}px;font-size:3.5rem;pointer-events:none;z-index:99999;transform:translate(-50%,-50%) scale(0);animation:heartPop .6s ease forwards;`;
         document.body.appendChild(heart);
+        if (!document.getElementById('heartStyle')) {
+            const s = document.createElement('style');
+            s.id = 'heartStyle';
+            s.textContent = '@keyframes heartPop{0%{transform:translate(-50%,-50%) scale(0)}50%{transform:translate(-50%,-50%) scale(1.4)}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}';
+            document.head.appendChild(s);
+        }
         setTimeout(() => heart.remove(), 700);
     }
-})();   
+})();
 </script>

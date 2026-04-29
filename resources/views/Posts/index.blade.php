@@ -13,10 +13,8 @@
     --warn:     #f59e0b;
     --radius:   16px;
 }
-
 *, *::before, *::after { box-sizing: border-box; }
 body { font-family: 'DM Sans', sans-serif; }
-
 .feed-wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem 4rem; }
 .feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
 .feed-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--text); letter-spacing: -.02em; }
@@ -27,7 +25,6 @@ body { font-family: 'DM Sans', sans-serif; }
     transition: all .2s; box-shadow: 0 4px 14px rgba(99,102,241,.35);
 }
 .btn-new:hover { background: var(--accent-d); transform: translateY(-1px); color: #fff; }
-
 .search-bar { position: relative; margin-bottom: 1.4rem; }
 .search-bar input {
     width: 100%; padding: .75rem 3.5rem .75rem 1.2rem;
@@ -52,27 +49,22 @@ body { font-family: 'DM Sans', sans-serif; }
 }
 .search-bar .clear-btn:hover { color: var(--danger); }
 .search-info { font-size: .88rem; color: var(--muted); margin-bottom: 1rem; display: flex; align-items: center; gap: .4rem; }
-
 .alert-success-box {
     background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46;
     border-radius: 12px; padding: .85rem 1.1rem; font-size: .9rem;
     font-weight: 500; margin-bottom: 1.4rem; display: flex; align-items: center; gap: .5rem;
 }
 html.dark .alert-success-box { background: #052e16; border-color: #166534; color: #86efac; }
-
 .posts-grid { columns: 2; column-gap: 1.25rem; }
-
 .post-card {
     background: var(--surface); border-radius: var(--radius);
     border: 1px solid var(--border); overflow: hidden;
     transition: box-shadow .25s, transform .25s;
     break-inside: avoid; margin-bottom: 1.25rem;
-    display: inline-block; width: 100%;
-    cursor: pointer;
+    display: inline-block; width: 100%; cursor: pointer;
 }
 .post-card:hover { box-shadow: 0 8px 32px rgba(15,23,42,.1); transform: translateY(-2px); }
 html.dark .post-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.4); }
-
 .card-head {
     display: flex; align-items: flex-start; justify-content: space-between;
     padding: 1.1rem 1.25rem .6rem; gap: .75rem;
@@ -87,10 +79,8 @@ html.dark .tipo-texto   { background: #1e3a5f; color: #93c5fd; }
 html.dark .tipo-imagem  { background: #4a1942; color: #f9a8d4; }
 html.dark .tipo-video   { background: #14532d; color: #86efac; }
 html.dark .tipo-enquete { background: #451a03; color: #fcd34d; }
-
 .card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--text); line-height: 1.3; flex: 1; min-width: 0; }
 .card-date { font-size: .76rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; padding-top: .15rem; }
-
 .card-author {
     display: flex; align-items: center; gap: .5rem;
     padding: .5rem 1.25rem; border-bottom: 1px solid var(--border);
@@ -105,13 +95,11 @@ html.dark .tipo-enquete { background: #451a03; color: #fcd34d; }
 .author-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .author-name { font-size: .82rem; font-weight: 600; color: var(--text); }
 .author-date { font-size: .75rem; color: var(--muted); margin-left: auto; }
-
 .status-badge { display: inline-flex; align-items: center; gap: .3rem; padding: .22rem .7rem; border-radius: 20px; font-size: .72rem; font-weight: 700; }
 .status-aprovado { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
 .status-pendente { background: #fefce8; color: #92400e; border: 1px solid #fde68a; }
 html.dark .status-aprovado { background: #052e16; color: #86efac; border-color: #166534; }
 html.dark .status-pendente { background: #451a03; color: #fcd34d; border-color: #92400e; }
-
 .card-actions {
     display: flex; gap: .4rem; padding: .6rem 1.25rem;
     border-top: 1px solid var(--border); background: var(--surface-2);
@@ -123,11 +111,11 @@ html.dark .status-pendente { background: #451a03; color: #fcd34d; border-color: 
     border-radius: 8px; border: none; cursor: pointer;
     text-decoration: none; transition: all .18s;
 }
-.btn-edit    { background: #fef9c3; color: #713f12; border: 1.5px solid #fde68a; }
-.btn-edit:hover    { background: #fde68a; }
-.btn-del     { background: #fef2f2; color: var(--danger); border: 1.5px solid #fecaca; }
-.btn-del:hover     { background: var(--danger); color: #fff; border-color: var(--danger); }
-.btn-aprovar { background: #f0fdf4; color: #15803d; border: 1.5px solid #bbf7d0; }
+.btn-edit     { background: #fef9c3; color: #713f12; border: 1.5px solid #fde68a; }
+.btn-edit:hover { background: #fde68a; }
+.btn-del      { background: #fef2f2; color: var(--danger); border: 1.5px solid #fecaca; }
+.btn-del:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn-aprovar  { background: #f0fdf4; color: #15803d; border: 1.5px solid #bbf7d0; }
 .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #22c55e; }
 .btn-rejeitar { background: #fef2f2; color: var(--danger); border: 1.5px solid #fecaca; }
 .btn-rejeitar:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
@@ -137,25 +125,11 @@ html.dark .btn-del     { background: #2d0a0a; color: #fca5a5; border-color: #7f1
 html.dark .btn-del:hover { background: var(--danger); color: #fff; }
 html.dark .btn-aprovar { background: #052e16; color: #86efac; border-color: #166534; }
 html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #22c55e; }
-
 .card-divider { height: 1px; background: var(--border); margin: 0 1.25rem; }
 .card-body { padding: 1rem 1.25rem 1.25rem; }
 .post-text { color: var(--muted); font-size: .95rem; line-height: 1.65; }
-
-.img-grid { display: grid; gap: 4px; border-radius: 12px; overflow: hidden; margin-top: .2rem; }
-.img-grid.one   { grid-template-columns: 1fr; }
-.img-grid.two   { grid-template-columns: 1fr 1fr; }
-.img-grid.three { grid-template-columns: 1fr 1fr; }
-.img-grid.three .img-cell:first-child { grid-column: 1 / -1; }
-.img-grid.many  { grid-template-columns: repeat(3, 1fr); }
-.img-cell { aspect-ratio: 1; overflow: hidden; cursor: pointer; position: relative; }
-.img-cell img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
-.img-cell:hover img { transform: scale(1.04); }
-.img-cell .more-overlay { position: absolute; inset: 0; background: rgba(15,23,42,.6); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.4rem; font-weight: 700; }
-
 .video-wrap { border-radius: 12px; overflow: hidden; background: #000; margin-top: .2rem; }
 .video-wrap iframe, .video-wrap video { width: 100%; display: block; aspect-ratio: 16/9; }
-
 .poll-wrap { margin-top: .2rem; }
 .poll-label { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: .75rem; }
 .result-row { display: flex; flex-direction: column; gap: .3rem; margin-bottom: .5rem; }
@@ -165,12 +139,17 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
 .result-bar.winner { background: linear-gradient(90deg, var(--success), #059669); }
 .poll-total { font-size: .75rem; color: var(--muted); margin-top: .4rem; }
 
-#imgModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.88); justify-content: center; align-items: center; z-index: 9999; cursor: zoom-out; backdrop-filter: blur(6px); }
-#imgModal img { max-width: 92%; max-height: 92%; border-radius: 12px; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+/* Lightbox */
+#imgModal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.92); justify-content: center; align-items: center;
+    z-index: 99999; cursor: zoom-out; backdrop-filter: blur(6px);
+}
+#imgModal.open { display: flex; }
+#imgModal img { max-width: 92vw; max-height: 92vh; border-radius: 12px; box-shadow: 0 24px 80px rgba(0,0,0,.5); object-fit: contain; }
 
 .empty-state { text-align: center; padding: 4rem 1rem; color: var(--muted); }
 .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
-
 @media(max-width: 700px) { .posts-grid { columns: 1; } }
 </style>
 @endpush
@@ -253,7 +232,9 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
                 @endif
             </div>
             @if($post->usuario)
-                <a href="{{ route('users.perfil', $post->usuario->id) }}" style="text-decoration:none;color:inherit;font-weight:600;font-size:.82rem;" onclick="event.stopPropagation()">
+                <a href="{{ route('users.perfil', $post->usuario->id) }}"
+                   style="text-decoration:none;color:inherit;font-weight:600;font-size:.82rem;"
+                   onclick="event.stopPropagation()">
                     {{ $post->usuario->nome }}
                 </a>
             @else
@@ -268,6 +249,7 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
         <div class="card-divider"></div>
 
         <div class="card-body">
+
             @if($post->tipo === 'texto')
                 <p class="post-text">{{ Str::limit($post->texto, 200) }}</p>
             @endif
@@ -278,20 +260,52 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
                         ? $post->imagens->map(fn($i) => Storage::url($i->caminho))->toArray()
                         : ($post->imagem ? [str_starts_with($post->imagem,'/storage/') ? asset($post->imagem) : Storage::url($post->imagem)] : []);
                     $count = count($imgs);
-                    $gridClass = match(true) { $count===1=>'one', $count===2=>'two', $count===3=>'three', default=>'many' };
-                    $show = min($count, 9);
+                    $cid = 'carousel-idx-'.$post->id;
                 @endphp
-                @if($count)
-                <div class="img-grid {{ $gridClass }}" onclick="event.stopPropagation()">
-                    @foreach(array_slice($imgs, 0, $show) as $idx => $src)
-                        <div class="img-cell" onclick="abrirImagem('{{ $src }}')">
-                            <img src="{{ $src }}" alt="imagem {{ $idx + 1 }}">
-                            @if($idx === $show - 1 && $count > $show)
-                                <div class="more-overlay">+{{ $count - $show }}</div>
-                            @endif
+                @if($count === 1)
+                    <div style="border-radius:12px;overflow:hidden;aspect-ratio:16/9;" onclick="event.stopPropagation()">
+                        <img src="{{ $imgs[0] }}"
+                             style="width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;"
+                             onclick="abrirImagem('{{ $imgs[0] }}')">
+                    </div>
+                @elseif($count > 1)
+                    <div onclick="event.stopPropagation()">
+                        <div style="position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/9;background:#000;" id="{{ $cid }}">
+                            <div class="idx-track" style="display:flex;height:100%;transition:transform .35s ease;">
+                                @foreach($imgs as $src)
+                                    <div style="min-width:100%;height:100%;">
+                                        <img src="{{ $src }}"
+                                             style="width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;"
+                                             onclick="abrirImagem('{{ $src }}')">
+                                    </div>
+                                @endforeach
+                            </div>
+                            <button onclick="moverIdx('{{ $cid }}',-1)"
+                                    style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:1.1rem;cursor:pointer;z-index:2;">&#8249;</button>
+                            <button onclick="moverIdx('{{ $cid }}',1)"
+                                    style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:1.1rem;cursor:pointer;z-index:2;">&#8250;</button>
+                            <div style="position:absolute;top:8px;right:10px;background:rgba(0,0,0,.5);color:#fff;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px;z-index:2;">
+                                <span class="idx-current">1</span>/{{ $count }}
+                            </div>
+                            <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:2;">
+                                @foreach($imgs as $i => $src)
+                                    <span onclick="irIdxSlide('{{ $cid }}',{{ $i }})"
+                                          class="idx-dot"
+                                          style="width:7px;height:7px;border-radius:50%;background:{{ $i===0?'#fff':'rgba(255,255,255,.45)' }};cursor:pointer;transition:background .2s;display:inline-block;"></span>
+                                @endforeach
+                            </div>
                         </div>
-                    @endforeach
-                </div>
+                        <div style="display:flex;gap:5px;margin-top:5px;overflow-x:auto;padding-bottom:2px;">
+                            @foreach($imgs as $i => $src)
+                                <div onclick="irIdxSlide('{{ $cid }}',{{ $i }})"
+                                     class="idx-thumb"
+                                     data-carousel="{{ $cid }}"
+                                     style="flex-shrink:0;width:52px;height:52px;border-radius:6px;overflow:hidden;border:2px solid {{ $i===0?'#6366f1':'transparent' }};cursor:pointer;transition:border-color .2s;">
+                                    <img src="{{ $src }}" style="width:100%;height:100%;object-fit:cover;display:block;">
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                 @else
                     <p style="color:var(--muted);font-size:.88rem;"><em>Sem imagem</em></p>
                 @endif
@@ -337,6 +351,7 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
                     <p class="poll-total">Total: {{ $totalVotos }} voto(s)</p>
                 </div>
             @endif
+
         </div>
 
         <div class="card-actions" onclick="event.stopPropagation()">
@@ -346,7 +361,6 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
                 @csrf @method('DELETE')
                 <button class="btn-action btn-del">🗑️ Excluir</button>
             </form>
-            {{-- Aprovar/Rejeitar APENAS para administrador --}}
             @if($isAdmin && !$post->aprovado)
                 <form action="{{ route('posts.aprovar', $post->id) }}" method="POST" style="display:inline">
                     @csrf
@@ -371,17 +385,56 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
 
 </div>
 
-<div id="imgModal" onclick="this.style.display='none'">
+{{-- Lightbox --}}
+<div id="imgModal" onclick="fecharLightbox()">
     <img id="imgModalSrc" src="" alt="imagem ampliada">
 </div>
 
 <script>
 function abrirImagem(src) {
     document.getElementById('imgModalSrc').src = src;
-    document.getElementById('imgModal').style.display = 'flex';
+    document.getElementById('imgModal').classList.add('open');
+}
+function fecharLightbox() {
+    document.getElementById('imgModal').classList.remove('open');
 }
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') document.getElementById('imgModal').style.display = 'none';
+    if (e.key === 'Escape') fecharLightbox();
 });
+
+/* ── Carrossel posts/index ── */
+const _idxState = {};
+
+function moverIdx(id, dir) {
+    const el    = document.getElementById(id);
+    const track = el.querySelector('.idx-track');
+    const total = track.children.length;
+    _idxState[id] = ((_idxState[id] ?? 0) + dir + total) % total;
+    _renderIdx(id, el, track);
+}
+
+function irIdxSlide(id, idx) {
+    const el    = document.getElementById(id);
+    const track = el.querySelector('.idx-track');
+    _idxState[id] = idx;
+    _renderIdx(id, el, track);
+}
+
+function _renderIdx(id, el, track) {
+    const idx = _idxState[id] ?? 0;
+    track.style.transform = `translateX(-${idx * 100}%)`;
+
+    const cur = el.querySelector('.idx-current');
+    if (cur) cur.textContent = idx + 1;
+
+    el.querySelectorAll('.idx-dot').forEach((d, i) => {
+        d.style.background = i === idx ? '#fff' : 'rgba(255,255,255,.45)';
+    });
+
+    const wrap = el.parentElement;
+    wrap.querySelectorAll('.idx-thumb').forEach((t, i) => {
+        t.style.borderColor = i === idx ? '#6366f1' : 'transparent';
+    });
+}
 </script>
 @endsection

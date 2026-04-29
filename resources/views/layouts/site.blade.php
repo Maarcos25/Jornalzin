@@ -354,6 +354,7 @@
                     </a>
                 </li>
                 <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalContato">📩 Contato</a></li>
+                <li><a class="dropdown-item py-2" href="{{ route('favoritos.index') }}">🔖 Posts Salvos</a></li>
 
                 @if(auth()->user()->tipo === 'leitor')
                     <li><hr class="dropdown-divider my-1"></li>

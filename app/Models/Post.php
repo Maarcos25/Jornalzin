@@ -75,4 +75,9 @@ class Post extends Model
     {
         return $this->hasMany(Voto::class, 'post_id');
     }
+    public function favoritos()
+    {
+        return $this->hasMany(\App\Models\Favorito::class, 'post_id');
+    }
 }
+
