@@ -45,4 +45,8 @@ return [
         'secret' => env('RECAPTCHA_SECRET'),
     ],
 
+    'anthropic' => [
+        'key' => env('ANTHROPIC_API_KEY'),
+    ],
+
 ];

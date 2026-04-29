@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\GoogleCompletarController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentController;
@@ -87,6 +88,68 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/denuncias/{denuncia}', [DenunciaController::class, 'destroy'])->name('admin.denuncias.destroy');
     Route::delete('/admin/denuncias/{denuncia}/excluir-post', [DenunciaController::class, 'excluirPost'])->name('admin.denuncias.excluir-post');
     Route::delete('/admin/denuncias/{denuncia}/excluir-comentario', [DenunciaController::class, 'excluirComentario'])->name('admin.denuncias.excluir-comentario');
+
+    // Favoritos
+    Route::post('/favorito/{post}', [FavoritoController::class, 'toggle'])->name('favoritos.toggle');
+    Route::get('/favoritos', [FavoritoController::class, 'index'])->name('favoritos.index');
+
+    // IA Sugestões
+    Route::post('/ia/sugestoes', function (Request $request) {
+        $titulo = $request->input('titulo', '');
+        $tipo   = $request->input('tipo', 'texto');
+        $campo  = $request->input('campo', 'legenda');
+
+        if ($campo === 'titulo') {
+            $contexto = $titulo
+                ? "O post é sobre: \"{$titulo}\"."
+                : "Post de jornalismo escolar do tipo \"{$tipo}\".";
+            $prompt = "Você é um jornalista escolar. {$contexto} Gere 3 títulos criativos e jornalísticos em português. Retorne APENAS:\n1. título\n2. título\n3. título";
+        } else {
+            $prompt = $titulo
+                ? "Gere 3 sugestões de legenda para um post com o contexto: \"{$titulo}\". Tipo: {$tipo}. Responda em português. Retorne APENAS:\n1. legenda\n2. legenda\n3. legenda"
+                : "Gere 3 ideias de legenda para um post de jornalismo escolar do tipo \"{$tipo}\". Responda em português. Retorne APENAS:\n1. legenda\n2. legenda\n3. legenda";
+        }
+
+        $apiKey = env('GROQ_API_KEY');
+
+        if (!$apiKey) {
+            return response()->json(['content' => [['text' => "1. GROQ_API_KEY não encontrada no .env"]]], 200);
+        }
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::timeout(20)
+                ->withHeaders([
+                    'Authorization' => 'Bearer ' . $apiKey,
+                    'Content-Type'  => 'application/json',
+                ])->post('https://api.groq.com/openai/v1/chat/completions', [
+                    'model'       => 'llama-3.1-8b-instant',
+                    'max_tokens'  => 300,
+                    'temperature' => 0.8,
+                    'messages'    => [
+                        [
+                            'role'    => 'system',
+                            'content' => 'Você é assistente de jornalismo escolar. Responda SEMPRE em português brasileiro. Retorne APENAS as sugestões numeradas, sem introdução ou comentários extras.'
+                        ],
+                        [
+                            'role'    => 'user',
+                            'content' => $prompt
+                        ]
+                    ],
+                ]);
+
+            if (!$response->successful()) {
+                $erro = $response->json('error.message', $response->body());
+                return response()->json(['content' => [['text' => "1. Erro API: {$erro}"]]], 200);
+            }
+
+            $texto = $response->json('choices.0.message.content', 'Sem resposta');
+            return response()->json(['content' => [['text' => $texto]]]);
+
+        } catch (\Exception $e) {
+            return response()->json(['content' => [['text' => "1. Exceção: " . $e->getMessage()]]], 200);
+        }
+
+    })->name('ia.sugestoes');
 });
 
 // Admin
@@ -107,10 +170,4 @@ Route::delete('/u/{user}/seguidores/{seguidor}/remover', [UserController::class,
     ->name('users.removerSeguidor')
     ->middleware('auth');
 
-    Route::middleware('auth')->group(function () {
-        Route::post('/favorito/{post}', [FavoritoController::class, 'toggle'])->name('favoritos.toggle');
-        Route::get('/favoritos', [FavoritoController::class, 'index'])->name('favoritos.index');
-    });
-    Route::get('/favoritos', [\App\Http\Controllers\FavoritoController::class, 'index'])->name('favoritos.index')->middleware('auth');
-    Route::post('/favorito/{post}', [\App\Http\Controllers\FavoritoController::class, 'toggle'])->name('favoritos.toggle')->middleware('auth');
 require __DIR__.'/auth.php';
