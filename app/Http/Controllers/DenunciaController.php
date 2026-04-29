@@ -29,7 +29,7 @@ class DenunciaController extends Controller
             'user_id'       => auth()->id(),
         ]);
 
-        return view('denuncias.enviada');
+        return back()->with('success', 'Denúncia enviada com sucesso!');
     }
 
 public function index(Request $request)

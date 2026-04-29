@@ -95,4 +95,18 @@ class DMController extends Controller
         ->where('lida', false)
         ->count();
     }
+    public function enviarPost(Request $request)
+{
+    $request->validate(['user_id' => 'required|exists:users,id', 'texto' => 'required|string']);
+    $ids = collect([auth()->id(), $request->user_id])->sort()->values();
+    $conversa = \App\Models\Conversa::firstOrCreate(['user1_id' => $ids[0], 'user2_id' => $ids[1]]);
+    \App\Models\Mensagem::create([
+        'conversa_id'  => $conversa->id,
+        'remetente_id' => auth()->id(),
+        'texto'        => $request->texto,
+        'lida'         => false,
+    ]);
+    $conversa->update(['ultima_mensagem_at' => now()]);
+    return response()->json(['ok' => true]);
+}
 }

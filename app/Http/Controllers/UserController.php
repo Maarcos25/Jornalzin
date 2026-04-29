@@ -192,4 +192,17 @@ public function removerSeguidor(User $user, User $seguidor)
 
     return view('users.perfil', compact('user', 'posts'));
 }
+public function buscar(Request $request)
+{
+    $q = $request->input('q', '');
+    $users = \App\Models\User::where('id', '!=', auth()->id())
+        ->where(function($query) use ($q) {
+            $query->where('nome', 'like', "%{$q}%")
+                  ->orWhere('email', 'like', "%{$q}%");
+        })
+        ->select('id', 'nome', 'avatar')
+        ->limit(8)
+        ->get();
+    return response()->json($users);
+}
 }
