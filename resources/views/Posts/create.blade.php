@@ -4,14 +4,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
     .post-creator-wrap { max-width: 760px; margin: 2rem auto; font-family: 'Nunito', sans-serif; padding: 0 1rem; }
-    .creator-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; border: 1px solid var(--border); }
-    .creator-header { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); padding: 1.4rem 1.8rem; display: flex; align-items: center; gap: .75rem; }
+    .creator-card { background: var(--surface); border-radius: 16px !important; box-shadow: var(--shadow); overflow: hidden; border: 1px solid var(--border); }
+    .creator-header { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); padding: 1.4rem 1.8rem; display: flex; align-items: center; gap: .75rem; border-radius: 16px 16px 0 0 !important; }
     .creator-header h4 { color: #fff; margin: 0; font-weight: 700; font-size: 1.2rem; }
     .creator-body { padding: 1.8rem; }
     .tipo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; margin-bottom: 1.6rem; }
-    .tipo-btn { border: 2px solid var(--border); border-radius: 10px; padding: .65rem .4rem; background: var(--surface-2); cursor: pointer; text-align: center; transition: all .2s; user-select: none; }
-    .tipo-btn:hover { border-color: var(--brand-light); background: #eef2ff; }
-    .tipo-btn.active { border-color: var(--brand); background: #eef2ff; color: var(--brand-dark); }
+    .tipo-btn { border: 2px solid var(--border); border-radius: 16px !important; padding: .65rem .4rem; background: var(--surface-2); cursor: pointer; text-align: center; transition: all .2s; user-select: none; }
+    .tipo-btn:hover { border-color: var(--brand-light); background: #eef2ff; border-radius: 16px !important; }
+    .tipo-btn.active { border-color: var(--brand); background: #eef2ff; color: var(--brand-dark); border-radius: 16px !important; }
     .tipo-btn .icon { font-size: 1.5rem; display: block; margin-bottom: .3rem; }
     .tipo-btn .label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
     .tipo-btn input[type=radio] { display: none; }
