@@ -59,7 +59,7 @@
     .btn-ia:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(99,102,241,.4); }
     .btn-ia:disabled { opacity: .6; cursor: not-allowed; transform: none; }
     .ia-sugestoes { margin-top: .75rem; display: flex; flex-direction: column; gap: .5rem; }
-    .ia-sugestao { padding: .65rem .9rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: .88rem; color: var(--text); background: var(--surface-2); cursor: pointer; transition: all .15s; text-align: left; width: 100%; }
+    .ia-sugestao { padding: .65rem .9rem; border: 1.5px solid var(--border); border-radius: 12px; font-size: .88rem; color: var(--text); background: var(--surface-2); cursor: pointer; transition: all .15s; text-align: left; width: 100%; }
     .ia-sugestao:hover { border-color: var(--brand); background: #eef2ff; color: var(--brand-dark); }
     .ia-loading { display: flex; align-items: center; gap: .5rem; font-size: .85rem; color: var(--muted); padding: .5rem 0; }
     .ia-spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--brand); border-radius: 50%; animation: spin .7s linear infinite; }
