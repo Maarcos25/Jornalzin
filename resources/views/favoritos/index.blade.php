@@ -201,7 +201,7 @@
                     <div style="display:flex;gap:.4rem;">
                         <a href="{{ route('posts.show', $post->slug) }}" class="btn-ver-post">👁 Ver</a>
                         <button class="btn-desfavoritar"
-                                onclick="toggleFavorito(this, {{ $post->id }})"
+                                onclick="toggleFavorito(this, '{{ $post->slug }}')"
                                 data-favoritado="1"
                                 title="Remover dos salvos">
                             🔖 Salvo
