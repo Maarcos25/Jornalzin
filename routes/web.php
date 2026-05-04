@@ -53,9 +53,6 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->midd
 // Home pública
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Post público
-Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
-
 // Registro
 Route::resource('users', UserController::class)->only(['create', 'store']);
 

@@ -205,7 +205,7 @@ html.dark .btn-aprovar:hover { background: #22c55e; color: #fff; border-color: #
         $isAdmin  = auth()->user()->tipo === 'administrador';
     @endphp
 
-    <div class="post-card" onclick="window.location='{{ route('posts.show', $post->id) }}'">
+    <div class="post-card" onclick="window.location='{{ route('posts.show', $post->slug) }}'">
 
         <div class="card-head">
             <div class="card-meta">

@@ -303,12 +303,6 @@
     <a href="{{ route('home') }}" class="navbar-brand">Jornalzin</a>
     <div class="collapse navbar-collapse" id="menu">
         <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('home') ? 'active-link' : '' }}" href="{{ route('home') }}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('sobre') ? 'active-link' : '' }}" href="{{ route('sobre') }}">Sobre Nós</a>
-            </li>
             @auth
                 @if(auth()->user()->tipo !== 'leitor')
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('posts.*') ? 'active-link' : '' }}" href="{{ route('posts.index') }}">Posts</a></li>
@@ -496,7 +490,12 @@
     @yield('conteudo')
 </div>
 
-<footer>© {{ date('Y') }} Jornalzin - Projeto TCC</footer>
+<footer>
+    © {{ date('Y') }} Jornalzin - Projeto TCC
+    <span style="margin:0 .5rem;opacity:.4;">|</span>
+    <a href="{{ route('sobre') }}" style="color:var(--brand-light);text-decoration:none;font-weight:600;">Sobre Nós</a>
+</footer>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 @stack('scripts')

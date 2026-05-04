@@ -76,7 +76,7 @@
                     @endif
 
                     <div class="post-card {{ $isDestaque ? 'destaque-relevante' : '' }}"
-                         onclick="window.location='{{ route('posts.show', $post->id) }}'"
+                         onclick="window.location='{{ route('posts.show', $post->slug) }}'"
                          style="cursor:pointer;">
 
                         @if ($isDestaque)
@@ -132,7 +132,7 @@
 
                         {{-- CORPO --}}
                         <div class="post-body">
-                            <a class="post-title" href="{{ route('posts.show', $post->id) }}" onclick="event.stopPropagation()">{{ $post->titulo }}</a>
+                            <a class="post-title" href="{{ route('posts.show', $post->slug) }}" onclick="event.stopPropagation()">{{ $post->titulo }}</a>
 
                             @if ($post->tipo === 'texto' && $post->texto)
                                 <p class="post-excerpt">
@@ -205,7 +205,7 @@
                                 <a href="{{ route('login') }}" class="btn-like" style="padding:.38rem .85rem;font-size:.88rem;">🤍 {{ $totalLikes }}</a>
                                 @endauth
 
-                                <a class="btn-comment" href="{{ route('posts.show', $post->id) }}#comentarios"
+                                <a class="btn-comment" href="{{ route('posts.show', $post->slug) }}#comentarios"
                                     onclick="event.stopPropagation()"
                                     style="padding:.38rem .85rem;font-size:.88rem;">
                                     💬{{ $totalComentarios > 0 ? ' '.$totalComentarios : '' }}

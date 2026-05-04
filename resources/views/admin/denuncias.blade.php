@@ -171,7 +171,8 @@
                 <span>Conteúdo denunciado:</span>
 
                 @if($den->tipo === 'post')
-                    <a href="{{ route('posts.show', $den->referencia_id) }}" target="_blank"
+                <a href="{{ route('posts.show', \App\Models\Post::find($den->referencia_id)?->slug ?? $den->referencia_id) }}" target="_blank"
+
                        class="btn-ver-conteudo">
                         👁 Ver post #{{ $den->referencia_id }}
                     </a>

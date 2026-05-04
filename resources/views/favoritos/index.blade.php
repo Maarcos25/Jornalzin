@@ -176,7 +176,7 @@
                     <span class="fav-tipo {{ $pilltypes[$post->tipo] ?? '' }}">
                         {{ $pillicons[$post->tipo] ?? '' }} {{ ucfirst($post->tipo) }}
                     </span>
-                    <a href="{{ route('posts.show', $post->id) }}" class="fav-post-title">
+                    <a href="{{ route('posts.show', $post->slug) }}" class="fav-post-title">
                         {{ $post->titulo }}
                     </a>
                     @if($post->tipo === 'texto' && $post->texto)
@@ -199,7 +199,7 @@
                     </div>
 
                     <div style="display:flex;gap:.4rem;">
-                        <a href="{{ route('posts.show', $post->id) }}" class="btn-ver-post">👁 Ver</a>
+                        <a href="{{ route('posts.show', $post->slug) }}" class="btn-ver-post">👁 Ver</a>
                         <button class="btn-desfavoritar"
                                 onclick="toggleFavorito(this, {{ $post->id }})"
                                 data-favoritado="1"

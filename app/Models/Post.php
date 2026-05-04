@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\PostMedia;
 
@@ -79,5 +80,23 @@ class Post extends Model
     {
         return $this->hasMany(\App\Models\Favorito::class, 'post_id');
     }
+
+protected static function booted()
+{
+    static::creating(function ($post) {
+        $slug = Str::slug($post->titulo);
+        $base = $slug;
+        $i = 1;
+        while (Post::where('slug', $slug)->exists()) {
+            $slug = $base . '-' . $i++;
+        }
+        $post->slug = $slug;
+    });
+}
+
+public function getRouteKeyName()
+{
+    return 'slug';
+}
 }
 

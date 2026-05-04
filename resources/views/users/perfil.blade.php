@@ -226,7 +226,7 @@ html.dark .ig-badge-administrador { background: #451a03; color: #fcd34d; }
                 $tipoLabels = ['texto'=>'tipo-texto-badge','imagem'=>'tipo-imagem-badge','video'=>'tipo-video-badge','enquete'=>'tipo-enquete-badge'];
             @endphp
 
-            <a href="{{ route('posts.show', $post->id) }}" class="ig-post-item">
+            <a href="{{ route('posts.show', $post->slug) }}" class="ig-post-item">
                 @if($thumb)
                     <img src="{{ $thumb }}" alt="{{ $post->titulo }}">
                 @elseif($ytThumb)
