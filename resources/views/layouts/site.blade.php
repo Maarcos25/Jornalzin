@@ -60,6 +60,7 @@
         }
         .navbar-jornalzin .nav-link { color: #94a3b8 !important; font-weight: 500; }
         .navbar-jornalzin .nav-link:hover { color: #f1f5f9 !important; }
+        .navbar-jornalzin .nav-link.active-link { color: #f1f5f9 !important; }
 
         /* ── Botão dark mode ── */
         .btn-dark-mode {
@@ -239,6 +240,8 @@
         html.dark .ig-stat a   { color: var(--text) !important; }
         html.dark .btn-settings { background: var(--surface-2) !important; border-color: var(--border) !important; color: var(--muted) !important; }
         html.dark .btn-settings:hover { border-color: var(--brand-light) !important; color: var(--brand-light) !important; }
+        html.dark .sobre-section { background: var(--surface) !important; border-color: var(--border) !important; }
+        html.dark .valor-item, html.dark .equipe-card, html.dark .stat-item { background: var(--surface-2) !important; border-color: var(--border) !important; }
 
         /* Footer */
         footer {
@@ -287,10 +290,10 @@
             from { width: 100%; } to { width: 0%; }
         }
         @keyframes heartPop {
-    0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-    50%  { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
-    100% { transform: translate(-50%, -80%) scale(1); opacity: 0; }
-}
+            0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            50%  { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+            100% { transform: translate(-50%, -80%) scale(1); opacity: 0; }
+        }
     </style>
     @stack('styles')
 </head>
@@ -300,13 +303,18 @@
     <a href="{{ route('home') }}" class="navbar-brand">Jornalzin</a>
     <div class="collapse navbar-collapse" id="menu">
         <ul class="navbar-nav me-auto">
-            <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('home') ? 'active-link' : '' }}" href="{{ route('home') }}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('sobre') ? 'active-link' : '' }}" href="{{ route('sobre') }}">Sobre Nós</a>
+            </li>
             @auth
                 @if(auth()->user()->tipo !== 'leitor')
-                    <li class="nav-item"><a class="nav-link" href="{{ route('posts.index') }}">Posts</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('posts.*') ? 'active-link' : '' }}" href="{{ route('posts.index') }}">Posts</a></li>
                 @endif
                 @if(auth()->user()->tipo === 'administrador')
-                    <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">Usuários</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('users.*') ? 'active-link' : '' }}" href="{{ route('users.index') }}">Usuários</a></li>
                 @endif
             @endauth
         </ul>

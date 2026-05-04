@@ -169,5 +169,8 @@ Route::get('/u/{user}/seguindo', [UserController::class, 'seguindo'])->name('use
 Route::delete('/u/{user}/seguidores/{seguidor}/remover', [UserController::class, 'removerSeguidor'])
     ->name('users.removerSeguidor')
     ->middleware('auth');
+    Route::get('/sobre', function () {
+        return view('sobre.index');
+    })->name('sobre');
 
 require __DIR__.'/auth.php';

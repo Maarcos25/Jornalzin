@@ -213,7 +213,7 @@
 
                                 <span style="width:1px;height:20px;background:var(--border);margin:0 .1rem;"></span>
 
-                                @auth
+                                {{-- ••• visível para TODOS — salvar só logados, denunciar redireciona pro login --}}
                                 <div style="position:relative;" onclick="event.stopPropagation()">
                                     <button class="btn-comment"
                                         onclick="toggleMenu({{ $post->id }})"
@@ -222,12 +222,14 @@
                                         •••
                                     </button>
                                     <div id="menu-{{ $post->id }}" style="display:none;position:absolute;bottom:110%;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);min-width:175px;z-index:100;overflow:hidden;">
+                                        @auth
                                         <button onclick="toggleFavorito(this, {{ $post->id }}); toggleMenu({{ $post->id }})"
                                             type="button"
                                             style="width:100%;padding:.7rem 1rem;border:none;background:transparent;color:var(--text);font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.6rem;"
                                             onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background='transparent'">
                                             {{ $jaFavoritei ? '🔖 Remover dos salvos' : '🔖 Salvar post' }}
                                         </button>
+                                        @endauth
                                         <button onclick="abrirCompartilhar({{ $post->id }}, '{{ addslashes($post->titulo) }}'); toggleMenu({{ $post->id }})"
                                             type="button"
                                             style="width:100%;padding:.7rem 1rem;border:none;background:transparent;color:var(--text);font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.6rem;"
@@ -242,7 +244,6 @@
                                         </button>
                                     </div>
                                 </div>
-                                @endauth
                             </div>
                         </div>
 
@@ -334,7 +335,6 @@
             <button onclick="fecharCompartilhar()" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.2rem;line-height:1;">✕</button>
         </div>
 
-        {{-- Link --}}
         <div style="display:flex;gap:.5rem;margin-bottom:1.2rem;">
             <input id="compartilharLink" readonly
                 style="flex:1;padding:.6rem .9rem;border:1.5px solid var(--border);border-radius:10px;font-size:.88rem;background:var(--surface-2);color:var(--muted);outline:none;">
@@ -345,7 +345,6 @@
             </button>
         </div>
 
-        {{-- Redes sociais --}}
         <p style="font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem;">Compartilhar em</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.2rem;">
             <button onclick="compartilharWhatsApp()"
@@ -373,7 +372,6 @@
             </button>
         </div>
 
-        {{-- Enviar via DM --}}
         @auth
         <div style="border-top:1px solid var(--border);padding-top:1.1rem;">
             <p style="font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem;">Enviar para usuário</p>
@@ -390,6 +388,7 @@
 
 <script>
 // ── Denúncia ──
+// Se não logado → redireciona pro login. Se logado → abre modal.
 function abrirDenunciaPost(postId) {
     @auth
         document.getElementById('denunciaTipo').value = 'post';
