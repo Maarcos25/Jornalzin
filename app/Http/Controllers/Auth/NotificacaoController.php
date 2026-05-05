@@ -20,7 +20,6 @@ class NotificacaoController extends Controller
 
         $notificacoes = $query->paginate(20);
 
-        // Marca todas como lidas ao abrir
         Notificacao::where('user_id', auth()->id())
             ->where('lida', false)
             ->update(['lida' => true]);
@@ -37,13 +36,10 @@ class NotificacaoController extends Controller
         return back();
     }
 
-    // Helper estático para criar notificação
     public static function criar(int $userId, int $atorId, string $tipo, string $mensagem, ?string $link = null): void
     {
-        // Não notifica a si mesmo
         if ($userId === $atorId) return;
 
-        // Evita duplicata de like/seguidor
         if (in_array($tipo, ['like', 'seguidor'])) {
             $existe = Notificacao::where('user_id', $userId)
                 ->where('ator_id', $atorId)

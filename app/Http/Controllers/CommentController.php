@@ -42,7 +42,6 @@ class CommentController extends Controller
             'status'  => 'pendente'
         ]);
 
-        // ── Notificação de comentário ──
         $post = Post::find($request->post_id);
         if ($post) {
             NotificacaoController::criar(
@@ -50,7 +49,7 @@ class CommentController extends Controller
                 auth()->id(),
                 'comentario',
                 auth()->user()->nome . ' comentou em "' . $post->titulo . '"',
-                route('posts.show', $post->id) . '#comentarios'
+                route('posts.show', $post->id) . '#comentarios'  // ← URL completa
             );
         }
 

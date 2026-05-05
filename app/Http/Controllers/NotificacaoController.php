@@ -20,7 +20,6 @@ class NotificacaoController extends Controller
 
         $notificacoes = $query->paginate(20);
 
-        // Marca todas como lidas ao abrir
         Notificacao::where('user_id', auth()->id())
             ->where('lida', false)
             ->update(['lida' => true]);

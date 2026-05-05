@@ -23,13 +23,12 @@ class LikeController extends Controller
             $liked = false;
         } else {
             $liked = true;
-            // ── Notificação de like ──
             NotificacaoController::criar(
                 $post->id_usuario,
                 $user->id,
                 'like',
                 $user->nome . ' curtiu seu post "' . $post->titulo . '"',
-                route('posts.show', $post->id)
+                route('posts.show', $post->id)  // ← URL completa
             );
         }
 

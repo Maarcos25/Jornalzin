@@ -17,14 +17,35 @@ use App\Http\Controllers\DMController;
 use App\Http\Controllers\NotificacaoController;
 use App\Http\Controllers\FavoritoController;
 
-// Rotas autenticadas + verificadas
+// ── Rotas PÚBLICAS ──
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show'); // pública!
+Route::get('/u/{user}', [UserController::class, 'perfil'])->name('users.perfil');
+Route::get('/u/{user}/seguidores', [UserController::class, 'seguidores'])->name('users.seguidores');
+Route::get('/u/{user}/seguindo', [UserController::class, 'seguindo'])->name('users.seguindo');
+Route::get('/sobre', function () { return view('sobre.index'); })->name('sobre');
+
+// Registro
+Route::resource('users', UserController::class)->only(['create', 'store']);
+
+// Google OAuth
+Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
+Route::get('/auth/google/completar',  [GoogleCompletarController::class, 'create'])->name('auth.google.completar');
+Route::post('/auth/google/completar', [GoogleCompletarController::class, 'store'])->name('auth.google.completar.store');
+
+// Login / Logout
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->middleware('guest')->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('guest');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');
+
+// ── Rotas autenticadas + verificadas ──
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('comments', CommentController::class);
 
     Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
     Route::get('/nova-postagem', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-    Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::patch('/posts/{post}', [PostController::class, 'update']);
@@ -39,24 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/posts/{post}/midia',  [PostController::class, 'removerMidia'])->name('posts.removerMidia');
 });
 
-// Google OAuth
-Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('auth.google');
-Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
-Route::get('/auth/google/completar',  [GoogleCompletarController::class, 'create'])->name('auth.google.completar');
-Route::post('/auth/google/completar', [GoogleCompletarController::class, 'store'])->name('auth.google.completar.store');
-
-// Login / Logout
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])->middleware('guest')->name('login');
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('guest');
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');
-
-// Home pública
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Registro
-Route::resource('users', UserController::class)->only(['create', 'store']);
-
-// Rotas autenticadas gerais
+// ── Rotas autenticadas gerais ──
 Route::middleware('auth')->group(function () {
     Route::post('/like/{post}', [LikeController::class, 'altera_like'])->name('posts.like');
 
@@ -67,6 +71,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.deleteAvatar');
 
     Route::post('/solicitar-editor', [SolicitacaoEditorController::class, 'store'])->name('editor.solicitar');
+
+    Route::post('/u/{user}/seguir', [UserController::class, 'seguir'])->name('users.seguir');
+    Route::delete('/u/{user}/seguidores/{seguidor}/remover', [UserController::class, 'removerSeguidor'])->name('users.removerSeguidor');
 
     // DM
     Route::get('/dm', [DMController::class, 'index'])->name('dm.index');
@@ -149,7 +156,7 @@ Route::middleware('auth')->group(function () {
     })->name('ia.sugestoes');
 });
 
-// Admin
+// ── Admin ──
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::resource('users', UserController::class)->except(['create', 'store']);
     Route::get('/admin/solicitacoes', [SolicitacaoEditorController::class, 'index'])->name('admin.solicitacoes');
@@ -157,17 +164,5 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::post('/admin/solicitacoes/{id}/rejeitar', [SolicitacaoEditorController::class, 'rejeitar'])->name('editor.rejeitar');
     Route::post('/admin/editores/{id}/remover', [SolicitacaoEditorController::class, 'removerEditor'])->name('editor.remover');
 });
-
-// Perfil público e seguir
-Route::get('/u/{user}', [UserController::class, 'perfil'])->name('users.perfil');
-Route::post('/u/{user}/seguir', [UserController::class, 'seguir'])->name('users.seguir')->middleware('auth');
-Route::get('/u/{user}/seguidores', [UserController::class, 'seguidores'])->name('users.seguidores');
-Route::get('/u/{user}/seguindo', [UserController::class, 'seguindo'])->name('users.seguindo');
-Route::delete('/u/{user}/seguidores/{seguidor}/remover', [UserController::class, 'removerSeguidor'])
-    ->name('users.removerSeguidor')
-    ->middleware('auth');
-    Route::get('/sobre', function () {
-        return view('sobre.index');
-    })->name('sobre');
 
 require __DIR__.'/auth.php';

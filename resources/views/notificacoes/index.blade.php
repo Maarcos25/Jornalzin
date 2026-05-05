@@ -105,38 +105,35 @@
 
     {{-- Lista --}}
     @forelse($notificacoes as $notif)
-        <a href="{{ $notif->link ?? '#' }}" class="notif-card {{ !$notif->lida ? 'nao-lida' : '' }}">
+    <a href="{{ $notif->link ? url($notif->link) : '#' }}"
+       class="notif-card {{ !$notif->lida ? 'nao-lida' : '' }}">
 
-            {{-- Avatar do ator --}}
-            <div class="notif-avatar">
-                @if($notif->ator && $notif->ator->avatar)
-                    <img src="{{ asset('storage/' . $notif->ator->avatar) }}" alt="">
-                @else
-                    {{ strtoupper(substr($notif->ator->nome ?? 'U', 0, 1)) }}
-                @endif
-            </div>
-
-            {{-- Ícone do tipo --}}
-            <div class="notif-icone">{{ $notif->icone }}</div>
-
-            {{-- Texto --}}
-            <div class="notif-info">
-                <div class="notif-msg">{{ $notif->mensagem }}</div>
-                <div class="notif-time">{{ $notif->created_at->diffForHumans() }}</div>
-            </div>
-
-            {{-- Ponto azul se não lida --}}
-            @if(!$notif->lida)
-                <div class="notif-dot"></div>
+        <div class="notif-avatar">
+            @if($notif->ator && $notif->ator->avatar)
+                <img src="{{ asset('storage/' . $notif->ator->avatar) }}" alt="">
+            @else
+                {{ strtoupper(substr($notif->ator->nome ?? 'U', 0, 1)) }}
             @endif
-
-        </a>
-    @empty
-        <div class="notif-empty">
-            <div class="icon">🔕</div>
-            <p>Nenhuma notificação {{ $tipo && $tipo !== 'todas' ? 'deste tipo ' : '' }}ainda.</p>
         </div>
-    @endforelse
+
+        <div class="notif-icone">{{ $notif->icone }}</div>
+
+        <div class="notif-info">
+            <div class="notif-msg">{{ $notif->mensagem }}</div>
+            <div class="notif-time">{{ $notif->created_at->diffForHumans() }}</div>
+        </div>
+
+        @if(!$notif->lida)
+            <div class="notif-dot"></div>
+        @endif
+
+    </a>
+@empty
+    <div class="notif-empty">
+        <div class="icon">🔕</div>
+        <p>Nenhuma notificação {{ $tipo && $tipo !== 'todas' ? 'deste tipo ' : '' }}ainda.</p>
+    </div>
+@endforelse
 
     <div class="mt-3">{{ $notificacoes->links() }}</div>
 
