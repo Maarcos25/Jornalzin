@@ -49,7 +49,7 @@ class CommentController extends Controller
                 auth()->id(),
                 'comentario',
                 auth()->user()->nome . ' comentou em "' . $post->titulo . '"',
-                route('posts.show', $post->id) . '#comentarios'  // ← URL completa
+                '/posts/' . $post->slug . '#comentarios'// ← URL completa
             );
         }
 

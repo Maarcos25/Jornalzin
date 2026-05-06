@@ -77,7 +77,8 @@ class DMController extends Controller
             auth()->id(),
             'mensagem',
             auth()->user()->nome . ' te enviou uma mensagem',
-            route('dm.conversa', $conversa->id)
+            '/dm/' . $conversa->id
+
         );
 
         return back();

@@ -447,7 +447,7 @@ function toggleFavorito(btn, postId) {
     .then(r => r.json())
     .then(data => {
         btn.innerHTML = data.favoritado ? '🔖 Remover dos salvos' : '🔖 Salvar post';
-        showToast(data.favoritado ? '🔖 Post salvo!' : '🗑️ Removido dos salvos');
+        showToast(data.favoritado ? '🔖 Post salvo!' : '🗑️ Removido dos salvos', data.favoritado ? 'success' : 'error');
     });
 }
 

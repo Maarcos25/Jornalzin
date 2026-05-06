@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br" id="html-root">
 <head>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Jornalzin</title>
@@ -564,9 +565,10 @@
             setTimeout(() => el.remove(), 300);
         }, 4000);
     }
-    @if(session('success')) showToast("{{ session('success') }}", 'success'); @endif
-    @if(session('error'))   showToast("{{ session('error') }}", 'error');     @endif
-    @if(session('warning')) showToast("{{ session('warning') }}", 'warning'); @endif
+@if(session('success')) showToast("{{ session('success') }}", 'success'); @endif
+@if(session('danger'))  showToast("{{ session('danger') }}", 'error');    @endif
+@if(session('error'))   showToast("{{ session('error') }}", 'error');     @endif
+@if(session('warning')) showToast("{{ session('warning') }}", 'warning'); @endif
 </script>
 </body>
 </html>

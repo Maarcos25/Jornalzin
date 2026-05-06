@@ -105,7 +105,7 @@
 
     {{-- Lista --}}
     @forelse($notificacoes as $notif)
-    <a href="{{ $notif->link ? url($notif->link) : '#' }}"
+    <a href="{{ $notif->link ?? '#' }}"
        class="notif-card {{ !$notif->lida ? 'nao-lida' : '' }}">
 
         <div class="notif-avatar">
