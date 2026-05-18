@@ -196,7 +196,7 @@
                             <div style="display:flex;align-items:center;gap:.35rem;margin-left:auto;">
                                 @auth
                                 <button class="btn-like {{ $jaLikei ? 'liked' : '' }}"
-                                    onclick="toggleLike(this, {{ $post->id }})" type="button"
+                                    onclick="toggleLike(this, '{{ $post->slug }}')" type="button"
                                     style="padding:.38rem .85rem;font-size:.88rem;">
                                     <span class="like-icon">{{ $jaLikei ? '❤️' : '🤍' }}</span>
                                     <span class="like-count">{{ $totalLikes }}</span>
@@ -213,7 +213,6 @@
 
                                 <span style="width:1px;height:20px;background:var(--border);margin:0 .1rem;"></span>
 
-                                {{-- ••• visível para TODOS — salvar só logados, denunciar redireciona pro login --}}
                                 <div style="position:relative;" onclick="event.stopPropagation()">
                                     <button class="btn-comment"
                                         onclick="toggleMenu({{ $post->id }})"
@@ -224,7 +223,6 @@
                                     <div id="menu-{{ $post->id }}" style="display:none;position:absolute;bottom:110%;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);min-width:175px;z-index:100;overflow:hidden;">
                                         @auth
                                         <button onclick="toggleFavorito(this, '{{ $post->slug }}'); toggleMenu({{ $post->id }})"
-
                                             type="button"
                                             style="width:100%;padding:.7rem 1rem;border:none;background:transparent;color:var(--text);font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.6rem;"
                                             onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background='transparent'">
@@ -389,7 +387,6 @@
 
 <script>
 // ── Denúncia ──
-// Se não logado → redireciona pro login. Se logado → abre modal.
 function abrirDenunciaPost(postId) {
     @auth
         document.getElementById('denunciaTipo').value = 'post';
@@ -576,7 +573,8 @@ function enviarViaDM(userId, nomeUsuario, event) {
         const card = e.target.closest('.post-card');
         if (!card) return;
         if (e.target.closest('button,a,form,input,textarea,label,select')) return;
-        const postId = card.querySelector('.btn-like')?.getAttribute('onclick')?.match(/\d+/)?.[0];
+        const onclickAttr = card.querySelector('.btn-like')?.getAttribute('onclick') ?? '';
+        const postId = onclickAttr.match(/toggleLike\(this,\s*'([^']+)'\)/)?.[1];
         if (!postId) return;
         const now = Date.now();
         if (lastTap[postId] && (now - lastTap[postId]) < 300) {
@@ -584,7 +582,7 @@ function enviarViaDM(userId, nomeUsuario, event) {
             const btnLike = card.querySelector('.btn-like');
             if (btnLike && !btnLike.classList.contains('liked')) {
                 mostrarCoracao(e.clientX, e.clientY);
-                toggleLike(btnLike, parseInt(postId));
+                toggleLike(btnLike, postId);
             } else if (btnLike) {
                 mostrarCoracao(e.clientX, e.clientY);
             }
